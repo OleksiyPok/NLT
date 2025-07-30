@@ -1,0 +1,42 @@
+{
+  "en": {
+    "languageCode": "en-US",
+    "voiceName": "Google US English"
+  },
+  "de": {
+    "languageCode": "de-DE",
+    "voiceName": "Google Deutsch"
+  },
+  "uk": {
+    "languageCode": "uk-UA",
+    "voiceName": "Google українська"
+  },
+  "ru": {
+    "languageCode": "ru-RU",
+    "voiceName": "Google русский"
+  },
+  "tr": {
+    "languageCode": "tr-TR",
+    "voiceName": "Google Türkçe"
+  },
+  "pl": {
+    "languageCode": "pl-PL",
+    "voiceName": "Google polski"
+  },
+  "fr": {
+    "languageCode": "fr-FR",
+    "voiceName": "Google français"
+  },
+  "nl": {
+    "languageCode": "nl-NL",
+    "voiceName": "Google Nederlands"
+  },
+  "pt": {
+    "languageCode": "pt-PT",
+    "voiceName": "Google português"
+  },
+  "pt-BR": {
+    "languageCode": "pt-BR",
+    "voiceName": "Google português do Brasil"
+  }
+}
