@@ -655,7 +655,8 @@ function updateControlsState() {
     label?.classList.toggle("disabled", disable)
   );
 
-  UI.fillRandomBtn.disabled = disable;
+  // Only allow fillRandomBtn in initial state
+  UI.fillRandomBtn.disabled = !isInitialState;
 
   // Disable count & repeat selection outside of initial state
   [UI.countSelect, UI.repeatSelect].forEach((el) => {

@@ -59,6 +59,23 @@ h5 {
   gap: 12px;
   box-sizing: border-box;
 }
+.reset-settings-btn {
+  align-items: center;
+  background: #f9fbe7;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(3, 64, 120, 0.2);
+  color: #0277bd;
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  font-size: 22px;
+  height: 36px;
+  justify-content: center;
+  outline: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  width: 36px;
+}
 .default-btn {
   padding: 4px 8px;
   font-size: 0.8em;
