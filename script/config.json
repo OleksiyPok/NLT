@@ -21,16 +21,8 @@
       "repeat": "1",
       "delay": "500",
       "speed": "2.0",
-      "languageCode": "ru-RU",
-      "voiceName": "Google русский"
-    }
-  },
-  "ENUMS": {
-    "AppStates": {
-      "INIT": "init",
-      "READY": "ready",
-      "PLAYING": "playing",
-      "PAUSED": "paused"
+      "languageCode": "nl-NL",
+      "voiceName": "Google Nederlands"
     }
   }
 }

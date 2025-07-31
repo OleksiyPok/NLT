@@ -7,166 +7,9 @@ window.addEventListener("resize", updateViewportHeight);
 window.addEventListener("orientationchange", updateViewportHeight);
 window.addEventListener("load", updateViewportHeight);
 
-window.embeddedUITexts = {
-  de: {
-    uiLangLabel: "Oberfläche:",
-    labelLang: "Sprache",
-    labelVoice: "Stimme",
-    labelDigitLength: "Ziffernlänge",
-    labelCount: "Anzahl",
-    labelRepeat: "Wiederholen",
-    labelSpeed: "Tempo",
-    labelDelay: "Pause",
-    fillRandom: "Zufällig füllen",
-    start: "Start",
-    continue: "Fortsetzen",
-    pause: "Pause",
-    reset: "Zurücksetzen",
-    repeatsLeft: "Wiederholungen übrig:",
-    default: "Standard",
-  },
-  en: {
-    uiLangLabel: "Interface:",
-    labelLang: "Language",
-    labelVoice: "Voice",
-    labelDigitLength: "Digit length",
-    labelCount: "Count",
-    labelRepeat: "Repeat",
-    labelSpeed: "Speed",
-    labelDelay: "Delay",
-    fillRandom: "Fill randomly",
-    start: "Start",
-    continue: "Continue",
-    pause: "Pause",
-    reset: "Reset",
-    repeatsLeft: "Repeats left:",
-    default: "Default",
-  },
-  fr: {
-    uiLangLabel: "Interface :",
-    labelLang: "Langue",
-    labelVoice: "Voix",
-    labelDigitLength: "Longueur",
-    labelCount: "Nombre",
-    labelRepeat: "Répét.",
-    labelSpeed: "Vitesse",
-    labelDelay: "Pause",
-    fillRandom: "Remplir au hasard",
-    start: "Démarrer",
-    continue: "Continuer",
-    pause: "Pause",
-    reset: "Réinitialiser",
-    repeatsLeft: "Répétitions :",
-    default: "Défaut",
-  },
-  nl: {
-    uiLangLabel: "Interface:",
-    labelLang: "Taal",
-    labelVoice: "Stem",
-    labelDigitLength: "Lengte",
-    labelCount: "Aantal",
-    labelRepeat: "Herhaal",
-    labelSpeed: "Snelheid",
-    labelDelay: "Pauze",
-    fillRandom: "Willekeurig vullen",
-    start: "Start",
-    continue: "Doorgaan",
-    pause: "Pauze",
-    reset: "Opnieuw",
-    repeatsLeft: "Herhalingen:",
-    default: "Standaard",
-  },
-  pl: {
-    uiLangLabel: "Interfejs:",
-    labelLang: "Język",
-    labelVoice: "Głos",
-    labelDigitLength: "Długość",
-    labelCount: "Ilość",
-    labelRepeat: "Powtórz",
-    labelSpeed: "Tempo",
-    labelDelay: "Pauza",
-    fillRandom: "Losowo",
-    start: "Start",
-    continue: "Kontynuuj",
-    pause: "Pauza",
-    reset: "Resetuj",
-    repeatsLeft: "Pozostało:",
-    default: "Domyślne",
-  },
-  pt: {
-    uiLangLabel: "Interface:",
-    labelLang: "Idioma",
-    labelVoice: "Voz",
-    labelDigitLength: "Dígitos",
-    labelCount: "Qtd",
-    labelRepeat: "Repetir",
-    labelSpeed: "Veloc.",
-    labelDelay: "Pausa",
-    fillRandom: "Preencher aleatório",
-    start: "Iniciar",
-    continue: "Continuar",
-    pause: "Pausar",
-    reset: "Resetar",
-    repeatsLeft: "Restantes:",
-    default: "Padrão",
-  },
-  ru: {
-    uiLangLabel: "Интерфейс:",
-    labelLang: "Язык",
-    labelVoice: "Голос",
-    labelDigitLength: "Длина",
-    labelCount: "Кол-во",
-    labelRepeat: "Повтор",
-    labelSpeed: "Темп",
-    labelDelay: "Пауза",
-    fillRandom: "Случайно",
-    start: "Старт",
-    continue: "Продолжить",
-    pause: "Пауза",
-    reset: "Сброс",
-    repeatsLeft: "Осталось:",
-    default: "По умолчанию",
-  },
-  tr: {
-    uiLangLabel: "Arayüz:",
-    labelLang: "Dil",
-    labelVoice: "Ses",
-    labelDigitLength: "Basamak",
-    labelCount: "Sayı",
-    labelRepeat: "Tekrar",
-    labelSpeed: "Hız",
-    labelDelay: "Ara",
-    fillRandom: "Rastgele",
-    start: "Başlat",
-    continue: "Sürdür",
-    pause: "Duraklat",
-    reset: "Sıfırla",
-    repeatsLeft: "Kaldı:",
-    default: "Varsayılan",
-  },
-  uk: {
-    uiLangLabel: "Інтерфейс:",
-    labelLang: "Мова",
-    labelVoice: "Голос",
-    labelDigitLength: "Довжина",
-    labelCount: "Кількість",
-    labelRepeat: "Повтор",
-    labelSpeed: "Темп",
-    labelDelay: "Пауза",
-    fillRandom: "Випадково",
-    start: "Почати",
-    continue: "Продовжити",
-    pause: "Пауза",
-    reset: "Скинути",
-    repeatsLeft: "Залишилось:",
-    default: "Типові",
-  },
-};
-
-// === Configuration and Constants ===
 const PATHS = {
-  CONFIG: "script/config_.json",
-  UI_TEXTS: "script/ui_texts.json",
+  CONFIG: "script/config.json",
+  // UI_TEXTS: "script/ui_texts.json",
 };
 
 const DEFAULT_CONFIG = {
@@ -482,19 +325,19 @@ function setupMobileDefaults() {
 }
 
 async function loadUiTexts() {
-  try {
-    if (window.embeddedUITexts) {
-      state.texts = window.embeddedUITexts;
-      updateInterfaceLanguage();
-      return;
-    }
-    const res = await fetch(PATHS.UI_TEXTS);
-    if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-    state.texts = await res.json();
-  } catch (e) {
-    console.error("Failed to load UI texts", e);
-    state.texts = {};
+  // try {
+  if (window.embeddedUITexts) {
+    state.texts = window.embeddedUITexts;
+    updateInterfaceLanguage();
+    return;
   }
+  //   const res = await fetch(PATHS.UI_TEXTS);
+  //   if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+  //   state.texts = await res.json();
+  // } catch (e) {
+  //   console.error("Failed to load UI texts", e);
+  //   state.texts = {};
+  // }
 }
 
 async function loadVoices() {
