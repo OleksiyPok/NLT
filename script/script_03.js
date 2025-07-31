@@ -13,6 +13,7 @@ const PATHS = {
 };
 
 const DEFAULT_CONFIG = {
+  DEVELOPER_MODE: false, // If TRUE Button "Clear LS" and "Path" will be visible.
   USE_LOCAL_STORAGE: true,
   mobile: {
     DEFAULT_SETTINGS: {
@@ -30,7 +31,7 @@ const DEFAULT_CONFIG = {
     DEFAULT_SETTINGS: {
       uiLang: "en",
       digitLength: "2",
-      count: "10",
+      count: "20",
       repeat: "2",
       delay: "500",
       speed: "1.0",
@@ -89,6 +90,7 @@ const UI = {
   labelSpeed: document.getElementById("labelSpeed"),
   labelDelay: document.getElementById("labelDelay"),
   labelRepeatsText: document.getElementById("labelRepeatsText"),
+  developerPanel: document.getElementById("developer"),
 };
 
 const MOBILE_REGEX =
@@ -294,6 +296,11 @@ window.addEventListener("DOMContentLoaded", async () => {
   UI.resetBtn.addEventListener("click", fullReset);
   UI.startPauseBtn.disabled = false;
   resetRepeatLeft();
+
+  if (UI.developerPanel) {
+    UI.developerPanel.style.display = CONFIG.DEVELOPER_MODE ? "block" : "none";
+    UI.developerPanel.style.marginLeft = CONFIG.DEVELOPER_MODE ? "auto" : "";
+  }
 });
 
 async function loadConfig() {
@@ -310,6 +317,13 @@ async function loadConfig() {
         CONFIG.desktop.DEFAULT_SETTINGS,
         externalConfig.desktop?.DEFAULT_SETTINGS
       );
+      if (typeof externalConfig.DEVELOPER_MODE === "boolean") {
+        CONFIG.DEVELOPER_MODE = externalConfig.DEVELOPER_MODE;
+      }
+
+      if (typeof externalConfig.USE_LOCAL_STORAGE === "boolean") {
+        CONFIG.USE_LOCAL_STORAGE = externalConfig.USE_LOCAL_STORAGE;
+      }
       console.log("📦 CONFIG external:", CONFIG);
     } else {
       console.log("📦 CONFIG inside:", CONFIG);

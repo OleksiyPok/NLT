@@ -141,10 +141,10 @@ select {
 .count-group select,
 .speed-group select {
   height: 26px;
-  width: 55px;
+  width: 65px;
   text-align: right;
   box-sizing: border-box;
-  font-size: 0.8em;
+  font-size: 0.9em;
 }
 .top-language-wrapper {
   width: fit-content;
@@ -155,13 +155,13 @@ select {
 .language-panel label,
 .top-language-wrapper label {
   font-weight: 600;
-  font-size: 0.85em;
+  font-size: 0.95em;
   color: #1a2b4c;
   white-space: nowrap;
 }
 .top-language-wrapper select {
   padding: 4px 8px;
-  font-size: 0.8em;
+  font-size: 0.95em;
   border-radius: 6px;
   border: 1px solid #b3d4fc;
   background-color: #f7fbff;
@@ -179,7 +179,7 @@ select {
   width: 100%;
   padding: 6px;
   box-sizing: border-box;
-  font-size: 0.8em;
+  font-size: 0.95em;
 }
 .controls-buttons {
   display: flex;
@@ -199,7 +199,7 @@ select {
   border-radius: 10px;
   cursor: pointer;
   transition: background 0.2s;
-  font-size: 0.95em;
+  font-size: 0.85em;
 }
 .controls-buttons button:disabled {
   background: #eee;
@@ -239,7 +239,7 @@ select {
 .number-area .column input {
   width: 55px;
   height: 34px;
-  font-size: 1em;
+  font-size: 1.4em;
   text-align: center;
   box-sizing: border-box;
   border: 1px solid #b3d4fc;
@@ -300,12 +300,6 @@ select {
     flex-direction: column;
     align-items: stretch;
   }
-  .block-setting label,
-  .language-panel label,
-  .top-language-wrapper label,
-  .block-setting select {
-    font-size: 0.85em;
-  }
   .block-setting select {
     min-width: 60px;
   }
@@ -326,7 +320,7 @@ select {
   .setting-button-wrapper {
     display: flex;
     flex-direction: column-reverse;
-    gap: 8px;
+    gap: 6px;
     flex: 1;
   }
   .block-setting {
@@ -351,7 +345,7 @@ select {
   .language-panel select {
     width: 100%;
     padding: 6px;
-    font-size: 1em;
+    font-size: 0.95em;
     box-sizing: border-box;
   }
   .controls-buttons {
@@ -363,6 +357,7 @@ select {
   .controls-buttons button {
     width: 100%;
     padding: 10px 0;
+    font-size: 1em;
   }
   .block-numbers {
     display: flex;
@@ -391,7 +386,7 @@ select {
   .number-area .column input {
     width: 75px;
     height: 34px;
-    font-size: 1.42em;
+    font-size: 1.6em;
   }
   .repeat-group {
     border-bottom: none;
@@ -405,7 +400,7 @@ select {
     margin-left: 0;
     margin-bottom: 8px;
   }
-  .developer {
+  /* .developer {
     margin-left: auto;
-  }
+  } */
 }

@@ -1,4 +1,6 @@
 {
+  
+  "DEVELOPER_MODE": false, 
   "USE_LOCAL_STORAGE": true,
   "mobile": {
     "DEFAULT_VOICE": "Google Nederlands",
@@ -8,9 +10,9 @@
       "count": "20",
       "repeat": "1",
       "delay": "500",
-      "speed": "2.0",
-      "languageCode": "ALL",
-      "voiceName": ""
+      "speed": "1.0",
+      "languageCode": "nl-NL",
+      "voiceName": "Google Nederlands"
     }
   },
   "desktop": {
@@ -18,7 +20,7 @@
       "uiLang": "en",
       "digitLength": "2",
       "count": "20",
-      "repeat": "1",
+      "repeat": "2",
       "delay": "500",
       "speed": "1.0",
       "languageCode": "nl-NL",
