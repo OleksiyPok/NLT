@@ -10,29 +10,29 @@
       sizes="32x32"
       href="icons/icon_512x512.png"
     />
-    <link rel="stylesheet" href="styles/styles_03.css" />
+    <link rel="stylesheet" href="styles/styles_04.css" />
     <script src="script/ui_texts.js" defer></script>
     <script src="script/script_03.js" defer></script>
   </head>
 
   <body>
     <div id="scroll-container" class="scroll-container">
-      <h2>
+      <div class="titles-container" id="titlesContainer">
         <img
+          class="title-icon"
+          id="titleIcon"
           src="icons/icon_512x512.png"
           alt="Icon"
-          style="
-            width: 48px;
-            height: 48px;
-            vertical-align: middle;
-            margin-right: 8px;
-          "
-        />Number Listening Trainer
-      </h2>
-      <h5>Author: Oleksii Pokormiakho</h5>
+        />
+        <div class="title-text" id="titleText">
+          <h2>Number Listening Trainer<br /></h2>
+          <h6 id="version" class="version">version: 1.2.2</h6>
+        </div>
+      </div>
       <div class="layout">
-        <div class="top-bar">
-          <button id="resetSettingsBtn" class="reset-settings-btn" title="Def">
+        <h5>Oleksii Pokormiakho</h5>
+        <div class="setting-row" id="settingRow">
+          <button class="reset-settings-btn" id="resetSettingsBtn" title="Def">
             🔄
           </button>
           <!-- <button id="defaultBtn" class="default-btn" onclick="">🔄</button> -->
@@ -42,7 +42,7 @@
               id="uiLangLabel"
               class="ui-lang-label"
             ></label>
-            <select id="uiLangSelect" class="ui-lang-select">
+            <select class="ui-lang-select" id="uiLangSelect">
               <option value="de">Deutsch</option>
               <option selected value="en">English</option>
               <option value="fr">Français</option>

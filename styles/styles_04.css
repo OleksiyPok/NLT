@@ -25,22 +25,42 @@ body {
   box-sizing: border-box;
 }
 h2,
-h5 {
-  text-align: center;
-  word-wrap: break-word;
-  width: 100%;
+h5,
+h6 {
   box-sizing: border-box;
   margin-bottom: 10px;
+  width: 100%;
+  word-wrap: break-word;
 }
 h2 {
-  color: #1a2b4c;
+  margin: 0;
   font-size: 24px;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 h5 {
+  font-size: 14px;
+  font-style: italic;
+  text-align: right;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+.version {
+  display: block;
+  font-size: 12px;
   font-style: italic;
   margin-top: 0;
-  font-size: 14px;
+}
+.titles-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.title-icon {
+  width: 64px;
+  height: 64px;
+  margin-right: 8px;
+  flex-shrink: 0;
 }
 .layout {
   display: flex;
@@ -58,6 +78,8 @@ h5 {
   margin-bottom: 4px;
   gap: 12px;
   box-sizing: border-box;
+  border-top: 1px solid #cfd8dc;
+  padding: 8px 0;
 }
 .reset-settings-btn {
   align-items: center;
