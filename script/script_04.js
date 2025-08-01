@@ -573,44 +573,57 @@ function updateStartPauseButton() {
 }
 
 // === Playback ===
+
 async function togglePlay() {
   if (state.appState === CONFIG.ENUMS.AppStates.PLAYING) {
+    // Pause requested
     speechSynthesis.cancel();
     setAppState(CONFIG.ENUMS.AppStates.PAUSED);
     return;
   }
-  if (state.appState === CONFIG.ENUMS.AppStates.READY) {
-    state.repeatsRemaining = Number(UI.repeatSelect.value) || 1;
-    UI.repeatLeft.textContent = state.repeatsRemaining;
-    state.playQueue = state.inputs.filter((input) =>
-      input.classList.contains("selected")
-    );
-    state.currentIndex = 0;
-  }
-  setAppState(CONFIG.ENUMS.AppStates.PLAYING);
-  playSequence();
-}
 
-function playSequence() {
-  if (
-    state.appState !== CONFIG.ENUMS.AppStates.PLAYING ||
-    state.currentIndex >= state.playQueue.length
-  ) {
-    if (
-      state.currentIndex >= state.playQueue.length &&
-      state.repeatsRemaining > 1
-    ) {
-      state.repeatsRemaining--;
-      UI.repeatLeft.textContent = state.repeatsRemaining;
-      state.currentIndex = 0;
-      playSequence();
-      return;
-    }
-    stopPlayback();
+  if (state.appState === CONFIG.ENUMS.AppStates.PAUSED) {
+    // Continue from paused state
+    setAppState(CONFIG.ENUMS.AppStates.PLAYING);
+    playSequence(true); // true = resume
     return;
   }
 
+  // Start new playback
+  state.repeatsRemaining = Number(UI.repeatSelect.value) || 1;
+  UI.repeatLeft.textContent = state.repeatsRemaining;
+  state.playQueue = state.inputs.filter((input) =>
+    input.classList.contains("selected")
+  );
+  state.currentIndex = 0;
+
+  setAppState(CONFIG.ENUMS.AppStates.PLAYING);
+  playSequence(false);
+}
+
+function playSequence(isResume = false) {
+  if (state.appState !== CONFIG.ENUMS.AppStates.PLAYING) return;
+
+  if (state.currentIndex >= state.playQueue.length) {
+    if (state.repeatsRemaining > 1) {
+      state.repeatsRemaining--;
+      UI.repeatLeft.textContent = state.repeatsRemaining;
+      state.currentIndex = 0;
+    } else {
+      stopPlayback();
+      return;
+    }
+  }
+
   const input = state.playQueue[state.currentIndex];
+  if (!input || !input.value) {
+    state.currentIndex++;
+    setTimeout(() => playSequence(false), Number(UI.delaySelect.value) || 500);
+    return;
+  }
+
+  highlightSelection();
+
   const utterance = new SpeechSynthesisUtterance(input.value);
 
   const selectedVoiceName = UI.voiceSelect.value;
@@ -627,20 +640,24 @@ function playSequence() {
   utterance.onend = () => {
     if (state.appState === CONFIG.ENUMS.AppStates.PLAYING) {
       state.currentIndex++;
-      setTimeout(playSequence, Number(UI.delaySelect.value) || 500);
+      setTimeout(
+        () => playSequence(false),
+        Number(UI.delaySelect.value) || 500
+      );
     }
   };
-
-  highlightSelection();
 
   speechSynthesis.cancel();
 
   setTimeout(() => {
-    speechSynthesis.speak(utterance);
+    if (state.appState === CONFIG.ENUMS.AppStates.PLAYING) {
+      speechSynthesis.speak(utterance);
+    }
   }, 100);
 }
 
 function stopPlayback() {
+  speechSynthesis.cancel();
   setAppState(CONFIG.ENUMS.AppStates.READY);
   state.currentIndex = 0;
   state.playQueue = [];
