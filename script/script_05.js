@@ -19,7 +19,7 @@ const DEFAULT_CONFIG = {
     DEFAULT_SETTINGS: {
       uiLang: "en",
       digitLength: "2",
-      count: "40",
+      count: "20",
       repeat: "1",
       delay: "500",
       speed: "1.0",
@@ -31,7 +31,7 @@ const DEFAULT_CONFIG = {
     DEFAULT_SETTINGS: {
       uiLang: "en",
       digitLength: "2",
-      count: "40",
+      count: "20",
       repeat: "1",
       delay: "500",
       speed: "1.0",
@@ -328,10 +328,8 @@ async function loadConfig() {
       if (typeof externalConfig.USE_LOCAL_STORAGE === "boolean") {
         CONFIG.USE_LOCAL_STORAGE = externalConfig.USE_LOCAL_STORAGE;
       }
-      alert("Using external config");
       console.log("📦 CONFIG external:", CONFIG);
     } else {
-      alert("Using internal config");
       console.log("📦 CONFIG inside:", CONFIG);
     }
   } catch (e) {
