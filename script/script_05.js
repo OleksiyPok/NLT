@@ -328,8 +328,10 @@ async function loadConfig() {
       if (typeof externalConfig.USE_LOCAL_STORAGE === "boolean") {
         CONFIG.USE_LOCAL_STORAGE = externalConfig.USE_LOCAL_STORAGE;
       }
+      alert("Using external config");
       console.log("📦 CONFIG external:", CONFIG);
     } else {
+      alert("Using internal config");
       console.log("📦 CONFIG inside:", CONFIG);
     }
   } catch (e) {
