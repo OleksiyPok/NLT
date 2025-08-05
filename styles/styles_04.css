@@ -259,7 +259,7 @@ select {
   align-items: center;
   gap: 10px;
 }
-.number-area .column input {
+.number-input {
   width: 55px;
   height: 34px;
   font-size: 1.4em;
@@ -273,11 +273,11 @@ select {
   background-color: #f7fbff;
   color: #1a2b4c;
 }
-.number-area .column input.selected {
+.number-input.selected {
   outline: 2px solid #0366d6;
   outline-offset: -1px;
 }
-.number-area .column input.highlight {
+.number-input.highlight {
   background-color: #e6f2ff;
   font-weight: bold;
   color: #0a3c78;
@@ -406,7 +406,7 @@ select {
   .number-area .column {
     gap: 14px;
   }
-  .number-area .column input {
+  .number-input {
     width: 75px;
     height: 34px;
     font-size: 1.6em;

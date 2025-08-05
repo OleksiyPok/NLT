@@ -19,7 +19,7 @@ const DEFAULT_CONFIG = {
     DEFAULT_SETTINGS: {
       uiLang: "en",
       digitLength: "2",
-      count: "20",
+      count: "10",
       repeat: "1",
       delay: "500",
       speed: "1.0",
@@ -31,8 +31,8 @@ const DEFAULT_CONFIG = {
     DEFAULT_SETTINGS: {
       uiLang: "en",
       digitLength: "2",
-      count: "20",
-      repeat: "2",
+      count: "10",
+      repeat: "1",
       delay: "500",
       speed: "1.0",
       languageCode: "nl-NL",
@@ -285,9 +285,13 @@ window.addEventListener("DOMContentLoaded", async () => {
   await loadVoices();
   if (isMobileDevice()) setupMobileDefaults();
 
+  state.inputs = Array.from(
+    UI.numberGrid.querySelectorAll("input[type='text']")
+  );
+
+  // createGrid();
   populateLanguageSelect();
   populateVoiceSelect();
-  createGrid();
   fillRandom();
   highlightSelection();
   updateInterfaceLanguage();
@@ -493,29 +497,30 @@ function attachEventHandlers() {
 }
 
 // === Number Grid ===
-function createGrid() {
-  UI.numberGrid.innerHTML = "";
-  state.inputs = [];
+// function createGrid() {
+//   UI.numberGrid.innerHTML = "";
+//   state.inputs = [];
 
-  for (let col = 0; col < 4; col++) {
-    const column = document.createElement("div");
-    column.classList.add("column");
-    for (let row = 0; row < 10; row++) {
-      const input = document.createElement("input");
-      input.type = "text";
-      input.placeholder = "???";
-      input.maxLength = state.settings.digitLength;
-      input.readOnly = true;
-      input.tabIndex = -1;
-      input.style.userSelect = "none";
-      input.style.caretColor = "transparent";
-      input.style.pointerEvents = "none";
-      column.appendChild(input);
-      state.inputs.push(input);
-    }
-    UI.numberGrid.appendChild(column);
-  }
-}
+//   for (let col = 0; col < 4; col++) {
+//     const column = document.createElement("div");
+//     column.classList.add("column");
+//     for (let row = 0; row < 10; row++) {
+//       const input = document.createElement("input");
+//       input.type = "text";
+//       input.className = "number-input";
+//       input.placeholder = "***";
+//       input.maxLength = state.settings.digitLength;
+//       input.readOnly = true;
+//       input.tabIndex = -1;
+//       input.style.userSelect = "none";
+//       input.style.caretColor = "transparent";
+//       input.style.pointerEvents = "none";
+//       column.appendChild(input);
+//       state.inputs.push(input);
+//     }
+//     UI.numberGrid.appendChild(column);
+//   }
+// }
 
 function fillRandom() {
   const maxValue = 10 ** state.settings.digitLength - 1;
