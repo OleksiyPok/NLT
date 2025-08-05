@@ -6,7 +6,7 @@
     "DEFAULT_SETTINGS": {
       "uiLang": "en",
       "digitLength": "2",
-      "count": "40",
+      "count": "10",
       "repeat": "1",
       "delay": "500",
       "speed": "1.0",
@@ -18,7 +18,7 @@
     "DEFAULT_SETTINGS": {
       "uiLang": "en",
       "digitLength": "2",
-      "count": "40",
+      "count": "10",
       "repeat": "1",
       "delay": "500",
       "speed": "1.0",

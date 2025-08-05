@@ -19,7 +19,7 @@ const DEFAULT_CONFIG = {
     DEFAULT_SETTINGS: {
       uiLang: "en",
       digitLength: "2",
-      count: "10",
+      count: "40",
       repeat: "1",
       delay: "500",
       speed: "1.0",
@@ -31,7 +31,7 @@ const DEFAULT_CONFIG = {
     DEFAULT_SETTINGS: {
       uiLang: "en",
       digitLength: "2",
-      count: "10",
+      count: "40",
       repeat: "1",
       delay: "500",
       speed: "1.0",
