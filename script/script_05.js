@@ -120,11 +120,11 @@ function getDefaultSettings() {
 }
 
 function saveSettingsToLocalStorage() {
-  localStorage.setItem("settings", JSON.stringify(state.settings));
+  localStorage.setItem("NLT_settings", JSON.stringify(state.settings));
 }
 
 function loadSettingsFromLocalStorage() {
-  const saved = localStorage.getItem("settings");
+  const saved = localStorage.getItem("NLT_settings");
   return saved ? JSON.parse(saved) : null;
 }
 
@@ -162,6 +162,7 @@ function setSelectValueWithFallback(selectElem, value, fallbackValue) {
 }
 
 async function resetToDefaultSettings() {
+  localStorage.removeItem("NLT_settings");
   speechSynthesis.cancel();
   stopPlayback();
 
