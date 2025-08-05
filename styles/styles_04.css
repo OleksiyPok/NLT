@@ -285,6 +285,15 @@ select {
 .disabled {
   opacity: 0.5;
 }
+label.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
+select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 .repeats-text {
   padding-left: 8px;
   font-size: 0.85em;
