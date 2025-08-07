@@ -307,7 +307,7 @@ select:disabled {
 }
 
 @media (min-width: 768px) {
-  /* .layout {
+  .layout {
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -318,15 +318,15 @@ select:disabled {
   }
   .repeats-text {
     font-size: 1em;
-  }*/
-  /* .content-wrapper {
+  }
+  .content-wrapper {
     display: flex;
     flex-direction: row;
     align-items: stretch;
     gap: 12px;
     width: 100%;
-  } */
-  /*
+  }
+
   .block-numbers,
   .setting-button-wrapper {
     align-self: stretch;
@@ -412,8 +412,8 @@ select:disabled {
     max-width: 712px;
     margin-left: 0;
     margin-bottom: 8px;
-  } */
-  /* .developer {
+  }
+  .developer {
     margin-left: auto;
-  } */
+  }
 }
