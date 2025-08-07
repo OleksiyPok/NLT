@@ -1,3 +1,26 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  padding: 12px;
+  overflow-x: hidden;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #fff8e1;
+  color: #1a2b4c;
+}
 .scroll-container {
   height: calc(var(--vh, 1vh) * 100);
   overflow-y: auto;
@@ -8,29 +31,12 @@
 .scroll-container::-webkit-scrollbar {
   display: none;
 }
-body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: #fff8e1;
-  color: #1a2b4c;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 12px;
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
 h2,
 h5,
 h6 {
-  box-sizing: border-box;
-  margin-bottom: 10px;
   width: 100%;
-  word-wrap: break-word;
+  margin-bottom: 10px;
+  overflow-wrap: anywhere;
 }
 h2 {
   margin: 0;
@@ -38,17 +44,17 @@ h2 {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 h5 {
+  margin-top: 0;
+  margin-bottom: 8px;
   font-size: 14px;
   font-style: italic;
   text-align: right;
-  margin-top: 0;
-  margin-bottom: 8px;
 }
 .version {
   display: block;
+  margin-top: 0;
   font-size: 12px;
   font-style: italic;
-  margin-top: 0;
 }
 .titles-container {
   display: flex;
@@ -57,10 +63,10 @@ h5 {
   width: 100%;
 }
 .title-icon {
+  flex-shrink: 0;
   width: 64px;
   height: 64px;
   margin-right: 8px;
-  flex-shrink: 0;
 }
 .layout {
   display: flex;
@@ -76,153 +82,131 @@ h5 {
   max-width: 712px;
   margin-left: 0;
   margin-bottom: 4px;
-  gap: 12px;
-  box-sizing: border-box;
-  border-top: 1px solid #cfd8dc;
   padding: 8px 0;
+  gap: 12px;
+  border-top: 1px solid #cfd8dc;
 }
 .reset-settings-btn {
+  display: flex;
+  justify-content: center;
   align-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  font-size: 22px;
   background: #f9fbe7;
   border: none;
   border-radius: 6px;
   box-shadow: 0 2px 5px rgba(3, 64, 120, 0.2);
   color: #0277bd;
   cursor: pointer;
-  display: flex;
-  flex-shrink: 0;
-  font-size: 22px;
-  height: 36px;
-  justify-content: center;
   outline: none;
   transition: background-color 0.3s ease, color 0.3s ease;
-  width: 36px;
 }
-.default-btn {
-  padding: 4px 8px;
-  font-size: 0.8em;
-  font-weight: normal;
-  border-radius: 6px;
-  border: 1px solid #b3d4fc;
-  background-color: #f0f9ff;
-  color: #1a2b4c;
-  opacity: 0.5;
-  cursor: pointer;
-  box-sizing: border-box;
-}
-.default-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 .block-setting,
 .block-numbers,
 .block-button {
-  width: 100%;
-  box-sizing: border-box;
-  background: #ffffff;
-  border: 2px solid #b3d4fc;
-  border-radius: 15px;
-  padding: 12px;
-  margin-top: 8px;
-  box-shadow: 0 4px 12px rgba(3, 102, 214, 0.1);
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  background: #ffffff;
+  border: 2px solid #b3d4fc;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(3, 102, 214, 0.1);
 }
 .count-group-wrapper,
 .speed-group-wrapper,
 .language-panel-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+  min-width: 0;
+  padding: 6px;
   background: #ffffff;
   border: 1px solid #b3d4fc;
   border-radius: 10px;
-  padding: 6px;
-  box-sizing: border-box;
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
 }
 .count-group,
 .speed-group {
   display: grid;
   grid-template-columns: auto min-content;
-  row-gap: 8px;
-  column-gap: 8px;
   width: 100%;
   flex: 1;
+  row-gap: 8px;
+  column-gap: 8px;
 }
 select {
   background-color: #f7fbff;
-  border-radius: 6px;
   border: 1px solid #b3d4fc;
+  border-radius: 6px;
   box-shadow: none;
   font-size: 0.85em;
   color: #1a2b4c;
 }
 .count-group select,
 .speed-group select {
-  height: 26px;
   width: 65px;
+  height: 26px;
   text-align: right;
-  box-sizing: border-box;
   font-size: 0.9em;
 }
-.top-language-wrapper {
-  width: fit-content;
+.ui-language-wrapper {
   align-self: flex-end;
   margin-left: auto;
+  width: fit-content;
 }
+.ui-language-wrapper label,
 .block-setting label,
-.language-panel label,
-.top-language-wrapper label {
+.language-panel label {
   font-weight: 600;
   font-size: 0.95em;
   color: #1a2b4c;
   white-space: nowrap;
 }
-.top-language-wrapper select {
+.ui-language-wrapper select {
   padding: 4px 8px;
   font-size: 0.95em;
-  border-radius: 6px;
-  border: 1px solid #b3d4fc;
   background-color: #f7fbff;
+  border: 1px solid #b3d4fc;
+  border-radius: 6px;
   color: #1a2b4c;
 }
 .language-panel {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
   gap: 12px;
-  flex-wrap: wrap;
 }
 .language-panel select {
   width: 100%;
   padding: 6px;
-  box-sizing: border-box;
   font-size: 0.95em;
 }
 .controls-buttons {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: stretch;
+  justify-content: space-between;
   width: 100%;
   gap: 8px;
 }
 .controls-buttons button {
   flex: 1;
   padding: 10px 0;
-  border: 2px solid #b3d4fc;
-  background: #e3f2fd;
-  color: #1a2b4c;
+  font-size: 0.85em;
   font-weight: 600;
+  background: #e3f2fd;
+  border: 2px solid #b3d4fc;
   border-radius: 10px;
+  color: #1a2b4c;
   cursor: pointer;
   transition: background 0.2s;
-  font-size: 0.85em;
 }
 .controls-buttons button:disabled {
   background: #eee;
@@ -232,13 +216,13 @@ select {
 }
 .controls-buttons button:not(:disabled):hover {
   background: #d0e7fd;
-  color: #034078;
   border-color: #0366d6;
+  color: #034078;
 }
 .repeat-group {
   padding: 4px 0;
-  font-weight: 600;
   font-size: 0.95em;
+  font-weight: 600;
   text-align: left;
   color: #5a7899;
   border-top: 1px solid #cfd8dc;
@@ -247,11 +231,10 @@ select {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   justify-content: center;
-  gap: 6px;
+  width: 100%;
   padding-top: 6px;
   margin-bottom: 10px;
-  width: 100%;
-  box-sizing: border-box;
+  gap: 6px;
 }
 .number-area .column {
   display: flex;
@@ -262,24 +245,23 @@ select {
 .number-input {
   width: 55px;
   height: 34px;
+  margin: 0 auto;
+  padding: 2px;
   font-size: 1.4em;
   text-align: center;
-  box-sizing: border-box;
+  background-color: #f7fbff;
   border: 1px solid #b3d4fc;
   border-radius: 6px;
-  padding: 2px;
-  transition: box-shadow 0.2s, outline 0.2s;
-  margin: 0 auto;
-  background-color: #f7fbff;
   color: #1a2b4c;
+  transition: box-shadow 0.2s, outline 0.2s;
 }
 .number-input.selected {
   outline: 2px solid #0366d6;
   outline-offset: -1px;
 }
 .number-input.highlight {
-  background-color: #e6f2ff;
   font-weight: bold;
+  background-color: #e6f2ff;
   color: #0a3c78;
 }
 .disabled {
@@ -301,21 +283,20 @@ select:disabled {
 .developer {
   display: flex;
   justify-content: right;
-  gap: 8px;
   width: 100%;
   max-width: 712px;
   margin-top: 24px;
   margin-right: auto;
-  box-sizing: border-box;
+  gap: 8px;
 }
 .developer button {
   width: 80px;
   padding: 6px 12px;
   font-size: 0.75em;
   background-color: #f0f9ff;
-  color: #5a7899;
   border: 1px solid #b3d4fc;
   border-radius: 10px;
+  color: #5a7899;
   cursor: pointer;
   transition: background-color 0.2s, border-color 0.2s;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
@@ -326,7 +307,7 @@ select:disabled {
 }
 
 @media (min-width: 768px) {
-  .layout {
+  /* .layout {
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -337,14 +318,15 @@ select:disabled {
   }
   .repeats-text {
     font-size: 1em;
-  }
-  .content-wrapper {
+  }*/
+  /* .content-wrapper {
     display: flex;
     flex-direction: row;
     align-items: stretch;
     gap: 12px;
     width: 100%;
-  }
+  } */
+  /*
   .block-numbers,
   .setting-button-wrapper {
     align-self: stretch;
@@ -378,7 +360,6 @@ select:disabled {
     width: 100%;
     padding: 6px;
     font-size: 0.95em;
-    box-sizing: border-box;
   }
   .controls-buttons {
     display: flex;
@@ -401,7 +382,7 @@ select:disabled {
     padding-bottom: 12px;
     padding-left: 16px;
     padding-right: 16px;
-    box-sizing: border-box;
+
     height: 100%;
   }
   .number-area {
@@ -431,7 +412,7 @@ select:disabled {
     max-width: 712px;
     margin-left: 0;
     margin-bottom: 8px;
-  }
+  } */
   /* .developer {
     margin-left: auto;
   } */
