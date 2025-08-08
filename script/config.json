@@ -1,5 +1,5 @@
 {  
-  "DEVELOPER_MODE": false, 
+  "DEVELOPER_MODE": true,  
   "USE_LOCAL_STORAGE": true,
   "mobile": {
     "DEFAULT_VOICE": "Google Nederlands",
