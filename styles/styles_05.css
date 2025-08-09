@@ -1,5 +1,5 @@
 :root {
-  --max-content-width: 712px;
+  --max-content-width: 425px;
 }
 
 *,
@@ -60,6 +60,18 @@ h5 {
   font-style: italic;
   text-align: right;
 }
+input {
+  background-color: #f7fbff;
+  border: 1px solid #b3d4fc;
+  border-radius: 6px;
+  width: 120px;
+  box-shadow: none;
+  padding: 4px 8px;
+  font-size: 0.95em;
+  text-align: center;
+  color: #1a2b4c;
+  outline: none;
+}
 select {
   background-color: #f7fbff;
   border: 1px solid #b3d4fc;
@@ -112,7 +124,6 @@ button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-
 .version {
   display: block;
   margin-top: 0;
@@ -160,7 +171,6 @@ button:disabled {
   outline: none;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
-
 .section-block {
   display: flex;
   flex-direction: column;
@@ -239,7 +249,8 @@ button:disabled {
   gap: 8px;
 }
 .number-input {
-  width: 60px;
+  width: 100%;
+  max-width: 85px;
   height: 34px;
   margin: 0 auto;
   padding: 2px;
@@ -280,10 +291,10 @@ button:disabled {
 }
 .developer {
   display: flex;
-  justify-content: right;
+  justify-content: left;
   width: 100%;
+  gap: 12px;
   margin-top: 14px;
-  margin-right: auto;
 }
 .developer button {
   width: 80px;

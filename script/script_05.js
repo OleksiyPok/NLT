@@ -303,8 +303,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   resetRepeatLeft();
 
   if (UI.developerPanel) {
-    UI.developerPanel.style.display = CONFIG.DEVELOPER_MODE ? "block" : "none";
-    UI.developerPanel.style.marginLeft = CONFIG.DEVELOPER_MODE ? "auto" : "";
+    UI.developerPanel.style.display = CONFIG.DEVELOPER_MODE ? "flex" : "none";
   }
 });
 
