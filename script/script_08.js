@@ -607,7 +607,7 @@ async function togglePlay() {
   if (state.appState === CONFIG.ENUMS.AppStates.PLAYING) {
     // Pause requested
     speechSynthesis.cancel();
-    hideBackgroundOverlay();
+    // hideBackgroundOverlay();
     setAppState(CONFIG.ENUMS.AppStates.PAUSED);
     return;
   }
@@ -644,6 +644,7 @@ function playSequence(isResume = false) {
       state.currentIndex = 0;
     } else {
       stopPlayback();
+      // hideBackgroundOverlay();
       return;
     }
   }
@@ -655,7 +656,7 @@ function playSequence(isResume = false) {
     return;
   }
 
-  showBackgroundOverlay();
+  // showBackgroundOverlay();
   highlightSelection();
 
   showActiveNumberOverlay(input.value, Number(UI.delaySelect.value));
@@ -700,7 +701,6 @@ function stopPlayback() {
   state.repeatsRemaining = Number(UI.repeatSelect.value) || 1;
   resetRepeatLeft();
   highlightSelection();
-  hideBackgroundOverlay();
 }
 
 function updateControlsState() {
@@ -769,6 +769,7 @@ function hideBackgroundOverlay() {
 function showActiveNumberOverlay(value, delayMs) {
   const fullscreenVal = UI.fullscreenSelect.value;
   if (fullscreenVal == "1") {
+    // if (state.appState === CONFIG.ENUMS.AppStates.PLAYING) {
     UI.activeNumberOverlay.textContent = value || "";
 
     setTimeout(() => {
@@ -778,6 +779,7 @@ function showActiveNumberOverlay(value, delayMs) {
     setTimeout(() => {
       UI.activeNumberOverlay.classList.remove("show");
     }, 500 + delayMs);
+    // }
   }
 }
 

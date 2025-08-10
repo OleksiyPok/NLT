@@ -10,7 +10,7 @@
       "digitLength": "2",
       "count": "40",
       "repeat": "1",
-      "fullscreen": "1",
+      "fullscreen": "0",
       "languageCode": "nl-NL",
       "voiceName": "Google Nederlands"
     }
@@ -23,7 +23,7 @@
       "digitLength": "2",
       "count": "40",
       "repeat": "1",
-      "fullscreen": "1",
+      "fullscreen": "0",
       "languageCode": "nl-NL",
       "voiceName": "Google Nederlands"
     }
