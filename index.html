@@ -7,12 +7,12 @@
     <link
       rel="icon"
       type="image/png"
-      sizes="32x32"
-      href="icons/icon_NLT_512x512.png"
+      sizes="16x16"
+      href="icons/icon_NLT_16x16.png"
     />
     <link rel="stylesheet" href="styles/styles_05.css" />
     <script src="script/ui_NLT_texts.js" defer></script>
-    <script src="script/script_05.js" defer></script>
+    <script src="script/script_07.js" defer></script>
   </head>
   <!-- NLT -->
   <body>
@@ -22,12 +22,12 @@
           <img
             class="title-icon"
             id="titleIcon"
-            src="icons/icon_NLT_512x512.png"
+            src="icons/icon_NLT_64x64.png"
             alt="Icon"
           />
           <div class="title-text" id="titleText">
             <h2>Number Listening Trainer<br /></h2>
-            <h6 id="version" class="version">version: 1.2.9</h6>
+            <h6 id="version" class="version">version: 1.3.1</h6>
           </div>
         </div>
         <h5>Oleksii Pokormiakho</h5>
@@ -415,7 +415,12 @@
             >
               Start
             </button>
-            <button disabled id="resetBtn" class="reset-btn" onclick="reset()">
+            <button
+              disabled
+              id="resetBtn"
+              class="reset-btn"
+              onclick="fullReset()"
+            >
               Reset
             </button>
           </div>
@@ -440,9 +445,8 @@
                   >Delay</label
                 >
                 <select id="delaySelect" class="delay-select">
-                  <option value="200">200</option>
-                  <option value="500" selected>500</option>
-                  <option value="1000">1000</option>
+                  <option value="500">500</option>
+                  <option value="1000" selected>1000</option>
                   <option value="1500">1500</option>
                   <option value="2000">2000</option>
                   <option value="2500">2500</option>
@@ -502,6 +506,21 @@
               </div>
             </div>
 
+            <div class="fullscreen-wrapper">
+              <div class="fullscreen-group">
+                <label
+                  for="fullscreenSelect"
+                  id="labelFullscreen"
+                  class="label-fullscreen"
+                  >Fullscreen</label
+                >
+                <select id="fullscreenSelect" class="fullscreen-select">
+                  <option value="0">No</option>
+                  <option value="1" selected>Yes</option>
+                </select>
+              </div>
+            </div>
+
             <div class="language-voice-wrapper">
               <div class="language-group">
                 <label
@@ -530,6 +549,9 @@
           </div>
         </div>
 
+        <div class="background-overlay" id="backgroundOverlay"></div>
+        <div class="active-number-overlay" id="activeNumberOverlay"></div>
+
         <div class="developer" id="developer">
           <button onclick="alert(location.href);" title="Path to this page">
             Path
@@ -542,6 +564,7 @@
           </button>
         </div>
       </div>
+      <div class="scroll-bottom-space"></div>
     </div>
   </body>
 </html>

@@ -18,11 +18,12 @@ const DEFAULT_CONFIG = {
   mobile: {
     DEFAULT_SETTINGS: {
       uiLang: "en",
+      delay: "1000",
+      speed: "1.0",
       digitLength: "2",
       count: "20",
       repeat: "1",
-      delay: "500",
-      speed: "1.0",
+      fullscreen: "1",
       languageCode: "nl-NL",
       voiceName: "Google Nederlands",
     },
@@ -30,11 +31,12 @@ const DEFAULT_CONFIG = {
   desktop: {
     DEFAULT_SETTINGS: {
       uiLang: "en",
+      delay: "1000",
+      speed: "1.0",
       digitLength: "2",
       count: "20",
       repeat: "1",
-      delay: "500",
-      speed: "1.0",
+      fullscreen: "1",
       languageCode: "nl-NL",
       voiceName: "Google Nederlands",
     },
@@ -50,6 +52,7 @@ const DEFAULT_CONFIG = {
 };
 
 let CONFIG = structuredClone(DEFAULT_CONFIG);
+let wakeLock = null;
 
 // === Global State ===
 const state = {
@@ -66,20 +69,21 @@ const state = {
 
 // === UI Selectors ===
 const UI = {
-  resetSettingsBtn: document.getElementById("resetSettingsBtn"),
-  defaultBtn: document.getElementById("defaultBtn"),
-  repeatSelect: document.getElementById("repeatSelect"),
-  repeatLeft: document.getElementById("repeatLeft"),
-  delaySelect: document.getElementById("delaySelect"),
-  speedSelect: document.getElementById("speedSelect"),
   uiLangSelect: document.getElementById("uiLangSelect"),
+  repeatLeft: document.getElementById("repeatLeft"),
+  speedSelect: document.getElementById("speedSelect"),
+  delaySelect: document.getElementById("delaySelect"),
+  digitLengthSelect: document.getElementById("digitLengthSelect"),
+  countSelect: document.getElementById("countSelect"),
+  repeatSelect: document.getElementById("repeatSelect"),
+  fullscreenSelect: document.getElementById("fullscreenSelect"),
   languageCodeSelect: document.querySelector(".language-code-select"),
   labelLanguageCode: document.querySelector(".label-language-code"),
   voiceSelect: document.getElementById("voiceSelect"),
-  digitLengthSelect: document.getElementById("digitLengthSelect"),
-  countSelect: document.getElementById("countSelect"),
   numberGrid: document.getElementById("numberGrid"),
+  labelRepeatsText: document.getElementById("labelRepeatsText"),
   fillRandomBtn: document.getElementById("fillRandomBtn"),
+  resetSettingsBtn: document.getElementById("resetSettingsBtn"),
   startPauseBtn: document.getElementById("startPauseBtn"),
   resetBtn: document.getElementById("resetBtn"),
   uiLangLabel: document.getElementById("uiLangLabel"),
@@ -89,14 +93,15 @@ const UI = {
   labelRepeat: document.getElementById("labelRepeat"),
   labelSpeed: document.getElementById("labelSpeed"),
   labelDelay: document.getElementById("labelDelay"),
-  labelRepeatsText: document.getElementById("labelRepeatsText"),
+  labelFullscreen: document.getElementById("labelFullscreen"),
   developerPanel: document.getElementById("developer"),
+  backgroundOverlay: document.getElementById("backgroundOverlay"),
+  activeNumberOverlay: document.getElementById("activeNumberOverlay"),
 };
 
 const MOBILE_REGEX =
   /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
 
-// === Utilities ===
 function isMobileDevice() {
   if (navigator.userAgentData) {
     return navigator.userAgentData.mobile;
@@ -112,7 +117,6 @@ function setAppState(newState) {
   updateControlsState();
 }
 
-// === Settings ===
 function getDefaultSettings() {
   return isMobileDevice()
     ? { ...CONFIG.mobile.DEFAULT_SETTINGS }
@@ -219,7 +223,6 @@ async function resetToDefaultSettings() {
   resetRepeatLeft();
 }
 
-// === Configuration Loading ===
 window.addEventListener("DOMContentLoaded", async () => {
   await loadConfig();
 
@@ -290,7 +293,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     UI.numberGrid.querySelectorAll("input[type='text']")
   );
 
-  // createGrid();
   populateLanguageSelect();
   populateVoiceSelect();
   fillRandom();
@@ -343,20 +345,34 @@ function setupMobileDefaults() {
   );
 }
 
+async function requestWakeLock() {
+  try {
+    if ("wakeLock" in navigator) {
+      wakeLock = await navigator.wakeLock.request("screen");
+      wakeLock.addEventListener("release", () => {
+        console.log("Wake Lock was released");
+      });
+      console.log("Wake Lock is active");
+    }
+  } catch (err) {
+    console.error("Wake Lock request failed:", err);
+  }
+}
+
+function releaseWakeLock() {
+  if (wakeLock) {
+    wakeLock.release();
+    wakeLock = null;
+    console.log("Wake Lock released manually");
+  }
+}
+
 async function loadUiTexts() {
-  // try {
   if (window.embeddedUITexts) {
     state.texts = window.embeddedUITexts;
     updateInterfaceLanguage();
     return;
   }
-  //   const res = await fetch(PATHS.UI_TEXTS);
-  //   if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-  //   state.texts = await res.json();
-  // } catch (e) {
-  //   console.error("Failed to load UI texts", e);
-  //   state.texts = {};
-  // }
 }
 
 async function loadVoices() {
@@ -451,7 +467,6 @@ function populateVoiceSelect() {
     state.settings.voiceName = match.name;
   }
 }
-// === Event Handlers ===
 
 function attachEventHandlers() {
   UI.uiLangSelect.addEventListener("change", () => {
@@ -488,39 +503,12 @@ function attachEventHandlers() {
     highlightSelection();
   });
 
-  if (UI.resetSettingsBtn) {
-    UI.resetSettingsBtn.addEventListener("click", resetToDefaultSettings);
-  }
-  if (UI.defaultBtn) {
-    UI.defaultBtn.addEventListener("click", resetToDefaultSettings);
-  }
+  UI.fullscreenSelect.addEventListener("change", () => {
+    updateControlsState();
+  });
+
+  UI.resetSettingsBtn.addEventListener("click", resetToDefaultSettings);
 }
-
-// === Number Grid ===
-// function createGrid() {
-//   UI.numberGrid.innerHTML = "";
-//   state.inputs = [];
-
-//   for (let col = 0; col < 4; col++) {
-//     const column = document.createElement("div");
-//     column.classList.add("column");
-//     for (let row = 0; row < 10; row++) {
-//       const input = document.createElement("input");
-//       input.type = "text";
-//       input.className = "number-input";
-//       input.placeholder = "***";
-//       input.maxLength = state.settings.digitLength;
-//       input.readOnly = true;
-//       input.tabIndex = -1;
-//       input.style.userSelect = "none";
-//       input.style.caretColor = "transparent";
-//       input.style.pointerEvents = "none";
-//       column.appendChild(input);
-//       state.inputs.push(input);
-//     }
-//     UI.numberGrid.appendChild(column);
-//   }
-// }
 
 function fillRandom() {
   const maxValue = 10 ** state.settings.digitLength - 1;
@@ -535,9 +523,13 @@ function highlightSelection() {
     input.classList.toggle("selected", idx < count);
     input.classList.toggle("highlight", idx === state.currentIndex);
   });
+
+  const activeInput = state.inputs[state.currentIndex];
+  if (activeInput) {
+    UI.activeNumberOverlay.textContent = activeInput.value || "";
+  }
 }
 
-// === Interface ===
 function updateInterfaceLanguage() {
   updateUILabels();
 }
@@ -557,10 +549,9 @@ function updateUILabels() {
   UI.labelRepeatsText.textContent = texts.repeatsLeft;
   UI.fillRandomBtn.textContent = texts.fillRandom;
   UI.resetBtn.textContent = texts.reset;
-
-  if (UI.defaultBtn && texts.default) {
-    UI.defaultBtn.textContent = texts.default;
-  }
+  UI.labelFullscreen.textContent = texts.labelFullscreen;
+  UI.fullscreenSelect.options[0].textContent = texts.fullscreenNo;
+  UI.fullscreenSelect.options[1].textContent = texts.fullscreenYes;
 
   updateStartPauseButton();
   updateControlsState();
@@ -576,8 +567,6 @@ function updateStartPauseButton() {
   };
   UI.startPauseBtn.textContent = labels[state.appState] || texts.start;
 }
-
-// === Playback ===
 
 async function togglePlay() {
   if (state.appState === CONFIG.ENUMS.AppStates.PLAYING) {
@@ -607,6 +596,8 @@ async function togglePlay() {
 }
 
 function playSequence(isResume = false) {
+  requestWakeLock();
+
   if (state.appState !== CONFIG.ENUMS.AppStates.PLAYING) return;
 
   if (state.currentIndex >= state.playQueue.length) {
@@ -623,11 +614,13 @@ function playSequence(isResume = false) {
   const input = state.playQueue[state.currentIndex];
   if (!input || !input.value) {
     state.currentIndex++;
-    setTimeout(() => playSequence(false), Number(UI.delaySelect.value) || 500);
+    setTimeout(() => playSequence(false), Number(UI.delaySelect.value) || 1000);
     return;
   }
 
   highlightSelection();
+
+  showActiveNumberOverlay(input.value, Number(UI.delaySelect.value));
 
   const utterance = new SpeechSynthesisUtterance(input.value);
 
@@ -682,6 +675,9 @@ function updateControlsState() {
   const disableCountRepeat = !isInitialState;
   const disableDigitLength = !isInitialState;
 
+  // Update background overlay
+  updateBackgroundOverlay(isInitialState);
+
   // Disable main controls during playback
   [UI.languageCodeSelect, UI.voiceSelect].forEach(
     (el) => (el.disabled = disable)
@@ -714,6 +710,40 @@ function updateControlsState() {
   UI.resetBtn.disabled = !(
     state.appState === CONFIG.ENUMS.AppStates.PAUSED && !isInitialState
   );
+}
+
+function updateBackgroundOverlay(isInitialState) {
+  if (UI.fullscreenSelect.value == "1" && !isInitialState) {
+    UI.backgroundOverlay.classList.add("show");
+  } else {
+    UI.backgroundOverlay.classList.remove("show");
+  }
+}
+
+function showActiveNumberOverlay(value, delayMs) {
+  const fullscreenVal = UI.fullscreenSelect.value;
+  if (fullscreenVal == "1") {
+    UI.activeNumberOverlay.textContent = value || "";
+
+    setTimeout(() => {
+      UI.activeNumberOverlay.classList.add("show");
+    }, 200);
+
+    setTimeout(() => {
+      UI.activeNumberOverlay.classList.remove("show");
+    }, 500 + delayMs);
+  }
+}
+
+function scrollToElement(selector) {
+  const el = document.querySelector(selector);
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "end" });
+  }
+}
+function hideActiveNumberOverlay() {
+  UI.activeNumberOverlay.classList.remove("show");
+  UI.activeNumberOverlay.textContent = "";
 }
 
 function fullReset() {
