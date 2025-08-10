@@ -302,12 +302,47 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   UI.resetBtn.addEventListener("click", fullReset);
   UI.startPauseBtn.disabled = false;
+
   resetRepeatLeft();
+
+  document.addEventListener("keydown", handleKeyControls);
 
   if (UI.developerPanel) {
     UI.developerPanel.style.display = CONFIG.DEVELOPER_MODE ? "flex" : "none";
   }
 });
+
+function handleKeyControls(event) {
+  const isEscape =
+    event.key === "Escape" ||
+    event.key === "Esc" ||
+    event.code === "Escape" ||
+    event.keyCode === 27;
+
+  const isSpace =
+    event.key === " " ||
+    event.key === "Spacebar" ||
+    event.code === "Space" ||
+    event.keyCode === 32;
+
+  const isTyping = ["INPUT", "TEXTAREA"].includes(
+    document.activeElement.tagName
+  );
+
+  if (isEscape) {
+    event.preventDefault();
+    if (UI.resetBtn) {
+      UI.resetBtn.click();
+    }
+  }
+
+  if (isSpace && !isTyping) {
+    event.preventDefault();
+    if (UI.startPauseBtn) {
+      UI.startPauseBtn.click();
+    }
+  }
+}
 
 async function loadConfig() {
   try {
@@ -572,12 +607,14 @@ async function togglePlay() {
   if (state.appState === CONFIG.ENUMS.AppStates.PLAYING) {
     // Pause requested
     speechSynthesis.cancel();
+    hideBackgroundOverlay();
     setAppState(CONFIG.ENUMS.AppStates.PAUSED);
     return;
   }
 
   if (state.appState === CONFIG.ENUMS.AppStates.PAUSED) {
     // Continue from paused state
+    // showBackgroundOverlay();
     setAppState(CONFIG.ENUMS.AppStates.PLAYING);
     playSequence(true); // true = resume
     return;
@@ -618,6 +655,7 @@ function playSequence(isResume = false) {
     return;
   }
 
+  showBackgroundOverlay();
   highlightSelection();
 
   showActiveNumberOverlay(input.value, Number(UI.delaySelect.value));
@@ -662,6 +700,7 @@ function stopPlayback() {
   state.repeatsRemaining = Number(UI.repeatSelect.value) || 1;
   resetRepeatLeft();
   highlightSelection();
+  hideBackgroundOverlay();
 }
 
 function updateControlsState() {
@@ -676,7 +715,7 @@ function updateControlsState() {
   const disableDigitLength = !isInitialState;
 
   // Update background overlay
-  updateBackgroundOverlay(isInitialState);
+  // updateBackgroundOverlay(isInitialState);
 
   // Disable main controls during playback
   [UI.languageCodeSelect, UI.voiceSelect].forEach(
@@ -720,6 +759,13 @@ function updateBackgroundOverlay(isInitialState) {
   }
 }
 
+function showBackgroundOverlay() {
+  UI.backgroundOverlay.classList.add("show");
+}
+function hideBackgroundOverlay() {
+  UI.backgroundOverlay.classList.remove("show");
+}
+
 function showActiveNumberOverlay(value, delayMs) {
   const fullscreenVal = UI.fullscreenSelect.value;
   if (fullscreenVal == "1") {
@@ -735,15 +781,16 @@ function showActiveNumberOverlay(value, delayMs) {
   }
 }
 
+function hideActiveNumberOverlay() {
+  UI.activeNumberOverlay.classList.remove("show");
+  UI.activeNumberOverlay.textContent = "";
+}
+
 function scrollToElement(selector) {
   const el = document.querySelector(selector);
   if (el) {
     el.scrollIntoView({ behavior: "smooth", block: "end" });
   }
-}
-function hideActiveNumberOverlay() {
-  UI.activeNumberOverlay.classList.remove("show");
-  UI.activeNumberOverlay.textContent = "";
 }
 
 function fullReset() {
