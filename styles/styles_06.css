@@ -401,14 +401,10 @@ button:disabled {
   pointer-events: none;
   opacity: 0;
   transform: scale(2);
-  /* transition: opacity 0.3s ease, transform 0.5s ease; */
-  /* transition: opacity 0.15s ease-in, transform 0.15s ease-in; */
   transition: opacity 0.15s ease;
 }
 .active-number-overlay.show {
   opacity: 1;
-  /* transform: scale(2.5); */
-  /* transition: opacity 0.15s ease-out, transform 0.1s ease-out; */
   transition: opacity 0.5s ease;
 }
 /* .repeats-text, */

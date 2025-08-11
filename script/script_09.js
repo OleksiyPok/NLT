@@ -528,7 +528,7 @@ const NLTApp = (() => {
         Handlers.onFillRandomClick();
       });
       E.fullscreenSelect?.addEventListener("change", () =>
-        this.updateControlsState()
+        this.updateSettingsFromUI()
       );
       E.resetSettingsBtn?.addEventListener("click", () =>
         Handlers.onResetSettingsClick()
