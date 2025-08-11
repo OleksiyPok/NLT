@@ -10,9 +10,9 @@
       sizes="16x16"
       href="icons/icon_NLT_16x16.png"
     />
-    <link rel="stylesheet" href="styles/styles_05.css" />
+    <link rel="stylesheet" href="styles/styles_06.css" />
     <script src="script/ui_NLT_texts.js" defer></script>
-    <script src="script/script_08.js" defer></script>
+    <script src="script/script_08_07.js" defer></script>
   </head>
   <!-- NLT -->
   <body>
@@ -27,7 +27,7 @@
           />
           <div class="title-text" id="titleText">
             <h2>Number Listening Trainer<br /></h2>
-            <h6 id="version" class="version">version: 1.3.3</h6>
+            <h6 id="version" class="version">version: 1.3.4</h6>
           </div>
         </div>
         <h5>Oleksii Pokormiakho</h5>
@@ -400,29 +400,11 @@
 
         <div class="setting-button-wrapper">
           <div class="section-block section-block-buttons">
-            <button
-              class="fill-random-btn"
-              id="fillRandomBtn"
-              onclick="fillRandom()"
-            >
-              Rnd
-            </button>
-            <button
-              disabled
-              id="startPauseBtn"
-              class="start-pause-btn"
-              onclick="togglePlay()"
-            >
+            <button class="fill-random-btn" id="fillRandomBtn">Rnd</button>
+            <button disabled id="startPauseBtn" class="start-pause-btn">
               Start
             </button>
-            <button
-              disabled
-              id="resetBtn"
-              class="reset-btn"
-              onclick="fullReset()"
-            >
-              Reset
-            </button>
+            <button disabled id="resetBtn" class="reset-btn">Reset</button>
           </div>
 
           <div class="section-block section-block-settings">
