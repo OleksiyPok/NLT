@@ -1,5 +1,4 @@
 "use strict";
-
 import { Voices } from "../modules/voices.js";
 import { Speech } from "../modules/speech.js";
 import { Config } from "../modules/config.js";
@@ -10,25 +9,8 @@ import { createHandlers } from "../modules/handlers.js";
 import { createKeyboard } from "../modules/keyboard.js";
 import { createWakeLock } from "../modules/wakelock.js";
 import { createApp } from "./app.js";
+import { createState } from "./state.js";
+import { createNLTApp } from "./nltapp.js";
 
-const NLTApp = (() => {
-  const state = {
-    appState: null,
-    settings: {},
-    texts: {},
-    voices: [],
-    availableLanguages: [],
-    inputs: [],
-    playQueue: [],
-    currentIndex: 0,
-    repeatsRemaining: 1,
-  };
-
-  const UI = createUI(state);
-  const WakeLock = createWakeLock({ state, Config });
-  const App = createApp({ state, UI, Speech, Config, Utils, Storage, Voices, WakeLock, createHandlers, createKeyboard });
-
-  return { init: () => App.init(), _internal: { Config, Utils, state } };
-})();
-
+const NLTApp = createNLTApp({ Voices, Speech, Config, Utils, Storage, createUI, createHandlers, createKeyboard, createWakeLock, createApp, createState });
 NLTApp.init();
