@@ -1,4 +1,4 @@
-import { createUI } from './controllers/uiController.js';
+import { createStateManager } from './controllers/stateManager.js';
 "use strict";
 import { AppStates } from "./appStates.js";
 export function createApp({ state, UI, Speech, Config, Utils, Storage, Voices, WakeLock, createHandlers, createKeyboard }) {
