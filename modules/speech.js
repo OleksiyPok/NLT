@@ -22,6 +22,7 @@ export const Speech = {
   stopPlayback() {
     speechSynthesis.cancel();
     this.state.appState = this.state.config.ENUMS.AppStates.READY;
+    this.ui.updateStartPauseButton();
     this.ui.hideBackgroundOverlay();
     this.state.currentIndex = 0;
     this.state.playQueue = [];
