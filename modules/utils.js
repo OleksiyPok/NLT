@@ -1,4 +1,3 @@
-// Auto-extracted from app/main.js (Step 1)
 "use strict";
 export const Utils = {
     $: (s) => document.querySelector(s),
@@ -26,4 +25,4 @@ export const Utils = {
         return MOBILE_REGEX.test(navigator.userAgent || "");
       };
     })(),
-  };
+  }
