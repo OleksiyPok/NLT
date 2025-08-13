@@ -7,6 +7,8 @@ import { Utils } from "../modules/utils.js";
 import { Storage } from "../modules/storage.js";
 import { createUI } from "../modules/ui.js";
 
+
+import { createHandlers } from "../modules/handlers.js";
 const NLTApp = (() => {
   const state = {
     appState: null,
@@ -58,57 +60,6 @@ const NLTApp = (() => {
       });
     },
   };
-
-  const Handlers = {
-    onUiLangChange() {
-      UI.updateUILabels();
-      UI.updateSettingsFromUI();
-    },
-    onLanguageCodeChange() {
-      UI.populateVoiceSelect();
-      UI.updateSettingsFromUI();
-    },
-    onVoiceChange() {
-      UI.updateSettingsFromUI();
-    },
-    onDigitLengthChange() {
-      UI.fillRandom();
-      UI.highlightSelection();
-    },
-    onCountChange() {
-      UI.highlightSelection();
-    },
-    onRepeatChange() {
-      UI.resetRepeatLeft();
-    },
-    onSpeedChange() {
-      UI.updateSettingsFromUI();
-    },
-    onDelayChange() {
-      UI.updateSettingsFromUI();
-    },
-    onFillRandomClick() {
-      UI.fillRandom();
-      UI.highlightSelection();
-    },
-    onFullscreenChange() {
-      UI.updateControlsState();
-    },
-    onResetSettingsClick() {
-      App.resetToDefaultSettings();
-    },
-    onStartPauseClick() {
-      Speech.togglePlay(state, UI, Config, Utils, WakeLock);
-      UI.updateStartPauseButton();
-      UI.updateControlsState();
-    },
-    onResetClick() {
-      Speech.stopPlayback(state, UI, Config, Utils, WakeLock);
-      UI.updateStartPauseButton();
-      UI.updateControlsState();
-    },
-  };
-
   const App = {
     async handleDOMContentLoaded() {
       UI.cache();
@@ -335,6 +286,8 @@ const NLTApp = (() => {
       );
     },
   };
+
+    const Handlers = createHandlers({ UI, App, Speech, Config, Utils, WakeLock, state });
 
   return { init: () => App.init(), _internal: { Config, Utils, state } };
 })();
