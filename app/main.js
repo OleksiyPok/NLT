@@ -4,6 +4,7 @@ import { Voices } from "../modules/voices.js";
 import { Speech } from "../modules/speech.js";
 import { Config } from "../modules/config.js";
 import { Utils } from "../modules/utils.js";
+import { Storage } from "../modules/storage.js";
 
 window.userActivated = false; /// TODO
 
@@ -18,33 +19,6 @@ const NLTApp = (() => {
     playQueue: [],
     currentIndex: 0,
     repeatsRemaining: 1,
-  };
-
-  const Storage = {
-    KEY: "NLT_settings",
-    save(settings) {
-      if (!Config.CONFIG.USE_LOCAL_STORAGE) return;
-      try {
-        localStorage.setItem(this.KEY, JSON.stringify(settings));
-      } catch (e) {
-        console.warn("LS save failed", e);
-      }
-    },
-    load() {
-      if (!Config.CONFIG.USE_LOCAL_STORAGE) return null;
-      try {
-        const v = localStorage.getItem(this.KEY);
-        return v ? JSON.parse(v) : null;
-      } catch (e) {
-        console.warn("LS load failed", e);
-        return null;
-      }
-    },
-    remove() {
-      try {
-        localStorage.removeItem(this.KEY);
-      } catch (e) {}
-    },
   };
 
   const WakeLock = {

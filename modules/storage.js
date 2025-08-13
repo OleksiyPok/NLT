@@ -1,5 +1,4 @@
-// Auto-extracted from app/main.js (Step 1)
-"use strict";
+import { Config } from "./config.js";
 export const Storage = {
     KEY: "NLT_settings",
     save(settings) {
@@ -25,4 +24,4 @@ export const Storage = {
         localStorage.removeItem(this.KEY);
       } catch (e) {}
     },
-  };
+  }
