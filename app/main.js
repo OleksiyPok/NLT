@@ -6,9 +6,9 @@ import { Config } from "../modules/config.js";
 import { Utils } from "../modules/utils.js";
 import { Storage } from "../modules/storage.js";
 import { createUI } from "../modules/ui.js";
-
-
 import { createHandlers } from "../modules/handlers.js";
+import { createKeyboard } from "../modules/keyboard.js";
+
 const NLTApp = (() => {
   const state = {
     appState: null,
@@ -60,6 +60,7 @@ const NLTApp = (() => {
       });
     },
   };
+
   const App = {
     async handleDOMContentLoaded() {
       UI.cache();
@@ -128,7 +129,6 @@ const NLTApp = (() => {
       if (Voices.load) {
         await Voices.load(state, UI, Utils);
       } else {
-        // fallback: try to collect voices directly (if module is older)
         try {
           const v = speechSynthesis.getVoices() || [];
           state.voices = v;
@@ -164,36 +164,12 @@ const NLTApp = (() => {
       UI.updateStartPauseButton();
       UI.updateControlsState();
 
-      document.addEventListener("keydown", App.handleKeyControls);
+      Keyboard.attach();
 
       if (UI.elements.developerPanel) {
         UI.elements.developerPanel.style.display = Config.CONFIG.DEVELOPER_MODE
           ? "flex"
           : "none";
-      }
-    },
-    handleKeyControls(event) {
-      const tag = document.activeElement?.tagName || "";
-      const isTyping = ["INPUT", "TEXTAREA"].includes(tag);
-
-      if (
-        event.key === "Escape" ||
-        event.key === "Esc" ||
-        event.code === "Escape" ||
-        event.keyCode === 27
-      ) {
-        event.preventDefault();
-        UI.elements.resetBtn?.click();
-      }
-      if (
-        (event.key === " " ||
-          event.key === "Spacebar" ||
-          event.code === "Space" ||
-          event.keyCode === 32) &&
-        !isTyping
-      ) {
-        event.preventDefault();
-        UI.elements.startPauseBtn?.click();
       }
     },
     getDefaultSettings() {
@@ -287,7 +263,17 @@ const NLTApp = (() => {
     },
   };
 
-    const Handlers = createHandlers({ UI, App, Speech, Config, Utils, WakeLock, state });
+  const Handlers = createHandlers({
+    UI,
+    App,
+    Speech,
+    Config,
+    Utils,
+    WakeLock,
+    state,
+  });
+
+  const Keyboard = createKeyboard({ UI });
 
   return { init: () => App.init(), _internal: { Config, Utils, state } };
 })();
