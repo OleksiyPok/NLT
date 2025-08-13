@@ -1,32 +1,41 @@
 :root {
   --max-content-width: 425px;
-  --text-color-01: #1a2b4c;
-  --text-color-02: #1a4480;
-  --text-color-03: #0d376e;
-  --text-color-04: #2554a1;
-  --text-color-05: #026aa7;
-  --text-color-06: #0277bd;
-  --background-color-01: #fff8e1;
-  --background-color-02: #e3f2fd;
-  --background-color-03: #cfd8dc;
-  --background-color-04: #b3d4fc;
-  --background-color-05: #f7fbff;
-  --highlight-background-color-01: #e3f2fd;
-  --highlight-background-color-02: #cfd8dc;
-  --highlight-background-color-03: #b3d4fc;
-  --highlight-background-color-04: #f9fbe7;
-  --highlight-background-color-05: #ffffcc;
-  --highlight-color-01: #1a2b4c;
-  --highlight-color-02: #1a4480;
-  --highlight-color-03: #0d376e;
-  --highlight-color-04: #026aa7;
-  --highlight-color-05: #0277bd;
-  --highlight-color-10: #bd0202;
-  --overlay-background-color-transparent-00: rgba(255, 248, 225, 0);
-  --overlay-background-color-transparent-03: rgba(255, 248, 225, 0.3);
-  --overlay-background-color-transparent-08: rgba(255, 248, 225, 0.8);
-  --overlay-background-color-transparent-09: rgba(255, 248, 225, 0.9);
-  --overlay-background-color-transparent-10: rgba(255, 248, 225, 1);
+
+  /* ======================
+   Light — Bright lighting
+   ====================== */
+
+  --text-color-01: #1a1a1a;
+  --text-color-02: #2e2e2e;
+  --text-color-03: #333333;
+  --text-color-04: #444444;
+  --text-color-05: #005fa3;
+  --text-color-06: #007acc;
+
+  --background-color-01: #ffffff;
+  --background-color-02: #f2f7fb;
+  --background-color-03: #e6eef5;
+  --background-color-04: #d4e6f9;
+  --background-color-05: #f9fcff;
+
+  --highlight-background-color-01: #e6f4ff;
+  --highlight-background-color-02: #d1eaff;
+  --highlight-background-color-03: #b3dbff;
+  --highlight-background-color-04: #f0ffe0;
+  --highlight-background-color-05: #fffacd;
+
+  --highlight-color-01: #002b5c;
+  --highlight-color-02: #004b87;
+  --highlight-color-03: #005fa3;
+  --highlight-color-04: #007acc;
+  --highlight-color-05: #0096e6;
+  --highlight-color-10: #cc0000;
+
+  --overlay-background-color-transparent-00: rgba(255, 255, 255, 0);
+  --overlay-background-color-transparent-03: rgba(255, 255, 255, 0.3);
+  --overlay-background-color-transparent-08: rgba(255, 255, 255, 0.8);
+  --overlay-background-color-transparent-09: rgba(255, 255, 255, 0.9);
+  --overlay-background-color-transparent-10: rgba(255, 255, 255, 1);
 }
 
 *,

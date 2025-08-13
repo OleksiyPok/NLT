@@ -1,0 +1,93 @@
+/* themes.css
+   Simplified color variables for different lighting conditions.
+   Attach this file after style.css to override defaults.
+*/
+
+/* ======================
+   Light — Bright lighting
+   ====================== */
+.theme-bright {
+  --text-color: #1a1a1a;
+  --background-color: #ffffff;
+  --highlight-color: #005fa3;
+  --highlight-bg-color: #e6f4ff;
+
+  --danger-color: #cc0000;
+
+  /* Shadows & overlays */
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  --shadow-medium: rgba(0, 0, 0, 0.2);
+  --shadow-strong: rgba(0, 0, 0, 0.4);
+
+  --overlay-0: rgba(255, 255, 255, 0);
+  --overlay-30: rgba(255, 255, 255, 0.3);
+  --overlay-80: rgba(255, 255, 255, 0.8);
+  --overlay-90: rgba(255, 255, 255, 0.9);
+  --overlay-100: rgba(255, 255, 255, 1);
+}
+
+/* ======================
+       Light — Daylight / Moderate
+       ====================== */
+.theme-day {
+  --text-color: #1c1c1c;
+  --background-color: #fafafa;
+  --highlight-color: #006080;
+  --highlight-bg-color: #e0f4ff;
+
+  --danger-color: #b30000;
+
+  --shadow-light: rgba(0, 0, 0, 0.08);
+  --shadow-medium: rgba(0, 0, 0, 0.18);
+  --shadow-strong: rgba(0, 0, 0, 0.35);
+
+  --overlay-0: rgba(250, 250, 250, 0);
+  --overlay-30: rgba(250, 250, 250, 0.3);
+  --overlay-80: rgba(250, 250, 250, 0.8);
+  --overlay-90: rgba(250, 250, 250, 0.9);
+  --overlay-100: rgba(250, 250, 250, 1);
+}
+
+/* ======================
+       Dark — Evening
+       ====================== */
+.theme-evening {
+  --text-color: #f0f0f0;
+  --background-color: #2a2f38;
+  --highlight-color: #9ad4ff;
+  --highlight-bg-color: #2d3a48;
+
+  --danger-color: #ff7070;
+
+  --shadow-light: rgba(0, 0, 0, 0.25);
+  --shadow-medium: rgba(0, 0, 0, 0.4);
+  --shadow-strong: rgba(0, 0, 0, 0.6);
+
+  --overlay-0: rgba(42, 47, 56, 0);
+  --overlay-30: rgba(42, 47, 56, 0.3);
+  --overlay-80: rgba(42, 47, 56, 0.8);
+  --overlay-90: rgba(42, 47, 56, 0.9);
+  --overlay-100: rgba(42, 47, 56, 1);
+}
+
+/* ======================
+       Dark — Night
+       ====================== */
+.theme-night {
+  --text-color: #eaeaea;
+  --background-color: #181a1f;
+  --highlight-color: #85c7ff;
+  --highlight-bg-color: #24303a;
+
+  --danger-color: #ff5c5c;
+
+  --shadow-light: rgba(0, 0, 0, 0.3);
+  --shadow-medium: rgba(0, 0, 0, 0.5);
+  --shadow-strong: rgba(0, 0, 0, 0.7);
+
+  --overlay-0: rgba(24, 26, 31, 0);
+  --overlay-30: rgba(24, 26, 31, 0.3);
+  --overlay-80: rgba(24, 26, 31, 0.8);
+  --overlay-90: rgba(24, 26, 31, 0.9);
+  --overlay-100: rgba(24, 26, 31, 1);
+}
