@@ -1,3 +1,4 @@
+import { AppStates } from "../app/appStates.js";
 import { Config } from "./config.js";
 import { Utils } from "./utils.js";
 import { Storage } from "./storage.js";
@@ -140,9 +141,9 @@ export function createUI(state) {
       const texts = state.texts[this.elements.uiLangSelect?.value];
       if (!texts) return;
       const labels = {
-        [Config.CONFIG.ENUMS.AppStates.PLAYING]: texts.pause,
-        [Config.CONFIG.ENUMS.AppStates.PAUSED]: texts.continue,
-        [Config.CONFIG.ENUMS.AppStates.READY]: texts.start,
+        [AppStates.PLAYING]: texts.pause,
+        [AppStates.PAUSED]: texts.continue,
+        [AppStates.READY]: texts.start,
       };
       const btn = this.elements.startPauseBtn;
       if (btn) {
@@ -151,9 +152,9 @@ export function createUI(state) {
       }
     },
     updateControlsState() {
-      const disable = state.appState === Config.CONFIG.ENUMS.AppStates.PLAYING;
+      const disable = state.appState === AppStates.PLAYING;
       const isInitialState =
-        state.appState === Config.CONFIG.ENUMS.AppStates.READY &&
+        state.appState === AppStates.READY &&
         state.currentIndex === 0 &&
         Number(this.elements.repeatLeft?.textContent || 0) ===
           Number(this.elements.repeatSelect?.value || 0);
@@ -183,7 +184,7 @@ export function createUI(state) {
       setDisabled(
         this.elements.resetBtn,
         !(
-          state.appState === Config.CONFIG.ENUMS.AppStates.PAUSED &&
+          state.appState === AppStates.PAUSED &&
           !isInitialState
         )
       );

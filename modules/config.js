@@ -1,5 +1,6 @@
 // Extracted step-by-step from app/main.js
 "use strict";
+import { AppStates } from "../app/appStates.js";
 export const Config = {
     PATHS: { CONFIG: "config.json" },
     DEFAULT_CONFIG: Object.freeze({

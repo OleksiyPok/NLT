@@ -1,4 +1,5 @@
 "use strict";
+import { AppStates } from "./appStates.js";
 export function createApp({ state, UI, Speech, Config, Utils, Storage, Voices, WakeLock, createHandlers, createKeyboard }) {
   const App = {
     async handleDOMContentLoaded() {
@@ -20,7 +21,7 @@ export function createApp({ state, UI, Speech, Config, Utils, Storage, Voices, W
         state.texts = window.embeddedUITexts;
         UI.updateUILabels();
       }
-      App.setAppState(Config.CONFIG.ENUMS.AppStates.READY);
+      App.setAppState(AppStates.READY);
       UI.hideBackgroundOverlay();
       state.config = Config.CONFIG;
       if (Voices.init) Voices.init(state, Utils, UI);

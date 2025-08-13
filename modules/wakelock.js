@@ -1,4 +1,5 @@
 "use strict";
+import { AppStates } from "../app/appStates.js";
 export function createWakeLock({ state, Config }) {
   return {
     wakeLock: null,
@@ -24,7 +25,7 @@ export function createWakeLock({ state, Config }) {
     init() {
       document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "visible") {
-          if (state.appState === Config.CONFIG.ENUMS.AppStates.PLAYING) this.request();
+          if (state.appState === AppStates.PLAYING) this.request();
         } else {
           this.release();
         }
