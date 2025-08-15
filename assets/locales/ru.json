@@ -1,0 +1,21 @@
+{
+  "languageCode": "RU",
+  "uiLangLabel": "Интерфейс",
+  "labelLang": "Язык",
+  "labelVoice": "Голос",
+  "labelDigitLength": "Длина",
+  "labelCount": "Количество",
+  "labelRepeat": "Повтор",
+  "labelSpeed": "Темп",
+  "labelDelay": "Пауза (мс)",
+  "labelFullscreen": "Полный экран",
+  "start": "Старт",
+  "continue": "Продолжить",
+  "pause": "Пауза",
+  "reset": "Сброс",
+  "fillRandom": "🎲 Rnd",
+  "fullscreenNo": "Нет",
+  "fullscreenYes": "Да",
+  "default": "По умолчанию",
+  "repeatsLeft": "Осталось:"
+}

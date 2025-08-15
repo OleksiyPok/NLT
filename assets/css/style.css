@@ -42,7 +42,7 @@
   --selection-bg: #b3daff;
   --selection-text: #000000;
   --overlay-clear: rgba(0, 0, 0, 0);
-  --overlay-bg: rgba(0, 0, 0, 0.4);
+  --overlay-bg: rgba(0, 0, 0, 1);
   --tooltip-bg: var(--text-color);
   --tooltip-text: var(--text-inverted);
   --shadow-light: rgba(0, 0, 0, 0.1);
@@ -331,16 +331,20 @@ button:disabled {
   background-color: var(--background-color);
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  color: var(--text-color);
+  color: var(--text-placeholder);
   transition: box-shadow 0.2s, outline 0.2s;
 }
 .number-input.selected {
+  color: var(--text-color);
   outline: 2px solid var(--border-color);
   outline-offset: -1px;
 }
+.number-input:not(.selected) {
+  color: var(--text-placeholder);
+}
 .number-input.highlight {
   font-weight: bold;
-  background-color: var(--background-color);
+  background-color: var(--surface-alt-color);
   color: var(--danger-hover);
 }
 .repeat-info-group {
@@ -394,7 +398,7 @@ button:disabled {
   left: 0;
   width: 100%;
   height: 100%;
-  background: var(--overlay-bg);
+  background: var(--surface-alt-color);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s ease;

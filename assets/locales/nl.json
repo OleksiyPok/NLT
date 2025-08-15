@@ -1,0 +1,21 @@
+{
+  "languageCode": "NL",
+  "uiLangLabel": "Interface",
+  "labelLang": "Taal",
+  "labelVoice": "Stem",
+  "labelDigitLength": "Lengte",
+  "labelCount": "Aantal",
+  "labelRepeat": "Herhalen",
+  "labelSpeed": "Snelheid",
+  "labelDelay": "Pauze (ms)",
+  "labelFullscreen": "Volledig scherm",
+  "start": "Start",
+  "continue": "Doorgaan",
+  "pause": "Pauze",
+  "reset": "Opnieuw instellen",
+  "fillRandom": "🎲 Rnd",
+  "fullscreenNo": "Nee",
+  "fullscreenYes": "Ja",
+  "default": "Standaard",
+  "repeatsLeft": "Herhalingen over:"
+}
