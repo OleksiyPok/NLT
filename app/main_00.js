@@ -123,10 +123,7 @@ const NLTApp = (() => {
   // shared application state
   const state = {
     appState: null,
-    settings: {
-      pitch: 1.0,
-      volume: 1.0,
-    },
+    settings: {},
     texts: {},
     voices: [],
     availableLanguages: [],
@@ -245,116 +242,6 @@ const NLTApp = (() => {
 
   // hook voiceschanged
   speechSynthesis.onvoiceschanged = () => Voices.onVoicesChanged();
-
-  // --- Module: Speaker ---
-  // Provides a reusable, UI-agnostic text-to-speech interface.
-
-  const Speaker = {
-    /**
-     * Speak text using Web Speech API
-     * @param {string} text - Text to be spoken
-     * @param {object} options - Optional overrides (voiceName, languageCode, rate/speed, pitch, volume, interrupt, callbacks)
-     */
-    speak(text, options = {}) {
-      if (!text) return Promise.resolve();
-      const voices = speechSynthesis.getVoices();
-      const s = { ...state.settings, ...options };
-
-      // Interrupt option (default true)
-      const interrupt =
-        options.interrupt !== undefined ? options.interrupt : true;
-      if (interrupt) {
-        speechSynthesis.cancel();
-      }
-
-      const utter = new SpeechSynthesisUtterance(text);
-
-      // Voice
-      if (s.voiceName) {
-        const v = voices.find((v) => v.name === s.voiceName);
-        if (v) utter.voice = v;
-      }
-
-      // Language
-      if (s.languageCode) utter.lang = s.languageCode;
-
-      // Rate (speed)
-      let rate = s.rate !== undefined ? Number(s.rate) : Number(s.speed);
-      utter.rate = Number.isFinite(rate) && rate > 0 ? rate : 1.0;
-
-      // Pitch
-      let pitch = Number(s.pitch);
-      utter.pitch = Number.isFinite(pitch) && pitch > 0 ? pitch : 1.0;
-
-      // Volume
-      let volume = Number(s.volume);
-      utter.volume =
-        Number.isFinite(volume) && volume >= 0 && volume <= 1 ? volume : 1.0;
-
-      this.lastUtterance = utter;
-
-      return new Promise((resolve) => {
-        let finished = false;
-        const done = () => {
-          if (!finished) {
-            finished = true;
-            resolve();
-          }
-        };
-
-        // Wire callbacks, but always resolve on end/error
-        const proxy =
-          (userFn, doneAlso = False) =>
-          (ev) => {
-            try {
-              if (typeof userFn === "function") userFn(ev);
-            } catch (e) {
-              /* swallow */
-            }
-            if (doneAlso) done();
-          };
-
-        utter.onstart = proxy(options.onstart, false);
-        utter.onpause = proxy(options.onpause, false);
-        utter.onresume = proxy(options.onresume, false);
-        utter.onend = proxy(options.onend, true);
-        utter.onerror = proxy(options.onerror, true);
-
-        speechSynthesis.speak(utter);
-      });
-    },
-
-    cancel() {
-      speechSynthesis.cancel();
-    },
-    pause() {
-      speechSynthesis.pause();
-    },
-    resume() {
-      speechSynthesis.resume();
-    },
-    isSpeaking() {
-      return speechSynthesis.speaking;
-    },
-    isPaused() {
-      return speechSynthesis.paused;
-    },
-    getVoices() {
-      return speechSynthesis.getVoices();
-    },
-    getCurrentSettings() {
-      const s = state.settings || {};
-      return {
-        voiceName: s.voiceName || null,
-        languageCode: s.languageCode || null,
-        rate: Number.isFinite(Number(s.rate))
-          ? Number(s.rate)
-          : Number(s.speed) || 1.0,
-        pitch: Number.isFinite(Number(s.pitch)) ? Number(s.pitch) : 1.0,
-        volume: Number.isFinite(Number(s.volume)) ? Number(s.volume) : 1.0,
-      };
-    },
-  };
 
   // --- Module: LangLoader ---
   // load UI texts from per-language JSON files
@@ -638,7 +525,7 @@ const NLTApp = (() => {
 
       setTimeout(() => {
         overlay.classList.remove("show");
-      }, 1000 + Number(delayMs || 0));
+      }, 500 + Number(delayMs || 0));
     },
 
     hideActiveNumberOverlay() {
@@ -810,7 +697,7 @@ const NLTApp = (() => {
       );
     },
     stopPlayback() {
-      Speaker.cancel();
+      speechSynthesis.cancel();
       App.setAppState(Config.CONFIG.ENUMS.AppStates.READY);
       UI.hideBackgroundOverlay();
       state.currentIndex = 0;
@@ -821,21 +708,19 @@ const NLTApp = (() => {
       );
       UI.resetRepeatLeft();
       UI.highlightSelection();
-      /* wake lock */
+      WakeLock.release();
     },
     speakUtterance(utter) {
       return new Promise((resolve) => {
         utter.onend = () => resolve();
         utter.onerror = () => resolve();
-        Speaker.cancel();
+        speechSynthesis.cancel();
         speechSynthesis.speak(utter);
       });
     },
     async playSequence(isResume = false) {
-      /* wake lock */ if (
-        state.appState !== Config.CONFIG.ENUMS.AppStates.PLAYING
-      )
-        return;
+      await WakeLock.request();
+      if (state.appState !== Config.CONFIG.ENUMS.AppStates.PLAYING) return;
       const delayMs = Utils.safeNumber(UI.elements.delaySelect?.value, 500);
 
       while (state.appState === Config.CONFIG.ENUMS.AppStates.PLAYING) {
@@ -864,9 +749,21 @@ const NLTApp = (() => {
         UI.showBackgroundOverlay();
         UI.showActiveNumberOverlay(input.value, delayMs);
 
-        await Speaker.speak(input.value, {
-          languageCode: state.settings.languageCode || "nl-NL",
-        });
+        const utter = new SpeechSynthesisUtterance(input.value);
+        const selectedVoiceName = UI.elements.voiceSelect?.value;
+        const selectedVoice = state.voices.find(
+          (v) => v.name === selectedVoiceName
+        );
+        if (selectedVoice) {
+          utter.voice = selectedVoice;
+          utter.lang = selectedVoice.lang;
+        } else {
+          utter.lang = state.settings.languageCode || "nl-NL";
+        }
+        utter.rate = Number(state.settings.speed) || 1.0;
+
+        await this.speakUtterance(utter);
+
         if (state.appState !== Config.CONFIG.ENUMS.AppStates.PLAYING) break;
         state.currentIndex += 1;
         await Utils.delay(delayMs);
@@ -874,7 +771,7 @@ const NLTApp = (() => {
     },
     togglePlay() {
       if (state.appState === Config.CONFIG.ENUMS.AppStates.PLAYING) {
-        Speaker.cancel();
+        speechSynthesis.cancel();
         App.setAppState(Config.CONFIG.ENUMS.AppStates.PAUSED);
         UI.hideBackgroundOverlay();
         UI.hideActiveNumberOverlay();
@@ -907,11 +804,6 @@ const NLTApp = (() => {
 
   // --- Module: App (methods) ---
   const App = {
-    async loadUILangs() {
-      state.texts = await LangLoader.loadAll();
-      UI.updateUILabels();
-    },
-
     async handleDOMContentLoaded() {
       UI.cache();
       await Config.load();
@@ -971,7 +863,7 @@ const NLTApp = (() => {
       }
 
       // Load UI texts from files, ensure EN fallback
-      await App.loadUILangs();
+      state.texts = await LangLoader.loadAll();
 
       // Ensure selected uiLang exists; fallback to EN if missing
       if (UI.elements.uiLangSelect) {
@@ -1047,16 +939,11 @@ const NLTApp = (() => {
       state.appState = s;
       UI.updateStartPauseButton();
       UI.updateControlsState();
-      if (s === Config.CONFIG.ENUMS.AppStates.PLAYING) {
-        WakeLock.request();
-      } else {
-        WakeLock.release();
-      }
     },
 
     async resetToDefaultSettings() {
       Storage.remove();
-      Speaker.cancel();
+      speechSynthesis.cancel();
       Playback.stopPlayback();
       state.settings = App.getDefaultSettings();
 
@@ -1114,7 +1001,7 @@ const NLTApp = (() => {
     },
 
     fullReset() {
-      Speaker.cancel();
+      speechSynthesis.cancel();
       Playback.stopPlayback();
     },
 
