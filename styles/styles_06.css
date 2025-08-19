@@ -196,7 +196,7 @@ button:disabled {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   width: 100%;
   margin-left: 0;
   margin-bottom: 4px;
@@ -215,8 +215,6 @@ button:disabled {
   background: #f9fbe7;
   border: none;
   border-radius: 6px;
-  box-shadow: 0 2px 5px rgba(3, 64, 120, 0.2);
-  color: #0277bd;
   cursor: pointer;
   outline: none;
   transition: background-color 0.3s ease, color 0.3s ease;
