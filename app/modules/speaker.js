@@ -1,95 +1,54 @@
-/**
- * Speaker module – reusable TTS wrapper around Web Speech API
- *
- * Usage:
- *   Speaker.speak("Hello world", { rate: 1.2, pitch: 0.9 })
- *     .then(() => console.log("Speech finished"));
- */
+export const Speaker = (() => {
+  let getVoices = () => [];
+  let getSettings = () => ({});
 
-const Speaker = {
-  lastUtterance: null,
+  function init(voicesProvider, settingsProvider) {
+    if (typeof voicesProvider === "function") getVoices = voicesProvider;
+    if (typeof settingsProvider === "function") getSettings = settingsProvider;
+  }
 
-  /**
-   * Speak text with given options
-   * @param {string} text - text to speak
-   * @param {Object} options - voice configuration
-   * @returns {Promise} resolves when speech ends or errors
-   */
-  speak(text, options = {}) {
+  function speak(text, options = {}) {
     if (!text) return Promise.resolve();
+    const s = { ...getSettings(), ...options };
 
-    const voices = speechSynthesis.getVoices();
-    const s = { ...options };
-
-    // Interrupt option (default true)
-    const interrupt =
-      options.interrupt !== undefined ? options.interrupt : true;
-    if (interrupt) {
+    if (options.interrupt !== false) {
       speechSynthesis.cancel();
     }
 
     const utter = new SpeechSynthesisUtterance(text);
 
-    // Voice
     if (s.voiceName) {
-      const v = voices.find((v) => v.name === s.voiceName);
+      const v = getVoices().find((vv) => vv.name === s.voiceName);
       if (v) utter.voice = v;
     }
 
-    // Language
     if (s.languageCode) utter.lang = s.languageCode;
 
-    // Rate (speed)
     let rate = s.rate !== undefined ? Number(s.rate) : Number(s.speed);
     utter.rate = Number.isFinite(rate) && rate > 0 ? rate : 1.0;
 
-    // Pitch
     let pitch = Number(s.pitch);
     utter.pitch = Number.isFinite(pitch) && pitch > 0 ? pitch : 1.0;
 
-    // Volume
     let volume = Number(s.volume);
     utter.volume =
       Number.isFinite(volume) && volume >= 0 && volume <= 1 ? volume : 1.0;
 
-    this.lastUtterance = utter;
-
     return new Promise((resolve) => {
-      let finished = false;
-      const done = () => {
-        if (!finished) {
-          finished = true;
-          resolve();
-        }
-      };
-
-      // Wire callbacks, but always resolve on end/error
-      const proxy =
-        (userFn, doneAlso = false) =>
-        (ev) => {
-          try {
-            if (typeof userFn === "function") userFn(ev);
-          } catch (e) {
-            /* ignore */
-          }
-          if (doneAlso) done();
-        };
-
-      utter.onstart = proxy(options.onstart, false);
-      utter.onpause = proxy(options.onpause, false);
-      utter.onresume = proxy(options.onresume, false);
-      utter.onend = proxy(options.onend, true);
-      utter.onerror = proxy(options.onerror, true);
-
+      const done = () => resolve();
+      utter.onend = done;
+      utter.onerror = done;
       speechSynthesis.speak(utter);
     });
-  },
+  }
 
-  /**
-   * Stop any ongoing speech immediately
-   */
-  stop() {
-    speechSynthesis.cancel();
-    this.lastUtterance = null;
-  },
-};
+  return {
+    init,
+    speak,
+    cancel: () => speechSynthesis.cancel(),
+    pause: () => speechSynthesis.pause(),
+    resume: () => speechSynthesis.resume(),
+    isSpeaking: () => speechSynthesis.speaking,
+    isPaused: () => speechSynthesis.paused,
+  };
+})();
