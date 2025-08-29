@@ -1,6 +1,418 @@
 "use strict";
 
 import { Speaker } from "./modules/speaker.js";
+import { Utils } from "./modules/utils.js";
+// import { UI } from "./modules/ui.js";
+
+const UI = (() => {
+  const SELECTORS = {
+    uiLangSelect: "#uiLangSelect",
+    repeatLeft: "#repeatLeft",
+    speedSelect: "#speedSelect",
+    delaySelect: "#delaySelect",
+    digitLengthSelect: "#digitLengthSelect",
+    countSelect: "#countSelect",
+    repeatSelect: "#repeatSelect",
+    fullscreenSelect: "#fullscreenSelect",
+    languageCodeSelect: ".language-code-select",
+    labelLanguageCode: ".label-language-code",
+    voiceSelect: "#voiceSelect",
+    numberGrid: "#numberGrid",
+    labelRepeatsText: "#labelRepeatsText",
+    fillRandomBtn: "#fillRandomBtn",
+    resetSettingsBtn: "#resetSettingsBtn",
+    startPauseBtn: "#startPauseBtn",
+    resetBtn: "#resetBtn",
+    uiLangLabel: "#uiLangLabel",
+    labelVoice: "#labelVoice",
+    labelDigitLength: "#labelDigitLength",
+    labelCount: "#labelCount",
+    labelRepeat: "#labelRepeat",
+    labelSpeed: "#labelSpeed",
+    labelDelay: "#labelDelay",
+    labelFullscreen: "#labelFullscreen",
+    developerPanel: "#developer",
+    backgroundOverlay: "#backgroundOverlay",
+    activeNumberOverlay: "#activeNumberOverlay",
+  };
+
+  let elements = {};
+  let handlersAttached = false;
+  let deps = null;
+
+  function init(d) {
+    deps = d;
+  }
+
+  function cache() {
+    for (const key in SELECTORS) {
+      elements[key] = document.querySelector(SELECTORS[key]) || null;
+    }
+  }
+
+  function cacheInputs() {
+    elements.numberGrid &&
+      (deps.state.inputs = Array.from(
+        elements.numberGrid.querySelectorAll("input[type='text']")
+      ));
+  }
+
+  function setSelectsFromSettings(s) {
+    const E = elements;
+    s.digitLength = deps.Utils.safeNumber(
+      deps.Utils.safeSetSelectValue(
+        E.digitLengthSelect,
+        String(s.digitLength),
+        "2"
+      ),
+      2
+    );
+    s.count = deps.Utils.safeNumber(
+      deps.Utils.safeSetSelectValue(E.countSelect, String(s.count), "40"),
+      40
+    );
+    s.repeat = deps.Utils.safeNumber(
+      deps.Utils.safeSetSelectValue(E.repeatSelect, String(s.repeat), "1"),
+      1
+    );
+    s.speed = deps.Utils.safeNumber(
+      deps.Utils.safeSetSelectValue(E.speedSelect, String(s.speed), "1.0"),
+      1.0
+    );
+    s.delay = deps.Utils.safeNumber(
+      deps.Utils.safeSetSelectValue(E.delaySelect, String(s.delay), "1000"),
+      1000
+    );
+    s.fullscreen = deps.Utils.safeSetSelectValue(
+      E.fullscreenSelect,
+      String(s.fullscreen),
+      "0"
+    );
+    if (s.uiLang && E.uiLangSelect) E.uiLangSelect.value = s.uiLang;
+    if (E.languageCodeSelect) {
+      const langPart = (s.languageCode || "ALL").split(/[-_]/)[0].toUpperCase();
+      E.languageCodeSelect.value = langPart;
+    }
+  }
+
+  function populateLanguageSelect() {
+    const el = elements.languageCodeSelect;
+    if (!el) return;
+    const frag = document.createDocumentFragment();
+    deps.state.availableLanguages.forEach((lang) => {
+      const opt = document.createElement("option");
+      opt.value = lang;
+      opt.textContent = lang;
+      frag.appendChild(opt);
+    });
+    el.replaceChildren(frag);
+    const configLang = (
+      (deps.state.settings.languageCode || "ALL").split(/[-_]/)[0] || "ALL"
+    ).toUpperCase();
+    el.value = deps.state.availableLanguages.includes(configLang)
+      ? configLang
+      : deps.Utils.isMobileDevice()
+      ? "ALL"
+      : el.value;
+  }
+
+  function populateVoiceSelect() {
+    const el = elements.voiceSelect;
+    if (!el || !deps.state.voices.length) return;
+    const isMobile = deps.Utils.isMobileDevice();
+    const selectedLang = (
+      elements.languageCodeSelect?.value || "ALL"
+    ).toUpperCase();
+    const voicesToShow =
+      isMobile || selectedLang === "ALL"
+        ? deps.state.voices
+        : deps.state.voices.filter((v) =>
+            (v.lang || "").toUpperCase().startsWith(selectedLang)
+          );
+    const frag = document.createDocumentFragment();
+    voicesToShow.forEach((v) => {
+      const opt = document.createElement("option");
+      opt.value = v.name;
+      opt.textContent = `${v.name} (${v.lang || ""})`;
+      frag.appendChild(opt);
+    });
+    el.replaceChildren(frag);
+    const requestedVoice = deps.Utils.normalizeString(
+      deps.state.settings.voiceName || ""
+    );
+    const requestedLang = deps.Utils.normalizeString(
+      deps.state.settings.languageCode || ""
+    );
+    let match = null;
+    match = isMobile
+      ? voicesToShow.find(
+          (v) => deps.Utils.normalizeString(v.lang) === requestedLang
+        )
+      : voicesToShow.find(
+          (v) => deps.Utils.normalizeString(v.name) === requestedVoice
+        );
+    if (!match && voicesToShow.length) match = voicesToShow[0];
+    if (match && el.value !== match.name) el.value = match.name;
+    deps.state.settings.voiceName = el.value;
+  }
+
+  function setLanguageCodeFromSettings() {
+    const E = elements;
+    const langPart = (
+      (deps.state.settings.languageCode || "ALL").split(/[-_]/)[0] || "ALL"
+    ).toUpperCase();
+    if (E.languageCodeSelect && E.languageCodeSelect.value !== langPart) {
+      E.languageCodeSelect.value = langPart;
+    }
+  }
+
+  function setVoiceFromSettings() {
+    const E = elements;
+    const voice = deps.state.settings.voiceName;
+    if (!E.voiceSelect || !voice) return;
+    const opts = Array.from(E.voiceSelect.options).map((o) => o.value);
+    if (opts.includes(voice) && E.voiceSelect.value !== voice) {
+      E.voiceSelect.value = voice;
+    }
+  }
+
+  function updateUILabels() {
+    const uiLang = elements.uiLangSelect?.value || "en";
+    const texts = deps.state.texts[uiLang] || deps.state.texts.en;
+    if (!texts) return;
+    const E = elements;
+    const setText = (el, val) => {
+      if (el && el.textContent !== val) el.textContent = val;
+    };
+    setText(E.uiLangLabel, texts.uiLangLabel);
+    setText(E.labelLanguageCode, texts.labelLang);
+    setText(E.labelVoice, texts.labelVoice);
+    setText(E.labelDigitLength, texts.labelDigitLength);
+    setText(E.labelCount, texts.labelCount);
+    setText(E.labelRepeat, texts.labelRepeat);
+    setText(E.labelSpeed, texts.labelSpeed);
+    setText(E.labelDelay, texts.labelDelay);
+    setText(E.labelRepeatsText, texts.repeatsLeft);
+    setText(E.fillRandomBtn, texts.fillRandom);
+    setText(E.resetBtn, texts.reset);
+    setText(E.labelFullscreen, texts.labelFullscreen);
+    if (E.fullscreenSelect) {
+      if (E.fullscreenSelect.options[0].textContent !== texts.fullscreenNo)
+        E.fullscreenSelect.options[0].textContent = texts.fullscreenNo;
+      if (E.fullscreenSelect.options[1].textContent !== texts.fullscreenYes)
+        E.fullscreenSelect.options[1].textContent = texts.fullscreenYes;
+    }
+    updateStartPauseButton();
+    updateControlsState();
+  }
+
+  function updateStartPauseButton() {
+    const uiLang = elements.uiLangSelect?.value || "en";
+    const texts = deps.state.texts[uiLang] || deps.state.texts.en;
+    if (!texts) return;
+    const labels = {
+      [deps.Config.CONFIG.ENUMS.AppStates.PLAYING]: texts.pause,
+      [deps.Config.CONFIG.ENUMS.AppStates.PAUSED]: texts.continue,
+      [deps.Config.CONFIG.ENUMS.AppStates.READY]: texts.start,
+    };
+    const btn = elements.startPauseBtn;
+    if (btn) {
+      const val = labels[deps.state.appState] || texts.start;
+      if (btn.textContent !== val) btn.textContent = val;
+    }
+  }
+
+  function updateControlsState() {
+    const disable =
+      deps.state.appState === deps.Config.CONFIG.ENUMS.AppStates.PLAYING;
+    const isInitialState =
+      deps.state.appState === deps.Config.CONFIG.ENUMS.AppStates.READY &&
+      deps.state.currentIndex === 0 &&
+      Number(elements.repeatLeft?.textContent || 0) ===
+        Number(elements.repeatSelect?.value || 0);
+    const disableCountRepeat = !isInitialState;
+    const disableDigitLength = !isInitialState;
+    const setDisabled = (el, val) => {
+      if (el && el.disabled !== val) el.disabled = val;
+    };
+    const toggleClass = (el, cls, on) => {
+      if (el) el.classList.toggle(cls, on);
+    };
+    setDisabled(elements.languageCodeSelect, disable);
+    setDisabled(elements.voiceSelect, disable);
+    toggleClass(elements.labelLanguageCode, "disabled", disable);
+    toggleClass(elements.labelVoice, "disabled", disable);
+    setDisabled(elements.fillRandomBtn, !isInitialState);
+    setDisabled(elements.countSelect, disableCountRepeat);
+    setDisabled(elements.repeatSelect, disableCountRepeat);
+    toggleClass(elements.labelCount, "disabled", disableCountRepeat);
+    toggleClass(elements.labelRepeat, "disabled", disableCountRepeat);
+    setDisabled(elements.digitLengthSelect, disableDigitLength);
+    toggleClass(elements.labelDigitLength, "disabled", disableDigitLength);
+    setDisabled(
+      elements.resetBtn,
+      !(
+        deps.state.appState === deps.Config.CONFIG.ENUMS.AppStates.PAUSED &&
+        !isInitialState
+      )
+    );
+  }
+
+  function showBackgroundOverlay() {
+    if ((elements.fullscreenSelect?.value || "0") !== "1") return;
+    const overlay = elements.backgroundOverlay;
+    if (!overlay) return;
+    overlay.classList.add("show");
+  }
+
+  function hideBackgroundOverlay() {
+    const overlay = elements.backgroundOverlay;
+    if (!overlay) return;
+    overlay.classList.remove("show");
+  }
+
+  function showActiveNumberOverlay(value, delayMs) {
+    if ((elements.fullscreenSelect?.value || "0") !== "1") return;
+    const overlay = elements.activeNumberOverlay;
+    if (!overlay) return;
+    if (overlay.textContent !== value) overlay.textContent = value || "";
+    overlay.classList.add("show");
+    setTimeout(() => {
+      overlay.classList.remove("show");
+    }, 1000 + Number(delayMs || 0));
+  }
+
+  function hideActiveNumberOverlay() {
+    const overlay = elements.activeNumberOverlay;
+    if (!overlay) return;
+    overlay.classList.remove("show");
+  }
+
+  function updateSettingsFromUI() {
+    const E = elements;
+    const s = deps.state.settings;
+    const upd = (key, el, fallback) => {
+      if (el) s[key] = el.value || fallback;
+    };
+    upd("digitLength", E.digitLengthSelect, s.digitLength);
+    upd("count", E.countSelect, s.count);
+    upd("repeat", E.repeatSelect, s.repeat);
+    upd("uiLang", E.uiLangSelect, s.uiLang);
+    upd("languageCode", E.languageCodeSelect, s.languageCode);
+    upd("voiceName", E.voiceSelect, s.voiceName);
+    upd("speed", E.speedSelect, s.speed);
+    upd("delay", E.delaySelect, s.delay);
+    upd("fullscreen", E.fullscreenSelect, s.fullscreen);
+    deps.Storage.save(s);
+    deps.Events.emit("settings:changed", structuredClone(s));
+  }
+
+  function attachEventHandlers() {
+    if (handlersAttached) return;
+    handlersAttached = true;
+    const E = elements;
+    E.uiLangSelect?.addEventListener("change", () => {
+      updateUILabels();
+      updateSettingsFromUI();
+    });
+    if (!deps.Utils.isMobileDevice())
+      E.languageCodeSelect?.addEventListener("change", () => {
+        populateVoiceSelect();
+        updateSettingsFromUI();
+      });
+    E.voiceSelect?.addEventListener("change", () => updateSettingsFromUI());
+    E.digitLengthSelect?.addEventListener("change", () => {
+      updateSettingsFromUI();
+      fillRandom();
+      highlightSelection();
+    });
+    E.countSelect?.addEventListener("change", () => {
+      updateSettingsFromUI();
+      highlightSelection();
+    });
+    E.repeatSelect?.addEventListener("change", () => {
+      updateSettingsFromUI();
+      resetRepeatLeft();
+    });
+    E.speedSelect?.addEventListener("change", () => updateSettingsFromUI());
+    E.delaySelect?.addEventListener("change", () => updateSettingsFromUI());
+    E.fillRandomBtn?.addEventListener("click", () => {
+      fillRandom();
+      highlightSelection();
+    });
+    E.fullscreenSelect?.addEventListener("change", () =>
+      updateSettingsFromUI()
+    );
+    E.resetSettingsBtn?.addEventListener("click", () =>
+      deps.App.resetToDefaultSettings()
+    );
+    E.startPauseBtn?.addEventListener("click", () =>
+      deps.Playback.togglePlay()
+    );
+  }
+
+  function resetRepeatLeft() {
+    if (elements.repeatLeft && elements.repeatSelect) {
+      const val = elements.repeatSelect.value;
+      if (elements.repeatLeft.textContent !== val)
+        elements.repeatLeft.textContent = val;
+    }
+    updateControlsState();
+  }
+
+  function fillRandom() {
+    const maxValue =
+      10 ** deps.Utils.safeNumber(deps.state.settings.digitLength, 2) - 1;
+    deps.state.inputs.forEach((input) => {
+      input.value = String(Math.floor(Math.random() * (maxValue + 1)));
+    });
+  }
+
+  function highlightSelection() {
+    const count = Number(deps.state.settings.count || 0);
+    const ci = deps.state.currentIndex;
+    deps.state.inputs.forEach((input, idx) => {
+      const sel = idx < count;
+      const hi = idx === ci;
+      if (input.classList.contains("selected") !== sel)
+        input.classList.toggle("selected", sel);
+      if (input.classList.contains("highlight") !== hi)
+        input.classList.toggle("highlight", hi);
+    });
+    const activeInput = deps.state.inputs[ci];
+    const overlay = elements.activeNumberOverlay;
+    if (overlay && overlay.textContent !== (activeInput?.value || "")) {
+      overlay.textContent = activeInput?.value || "";
+    }
+  }
+
+  return {
+    SELECTORS,
+    get elements() {
+      return elements;
+    },
+    init,
+    cache,
+    cacheInputs,
+    setSelectsFromSettings,
+    populateLanguageSelect,
+    populateVoiceSelect,
+    setLanguageCodeFromSettings,
+    setVoiceFromSettings,
+    updateUILabels,
+    updateStartPauseButton,
+    updateControlsState,
+    showBackgroundOverlay,
+    hideBackgroundOverlay,
+    showActiveNumberOverlay,
+    hideActiveNumberOverlay,
+    updateSettingsFromUI,
+    attachEventHandlers,
+    resetRepeatLeft,
+    fillRandom,
+    highlightSelection,
+  };
+})();
 
 // --- Module: App (main) ---
 const NLTApp = (() => {
@@ -84,40 +496,6 @@ const NLTApp = (() => {
       } catch (e) {
         console.warn("Config load failed, using defaults", e);
       }
-    },
-  };
-
-  const Utils = {
-    $: (s) => document.querySelector(s),
-    $all: (s) => Array.from(document.querySelectorAll(s)),
-    delay: (ms) => new Promise((res) => setTimeout(res, ms)),
-    safeNumber: (v, f) => {
-      const n = Number(v);
-      return Number.isFinite(n) ? n : f;
-    },
-    normalizeString: (s = "") =>
-      String(s)
-        .toLowerCase()
-        .replace(/[_\s]+/g, "-")
-        .trim(),
-    isMobileDevice: (() => {
-      const MOBILE_REGEX =
-        /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
-      return () => {
-        if (
-          navigator.userAgentData &&
-          typeof navigator.userAgentData.mobile === "boolean"
-        )
-          return navigator.userAgentData.mobile;
-        return MOBILE_REGEX.test(navigator.userAgent || "");
-      };
-    })(),
-    safeSetSelectValue(selectElem, value, fallback) {
-      if (!selectElem) return fallback;
-      const opts = Array.from(selectElem.options || []).map((o) => o.value);
-      const chosen = opts.includes(value) ? value : fallback;
-      if (selectElem.value !== chosen) selectElem.value = chosen;
-      return chosen;
     },
   };
 
@@ -316,412 +694,6 @@ const NLTApp = (() => {
     },
   };
 
-  const UI = {
-    SELECTORS: {
-      uiLangSelect: "#uiLangSelect",
-      repeatLeft: "#repeatLeft",
-      speedSelect: "#speedSelect",
-      delaySelect: "#delaySelect",
-      digitLengthSelect: "#digitLengthSelect",
-      countSelect: "#countSelect",
-      repeatSelect: "#repeatSelect",
-      fullscreenSelect: "#fullscreenSelect",
-      languageCodeSelect: ".language-code-select",
-      labelLanguageCode: ".label-language-code",
-      voiceSelect: "#voiceSelect",
-      numberGrid: "#numberGrid",
-      labelRepeatsText: "#labelRepeatsText",
-      fillRandomBtn: "#fillRandomBtn",
-      resetSettingsBtn: "#resetSettingsBtn",
-      startPauseBtn: "#startPauseBtn",
-      resetBtn: "#resetBtn",
-      uiLangLabel: "#uiLangLabel",
-      labelVoice: "#labelVoice",
-      labelDigitLength: "#labelDigitLength",
-      labelCount: "#labelCount",
-      labelRepeat: "#labelRepeat",
-      labelSpeed: "#labelSpeed",
-      labelDelay: "#labelDelay",
-      labelFullscreen: "#labelFullscreen",
-      developerPanel: "#developer",
-      backgroundOverlay: "#backgroundOverlay",
-      activeNumberOverlay: "#activeNumberOverlay",
-    },
-    elements: {},
-    handlersAttached: false,
-
-    cache() {
-      const sel = this.SELECTORS;
-      for (const key in sel) {
-        this.elements[key] = document.querySelector(sel[key]) || null;
-      }
-    },
-
-    // --- Select value helpers (used by App init/reset) ---
-    setSelectsFromSettings(s) {
-      const E = this.elements;
-      s.digitLength = Utils.safeNumber(
-        Utils.safeSetSelectValue(
-          E.digitLengthSelect,
-          String(s.digitLength),
-          "2"
-        ),
-        2
-      );
-      s.count = Utils.safeNumber(
-        Utils.safeSetSelectValue(E.countSelect, String(s.count), "40"),
-        40
-      );
-      s.repeat = Utils.safeNumber(
-        Utils.safeSetSelectValue(E.repeatSelect, String(s.repeat), "1"),
-        1
-      );
-      s.speed = Utils.safeNumber(
-        Utils.safeSetSelectValue(E.speedSelect, String(s.speed), "1.0"),
-        1.0
-      );
-      s.delay = Utils.safeNumber(
-        Utils.safeSetSelectValue(E.delaySelect, String(s.delay), "1000"),
-        1000
-      );
-      s.fullscreen = Utils.safeSetSelectValue(
-        E.fullscreenSelect,
-        String(s.fullscreen),
-        "0"
-      );
-
-      if (s.uiLang && E.uiLangSelect) {
-        E.uiLangSelect.value = s.uiLang;
-      }
-
-      // Language code select shows only language part (e.g., NL from nl-NL)
-      if (E.languageCodeSelect) {
-        const langPart = (s.languageCode || "ALL")
-          .split(/[-_]/)[0]
-          .toUpperCase();
-        E.languageCodeSelect.value = langPart;
-      }
-      // Voice select will be populated after Voices.load()
-    },
-
-    safeSetSelectValue(selectElem, value, fallback) {
-      return Utils.safeSetSelectValue(selectElem, value, fallback);
-    },
-
-    populateLanguageSelect() {
-      const el = this.elements.languageCodeSelect;
-      if (!el) return;
-      const frag = document.createDocumentFragment();
-      state.availableLanguages.forEach((lang) => {
-        const opt = document.createElement("option");
-        opt.value = lang;
-        opt.textContent = lang;
-        frag.appendChild(opt);
-      });
-      el.replaceChildren(frag);
-      const configLang = (
-        (state.settings.languageCode || "ALL").split(/[-_]/)[0] || "ALL"
-      ).toUpperCase();
-      el.value = state.availableLanguages.includes(configLang)
-        ? configLang
-        : Utils.isMobileDevice()
-        ? "ALL"
-        : el.value;
-    },
-
-    populateVoiceSelect() {
-      const el = this.elements.voiceSelect;
-      if (!el || !state.voices.length) return;
-      const isMobile = Utils.isMobileDevice();
-      const selectedLang = (
-        this.elements.languageCodeSelect?.value || "ALL"
-      ).toUpperCase();
-      const voicesToShow =
-        isMobile || selectedLang === "ALL"
-          ? state.voices
-          : state.voices.filter((v) =>
-              (v.lang || "").toUpperCase().startsWith(selectedLang)
-            );
-
-      const frag = document.createDocumentFragment();
-      voicesToShow.forEach((v) => {
-        const opt = document.createElement("option");
-        opt.value = v.name;
-        opt.textContent = `${v.name} (${v.lang || ""})`;
-        frag.appendChild(opt);
-      });
-      el.replaceChildren(frag);
-
-      // Keep previously selected voice if available
-      const requestedVoice = Utils.normalizeString(
-        state.settings.voiceName || ""
-      );
-      const requestedLang = Utils.normalizeString(
-        state.settings.languageCode || ""
-      );
-      let match = null;
-      match = isMobile
-        ? voicesToShow.find(
-            (v) => Utils.normalizeString(v.lang) === requestedLang
-          )
-        : voicesToShow.find(
-            (v) => Utils.normalizeString(v.name) === requestedVoice
-          );
-      if (!match && voicesToShow.length) match = voicesToShow[0];
-      if (match && el.value !== match.name) el.value = match.name;
-      state.settings.voiceName = el.value;
-    },
-
-    setLanguageCodeFromSettings() {
-      const E = this.elements;
-      const langPart = (
-        (state.settings.languageCode || "ALL").split(/[-_]/)[0] || "ALL"
-      ).toUpperCase();
-      if (E.languageCodeSelect && E.languageCodeSelect.value !== langPart) {
-        E.languageCodeSelect.value = langPart;
-      }
-    },
-
-    setVoiceFromSettings() {
-      const E = this.elements;
-      const voice = state.settings.voiceName;
-      if (!E.voiceSelect || !voice) return;
-      const opts = Array.from(E.voiceSelect.options).map((o) => o.value);
-      if (opts.includes(voice) && E.voiceSelect.value !== voice) {
-        E.voiceSelect.value = voice;
-      }
-    },
-
-    updateUILabels() {
-      const uiLang = this.elements.uiLangSelect?.value || "en";
-      const texts = state.texts[uiLang] || state.texts.en;
-      if (!texts) return;
-      const E = this.elements;
-      const setText = (el, val) => {
-        if (el && el.textContent !== val) el.textContent = val;
-      };
-      setText(E.uiLangLabel, texts.uiLangLabel);
-      setText(E.labelLanguageCode, texts.labelLang);
-      setText(E.labelVoice, texts.labelVoice);
-      setText(E.labelDigitLength, texts.labelDigitLength);
-      setText(E.labelCount, texts.labelCount);
-      setText(E.labelRepeat, texts.labelRepeat);
-      setText(E.labelSpeed, texts.labelSpeed);
-      setText(E.labelDelay, texts.labelDelay);
-      setText(E.labelRepeatsText, texts.repeatsLeft);
-      setText(E.fillRandomBtn, texts.fillRandom);
-      setText(E.resetBtn, texts.reset);
-      setText(E.labelFullscreen, texts.labelFullscreen);
-      if (E.fullscreenSelect) {
-        if (E.fullscreenSelect.options[0].textContent !== texts.fullscreenNo)
-          E.fullscreenSelect.options[0].textContent = texts.fullscreenNo;
-        if (E.fullscreenSelect.options[1].textContent !== texts.fullscreenYes)
-          E.fullscreenSelect.options[1].textContent = texts.fullscreenYes;
-      }
-      this.updateStartPauseButton();
-      this.updateControlsState();
-    },
-
-    updateStartPauseButton() {
-      const uiLang = this.elements.uiLangSelect?.value || "en";
-      const texts = state.texts[uiLang] || state.texts.en;
-      if (!texts) return;
-      const labels = {
-        [Config.CONFIG.ENUMS.AppStates.PLAYING]: texts.pause,
-        [Config.CONFIG.ENUMS.AppStates.PAUSED]: texts.continue,
-        [Config.CONFIG.ENUMS.AppStates.READY]: texts.start,
-      };
-      const btn = this.elements.startPauseBtn;
-      if (btn) {
-        const val = labels[state.appState] || texts.start;
-        if (btn.textContent !== val) btn.textContent = val;
-      }
-    },
-
-    updateControlsState() {
-      const disable = state.appState === Config.CONFIG.ENUMS.AppStates.PLAYING;
-      const isInitialState =
-        state.appState === Config.CONFIG.ENUMS.AppStates.READY &&
-        state.currentIndex === 0 &&
-        Number(this.elements.repeatLeft?.textContent || 0) ===
-          Number(this.elements.repeatSelect?.value || 0);
-      const disableCountRepeat = !isInitialState;
-      const disableDigitLength = !isInitialState;
-
-      const setDisabled = (el, val) => {
-        if (el && el.disabled !== val) el.disabled = val;
-      };
-      const toggleClass = (el, cls, on) => {
-        if (el) el.classList.toggle(cls, on);
-      };
-
-      setDisabled(this.elements.languageCodeSelect, disable);
-      setDisabled(this.elements.voiceSelect, disable);
-      toggleClass(this.elements.labelLanguageCode, "disabled", disable);
-      toggleClass(this.elements.labelVoice, "disabled", disable);
-
-      setDisabled(this.elements.fillRandomBtn, !isInitialState);
-      setDisabled(this.elements.countSelect, disableCountRepeat);
-      setDisabled(this.elements.repeatSelect, disableCountRepeat);
-      toggleClass(this.elements.labelCount, "disabled", disableCountRepeat);
-      toggleClass(this.elements.labelRepeat, "disabled", disableCountRepeat);
-
-      setDisabled(this.elements.digitLengthSelect, disableDigitLength);
-      toggleClass(
-        this.elements.labelDigitLength,
-        "disabled",
-        disableDigitLength
-      );
-
-      setDisabled(
-        this.elements.resetBtn,
-        !(
-          state.appState === Config.CONFIG.ENUMS.AppStates.PAUSED &&
-          !isInitialState
-        )
-      );
-    },
-
-    showBackgroundOverlay() {
-      if ((this.elements.fullscreenSelect?.value || "0") !== "1") return;
-      const overlay = this.elements.backgroundOverlay;
-      if (!overlay) return;
-      overlay.classList.add("show");
-    },
-    hideBackgroundOverlay() {
-      const overlay = this.elements.backgroundOverlay;
-      if (!overlay) return;
-      overlay.classList.remove("show");
-    },
-    showActiveNumberOverlay(value, delayMs) {
-      if ((this.elements.fullscreenSelect?.value || "0") !== "1") return;
-      const overlay = this.elements.activeNumberOverlay;
-      if (!overlay) return;
-      if (overlay.textContent !== value) overlay.textContent = value || "";
-      overlay.classList.add("show");
-
-      setTimeout(() => {
-        overlay.classList.remove("show");
-      }, 1000 + Number(delayMs || 0));
-    },
-
-    hideActiveNumberOverlay() {
-      const overlay = this.elements.activeNumberOverlay;
-      if (!overlay) return;
-      overlay.classList.remove("show");
-    },
-
-    cacheInputs() {
-      this.elements.numberGrid &&
-        (state.inputs = Array.from(
-          this.elements.numberGrid.querySelectorAll("input[type='text']")
-        ));
-    },
-
-    updateSettingsFromUI() {
-      const E = this.elements;
-      const s = state.settings;
-      const upd = (key, el, fallback) => {
-        if (el) s[key] = el.value || fallback;
-      };
-      upd("digitLength", E.digitLengthSelect, s.digitLength);
-      upd("count", E.countSelect, s.count);
-      upd("repeat", E.repeatSelect, s.repeat);
-      upd("uiLang", E.uiLangSelect, s.uiLang);
-      upd("languageCode", E.languageCodeSelect, s.languageCode);
-      upd("voiceName", E.voiceSelect, s.voiceName);
-      upd("speed", E.speedSelect, s.speed);
-      upd("delay", E.delaySelect, s.delay);
-      upd("fullscreen", E.fullscreenSelect, s.fullscreen);
-      Storage.save(s);
-      Events.emit("settings:changed", structuredClone(s));
-    },
-
-    attachEventHandlers() {
-      if (this.handlersAttached) return;
-      this.handlersAttached = true;
-      const E = this.elements;
-
-      E.uiLangSelect?.addEventListener("change", () => {
-        this.updateUILabels();
-        this.updateSettingsFromUI();
-      });
-      if (!Utils.isMobileDevice())
-        E.languageCodeSelect?.addEventListener("change", () => {
-          this.populateVoiceSelect();
-          this.updateSettingsFromUI();
-        });
-      E.voiceSelect?.addEventListener("change", () =>
-        this.updateSettingsFromUI()
-      );
-      E.digitLengthSelect?.addEventListener("change", () => {
-        this.updateSettingsFromUI();
-        this.fillRandom();
-        this.highlightSelection();
-      });
-      E.countSelect?.addEventListener("change", () => {
-        this.updateSettingsFromUI();
-        this.highlightSelection();
-      });
-      E.repeatSelect?.addEventListener("change", () => {
-        this.updateSettingsFromUI();
-        this.resetRepeatLeft();
-      });
-      E.speedSelect?.addEventListener("change", () =>
-        this.updateSettingsFromUI()
-      );
-      E.delaySelect?.addEventListener("change", () =>
-        this.updateSettingsFromUI()
-      );
-      E.fillRandomBtn?.addEventListener("click", () => {
-        this.fillRandom();
-        this.highlightSelection();
-      });
-      E.fullscreenSelect?.addEventListener("change", () =>
-        this.updateSettingsFromUI()
-      );
-      E.resetSettingsBtn?.addEventListener("click", () =>
-        App.resetToDefaultSettings()
-      );
-      E.startPauseBtn?.addEventListener("click", () => Playback.togglePlay());
-    },
-
-    resetRepeatLeft() {
-      if (this.elements.repeatLeft && this.elements.repeatSelect) {
-        const val = this.elements.repeatSelect.value;
-        if (this.elements.repeatLeft.textContent !== val)
-          this.elements.repeatLeft.textContent = val;
-      }
-      this.updateControlsState();
-    },
-
-    fillRandom() {
-      const maxValue =
-        10 ** Utils.safeNumber(state.settings.digitLength, 2) - 1;
-      state.inputs.forEach((input) => {
-        input.value = String(Math.floor(Math.random() * (maxValue + 1)));
-      });
-    },
-
-    highlightSelection() {
-      const count = Number(state.settings.count || 0);
-      const ci = state.currentIndex;
-      state.inputs.forEach((input, idx) => {
-        const sel = idx < count;
-        const hi = idx === ci;
-        if (input.classList.contains("selected") !== sel)
-          input.classList.toggle("selected", sel);
-        if (input.classList.contains("highlight") !== hi)
-          input.classList.toggle("highlight", hi);
-      });
-      const activeInput = state.inputs[ci];
-      const overlay = this.elements.activeNumberOverlay;
-      if (overlay && overlay.textContent !== (activeInput?.value || "")) {
-        overlay.textContent = activeInput?.value || "";
-      }
-    },
-  };
-
   const Playback = {
     buildPlayQueue() {
       state.playQueue = state.inputs.filter((i) =>
@@ -815,7 +787,18 @@ const NLTApp = (() => {
       state.texts = await LangLoader.loadAll();
       UI.updateUILabels();
     },
+
     async handleDOMContentLoaded() {
+      UI.init({
+        state,
+        Config,
+        Utils,
+        Events,
+        Storage,
+        Playback,
+        App,
+        Speaker,
+      });
       UI.cache();
       await Config.load();
       const initial = Config.CONFIG.USE_LOCAL_STORAGE ? Storage.load() : null;
@@ -861,6 +844,7 @@ const NLTApp = (() => {
         () => state.settings
       );
     },
+
     handleKeyControls(event) {
       const tag = document.activeElement?.tagName || "";
       const isTyping = ["INPUT", "TEXTAREA"].includes(tag);
@@ -884,10 +868,12 @@ const NLTApp = (() => {
         UI.elements.startPauseBtn?.click();
       }
     },
+
     getDefaultSettings() {
       const type = Utils.isMobileDevice() ? "mobile" : "desktop";
       return { ...Config.CONFIG.DEFAULT_SETTINGS[type] };
     },
+
     setAppState(s) {
       state.appState = s;
       UI.updateStartPauseButton();
@@ -899,6 +885,7 @@ const NLTApp = (() => {
       }
       Events.emit("app:state", s);
     },
+
     async resetToDefaultSettings() {
       Storage.remove();
       Speaker.cancel();
@@ -918,10 +905,12 @@ const NLTApp = (() => {
       UI.highlightSelection();
       UI.resetRepeatLeft();
     },
+
     fullReset() {
       Speaker.cancel();
       Playback.stopPlayback();
     },
+
     init() {
       const updateViewportHeight = () => {
         const vh = window.innerHeight * 0.01;
