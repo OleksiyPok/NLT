@@ -1,0 +1,21 @@
+{
+  "languageCode": "PL",
+  "uiLangLabel": "Interfejs",
+  "labelLang": "Język",
+  "labelVoice": "Głos",
+  "labelDigitLength": "Długość",
+  "labelCount": "Ilość",
+  "labelRepeat": "Powtórzenie",
+  "labelSpeed": "Tempo",
+  "labelDelay": "Pauza (ms)",
+  "labelFullscreen": "Pełny ekran",
+  "start": "Start",
+  "continue": "Kontynuuj",
+  "pause": "Pauza",
+  "reset": "Resetuj",
+  "fillRandom": "🎲 Losowy",
+  "fullscreenNo": "Nie",
+  "fullscreenYes": "Tak",
+  "default": "Domyślne",
+  "repeatsLeft": "Pozostało:"
+}

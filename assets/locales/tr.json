@@ -1,0 +1,21 @@
+{
+  "languageCode": "TR",
+  "uiLangLabel": "Arayüz",
+  "labelLang": "Dil",
+  "labelVoice": "Ses",
+  "labelDigitLength": "Basamak",
+  "labelCount": "Sayı",
+  "labelRepeat": "Tekrar",
+  "labelSpeed": "Hız",
+  "labelDelay": "Ara (ms)",
+  "labelFullscreen": "Tam ekran",
+  "start": "Başlat",
+  "continue": "Devam et",
+  "pause": "Duraklat",
+  "reset": "Sıfırla",
+  "fillRandom": "🎲 Rnd",
+  "fullscreenNo": "Hayır",
+  "fullscreenYes": "Evet",
+  "default": "Varsayılan",
+  "repeatsLeft": "Kaldı:"
+}

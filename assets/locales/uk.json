@@ -1,0 +1,21 @@
+{
+  "languageCode": "UK",
+  "uiLangLabel": "Інтерфейс",
+  "labelLang": "Мова",
+  "labelVoice": "Голос",
+  "labelDigitLength": "Довжина",
+  "labelCount": "Кількість",
+  "labelRepeat": "Повтор",
+  "labelSpeed": "Темп",
+  "labelDelay": "Пауза (мс)",
+  "labelFullscreen": "Повний екран",
+  "start": "Почати",
+  "continue": "Продовжити",
+  "pause": "Пауза",
+  "reset": "Скинути",
+  "fillRandom": "🎲 Rnd",
+  "fullscreenNo": "Ні",
+  "fullscreenYes": "Так",
+  "default": "Типові",
+  "repeatsLeft": "Залишилось:"
+}

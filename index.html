@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-yellowblue-normal">
   <head>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta charset="utf-8" />
@@ -8,11 +8,11 @@
       rel="icon"
       type="image/png"
       sizes="16x16"
-      href="icons/icon_NLT_16x16.png"
+      href="./assets/icons/icon_NLT_16x16.png"
     />
-    <link rel="stylesheet" href="styles/styles_06.css" />
-    <script src="script/ui_NLT_texts.js" defer></script>
-    <script src="script/script_09.js" defer></script>
+
+    <link rel="stylesheet" href="assets/css/themes.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
   </head>
   <!-- NLT -->
   <body>
@@ -22,12 +22,12 @@
           <img
             class="title-icon"
             id="titleIcon"
-            src="icons/icon_NLT_64x64.png"
+            src="./assets/icons/icon_NLT_64x64.png"
             alt="Icon"
           />
           <div class="title-text" id="titleText">
             <h2>Number Listening Trainer<br /></h2>
-            <h6 id="version" class="version">version: 1.3.6</h6>
+            <h6 id="version" class="version">version: 1.4.1</h6>
           </div>
         </div>
         <h5>Oleksii Pokormiakho</h5>
@@ -438,7 +438,6 @@
                 </select>
               </div>
             </div>
-
             <div class="digit-length-count-repeat-wrapper">
               <div class="digit-length-group">
                 <label
@@ -487,7 +486,6 @@
                 </select>
               </div>
             </div>
-
             <div class="fullscreen-wrapper">
               <div class="fullscreen-group">
                 <label
@@ -502,7 +500,6 @@
                 </select>
               </div>
             </div>
-
             <div class="language-voice-wrapper">
               <div class="language-group">
                 <label
@@ -548,5 +545,6 @@
       </div>
       <div class="scroll-bottom-space"></div>
     </div>
+    <script type="module" src="app/main.js"></script>
   </body>
 </html>

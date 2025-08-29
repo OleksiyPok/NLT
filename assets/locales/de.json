@@ -1,0 +1,21 @@
+{
+  "languageCode": "DE",
+  "uiLangLabel": "Oberfläche",
+  "labelLang": "Sprache",
+  "labelVoice": "Stimme",
+  "labelDigitLength": "Ziffernlänge",
+  "labelCount": "Anzahl",
+  "labelRepeat": "Wiederholen",
+  "labelSpeed": "Tempo",
+  "labelDelay": "Pause (ms)",
+  "labelFullscreen": "Vollbild",
+  "start": "Start",
+  "continue": "Weiter",
+  "pause": "Pause",
+  "reset": "Zurücksetzen",
+  "fillRandom": "🎲 Rnd",
+  "fullscreenNo": "Nein",
+  "fullscreenYes": "Ja",
+  "default": "Standard",
+  "repeatsLeft": "Wiederholungen übrig:"
+}
