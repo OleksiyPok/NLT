@@ -2,12 +2,7 @@
 
 /* ===========================
  * Utils
- * API:
- *   - safeNumber(v, defVal): number
- *   - safeSetSelectValue(selectEl, val, fallback): string
- *   - delay(ms): Promise<void>
- *   - isMobileDevice(): boolean
- *   - normalizeString(s): string
+ * Interface: safeNumber(v, defVal), safeSetSelectValue(selectEl, val, fallback), delay(ms), isMobileDevice(), normalizeString(s)
  * =========================== */
 const Utils = (() => {
   function safeNumber(v, defVal) {
@@ -44,11 +39,8 @@ const Utils = (() => {
 })();
 
 /* ===========================
- * Events (event bus)
- * API:
- *   - on(event, fn)
- *   - off(event, fn)
- *   - emit(event, payload)
+ * EventBus
+ * Interface: on(event, fn), off(event, fn), emit(event, payload)
  * =========================== */
 const Events = (() => {
   const listeners = new Map();
@@ -63,7 +55,7 @@ const Events = (() => {
   function emit(event, payload) {
     const set = listeners.get(event);
     if (!set) return;
-    for (const fn of set) {
+    for (const fn of Array.from(set)) {
       try {
         fn(payload);
       } catch (e) {
@@ -76,13 +68,8 @@ const Events = (() => {
 
 /* ===========================
  * Config
- * API:
- *   - load(): Promise<void>
- *   - CONFIG: current config
- * ===========================
- * Emits: none
- * Listens: none
- */
+ * Interface: CONFIG (after load), load()
+ * =========================== */
 const Config = {
   PATHS: {
     CONFIG: "./assets/configs/config.json",
@@ -167,22 +154,77 @@ const Config = {
 };
 
 /* ===========================
- * Store
- * API:
- *   - get(): state
- *   - saveSettings()
- *   - loadSettings(): object|null
- *   - removeSettings()
- * ===========================
- * Emits: none
- * Listens: none
- */
+ * LangLoader
+ * Interface: loadLang(code): Promise<object|null>, loadAll(), getTexts(lang)
+ * =========================== */
+const LangLoader = (() => {
+  const PATH = "./assets/locales";
+  let texts = {};
+  async function loadLang(code) {
+    const url = `${PATH}/${code}.json`;
+    try {
+      const res = await fetch(url, { cache: "no-cache" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      if (!json || typeof json !== "object") throw new Error("Bad JSON");
+      return json;
+    } catch (e) {
+      console.warn(`UI texts load failed for ${code}:`, e);
+      return null;
+    }
+  }
+  async function loadAll() {
+    texts = {};
+    await Promise.all(
+      Config.UI_LANGS.map(async (code) => {
+        const data = await loadLang(code);
+        if (data) texts[code] = data;
+      })
+    );
+    if (!texts.en) {
+      texts.en = {
+        uiLangLabel: "Interface",
+        labelLang: "Language",
+        labelVoice: "Voice",
+        labelDigitLength: "Digit length",
+        labelCount: "Count",
+        labelRepeat: "Repeat",
+        labelSpeed: "Speed",
+        labelDelay: "Delay (ms)",
+        labelFullscreen: "Fullscreen",
+        start: "Start",
+        continue: "Continue",
+        pause: "Pause",
+        reset: "Reset",
+        fillRandom: "🎲 Rnd",
+        fullscreenNo: "No",
+        fullscreenYes: "Yes",
+        default: "Default",
+        repeatsLeft: "Repeats left:",
+      };
+      console.warn("EN fallback injected (no file available).");
+    }
+    return texts;
+  }
+  function getTexts(lang) {
+    return texts[lang] || texts.en;
+  }
+  return { loadLang, loadAll, getTexts };
+})();
+
+/* ===========================
+ * Store (single object but mirrors original structure)
+ * Interface:
+ *   - get(): state object (appState, settings, texts, voices, availableLanguages, inputs, playQueue, currentIndex, repeatsRemaining)
+ *   - saveSettings(), loadSettings(), removeSettings()
+ * Behavior: keeps live SpeechSynthesisVoice objects in state.voices (like original)
+ * =========================== */
 const Store = (() => {
   const state = {
     appState: null,
     settings: { pitch: 1.0, volume: 1.0 },
     texts: {},
-    voices: [],
+    voices: [], // live SpeechSynthesisVoice objects
     availableLanguages: [],
     inputs: [],
     playQueue: [],
@@ -235,14 +277,8 @@ const Store = (() => {
 
 /* ===========================
  * WakeLock
- * API:
- *   - request()
- *   - release()
- *   - init()
- * ===========================
- * Emits: none
- * Listens: document visibility
- */
+ * Interface: request(), release(), init()
+ * =========================== */
 const WakeLock = {
   wakeLock: null,
   async request() {
@@ -282,16 +318,9 @@ const WakeLock = {
 
 /* ===========================
  * Speaker
- * API:
- *   - init(voicesProvider, settingsProvider)
- *   - speak(text, options?): Promise<void>
- *   - cancel(), pause(), resume()
- *   - isSpeaking(): boolean
- *   - isPaused(): boolean
- * ===========================
- * Emits: none
- * Listens: none
- */
+ * Interface: init(voicesProvider, settingsProvider), speak(text, options?), cancel(), pause(), resume(), isSpeaking(), isPaused()
+ * Note: Speaker uses live SpeechSynthesisVoice objects from voicesProvider()
+ * =========================== */
 const Speaker = (() => {
   let getVoices = () => [];
   let getSettings = () => ({});
@@ -353,31 +382,10 @@ const Speaker = (() => {
 })();
 
 /* ===========================
- * UI
- * Full UI module with all functions and event subscriptions
- * API:
- *   - cache(), cacheInputs()
- *   - setSelectsFromSettings(s)
- *   - populateLanguageSelect(), populateVoiceSelect()
- *   - setLanguageCodeFromSettings(), setVoiceFromSettings()
- *   - updateUILabels(), updateStartPauseButton(), updateControlsState()
- *   - showBackgroundOverlay(), hideBackgroundOverlay()
- *   - showActiveNumberOverlay(), hideActiveNumberOverlay()
- *   - updateSettingsFromUI()
- *   - attachEventHandlers(), bindEventSubscriptions()
- *   - resetRepeatLeft(), fillRandom(), highlightSelection()
- * Emits:
- *   - settings:changed
- *   - app:settings:resetToDefault
- *   - playback:toggle
- *   - app:fullReset
- * Listens:
- *   - ui:background:show/hide
- *   - ui:activeNumber:show/hide
- *   - ui:highlight
- *   - ui:repeatLeft:set
- *   - app:state
- *   - ui:texts:update
+ * UI (renderer + controller)
+ * Renderer Interface: cache(), cacheInputs(), getInputs(), setSelectsFromSettings(s), populateLanguageSelect(langs), populateVoiceSelect(voices, settings), setLanguageCodeFromSettings(settings), setVoiceFromSettings(settings), updateUILabels(texts), updateStartPauseButton(appState, texts), updateControlsState(appState), showBackgroundOverlay(), hideBackgroundOverlay(), showActiveNumberOverlay(value, delayMs), hideActiveNumberOverlay(), attachEventHandlers()
+ * Controller: binds events and orchestrates
+ * Emits actions via Events (playback:toggle, app:settings:resetToDefault, app:fullReset). Uses Store directly for reads/writes (like original).
  * =========================== */
 const UI = (() => {
   const SELECTORS = {
@@ -411,8 +419,8 @@ const UI = (() => {
     activeNumberOverlay: "#activeNumberOverlay",
   };
 
-  let elements = {};
-  let handlersAttached = false;
+  const elements = {};
+  let inputsCache = [];
 
   function cache() {
     for (const key in SELECTORS) {
@@ -426,7 +434,15 @@ const UI = (() => {
       st.inputs = Array.from(
         elements.numberGrid.querySelectorAll("input[type='text']")
       );
+      inputsCache = st.inputs;
+    } else {
+      inputsCache = [];
+      Store.get().inputs = [];
     }
+  }
+
+  function getInputs() {
+    return inputsCache;
   }
 
   function setSelectsFromSettings(s) {
@@ -452,11 +468,7 @@ const UI = (() => {
       1.0
     );
     s.delay = Utils.safeNumber(
-      Utils.safeSetSelectValue(
-        E.delaySelect,
-        Number(s.delay).toFixed(1),
-        "1000"
-      ),
+      Utils.safeSetSelectValue(E.delaySelect, String(s.delay), "1000"),
       1000
     );
     s.fullscreen = Utils.safeSetSelectValue(
@@ -676,8 +688,6 @@ const UI = (() => {
   }
 
   function attachEventHandlers() {
-    if (handlersAttached) return;
-    handlersAttached = true;
     const E = elements;
 
     E.uiLangSelect?.addEventListener("change", () => {
@@ -803,22 +813,17 @@ const UI = (() => {
 })();
 
 /* ===========================
- * Voices
- * API:
- *   - collect(): collect all available voices
- *   - load(): Promise<void> load voices and emit 'voices:loaded'
- *   - onVoicesChanged(): refresh voices list and UI
- * Emits:
- *   - voices:loaded
- * Listens: none
- * ===========================
- */
+ * Voices module
+ * Interface: collect(), load()
+ * Behavior: stores live SpeechSynthesisVoice objects in Store.get().voices (like original),
+ * but emits only plain arrays of {name, lang} and languages via Events to avoid cloning live objects.
+ * Emits: voices:changed (payload contains lightweight voices list and languages), voices:loaded
+ * =========================== */
 const Voices = (() => {
   function collect() {
-    const st = Store.get();
     const voices = speechSynthesis.getVoices() || [];
-    st.voices = voices;
-    st.availableLanguages = Array.from(
+    Store.get().voices = voices; // live objects kept in Store (same as original)
+    Store.get().availableLanguages = Array.from(
       new Set(
         voices
           .map((v) => (v.lang || "").split("-")[0].toUpperCase())
@@ -827,14 +832,21 @@ const Voices = (() => {
     )
       .sort()
       .concat([]);
-    if (!st.availableLanguages.includes("ALL"))
-      st.availableLanguages.push("ALL");
+    if (!Store.get().availableLanguages.includes("ALL"))
+      Store.get().availableLanguages.push("ALL");
+
+    // emit only lightweight info
+    const lightweight = voices.map((v) => ({ name: v.name, lang: v.lang }));
+    Events.emit("voices:changed", {
+      voices: lightweight,
+      availableLanguages: Store.get().availableLanguages.slice(),
+    });
   }
 
   async function load() {
     collect();
-    const st = Store.get();
-    if (!st.voices.length) {
+    const vs = Store.get().voices;
+    if (!vs.length) {
       try {
         speechSynthesis.speak(new SpeechSynthesisUtterance(""));
         await Utils.delay(250);
@@ -843,105 +855,40 @@ const Voices = (() => {
         console.warn("Voices.load fallback failed", err);
       }
     }
-    Events.emit("voices:loaded");
+    const lightweight = Store.get().voices.map((v) => ({
+      name: v.name,
+      lang: v.lang,
+    }));
+    Events.emit("voices:loaded", {
+      voices: lightweight,
+      availableLanguages: Store.get().availableLanguages.slice(),
+    });
   }
 
-  function onVoicesChanged() {
-    collect();
-    UI.populateLanguageSelect();
-    UI.populateVoiceSelect();
-    UI.setLanguageCodeFromSettings();
-    UI.setVoiceFromSettings();
-  }
-
-  // Subscribe to system voices changed event
   if ("onvoiceschanged" in speechSynthesis) {
-    speechSynthesis.onvoiceschanged = onVoicesChanged;
+    speechSynthesis.onvoiceschanged = () => {
+      collect();
+      // again emit lightweight list
+      const lightweight = Store.get().voices.map((v) => ({
+        name: v.name,
+        lang: v.lang,
+      }));
+      Events.emit("voices:changed", {
+        voices: lightweight,
+        availableLanguages: Store.get().availableLanguages.slice(),
+      });
+    };
   }
 
-  return { collect, load, onVoicesChanged };
+  return { collect, load };
 })();
 
 /* ===========================
- * LangLoader
- * Loads UI texts from separate JSON files
- * API:
- *   - loadLang(code): loads a single language
- *   - loadAll(): loads all available languages
- *   - getTexts(lang): returns texts for a given language
- * =========================== */
-const LangLoader = (() => {
-  const PATH = "./assets/locales";
-  let texts = {};
-
-  async function loadLang(code) {
-    const url = `${PATH}/${code}.json`;
-    try {
-      const res = await fetch(url, { cache: "no-cache" });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const json = await res.json();
-      if (!json || typeof json !== "object") throw new Error("Bad JSON");
-      return json;
-    } catch (e) {
-      console.warn(`UI texts load failed for ${code}:`, e);
-      return null;
-    }
-  }
-
-  async function loadAll() {
-    texts = {};
-    await Promise.all(
-      Config.UI_LANGS.map(async (code) => {
-        const data = await loadLang(code);
-        if (data) texts[code] = data;
-      })
-    );
-    if (!texts.en) {
-      texts.en = {
-        uiLangLabel: "Interface",
-        labelLang: "Language",
-        labelVoice: "Voice",
-        labelDigitLength: "Digit length",
-        labelCount: "Count",
-        labelRepeat: "Repeat",
-        labelSpeed: "Speed",
-        labelDelay: "Delay (ms)",
-        labelFullscreen: "Fullscreen",
-        start: "Start",
-        continue: "Continue",
-        pause: "Pause",
-        reset: "Reset",
-        fillRandom: "🎲 Rnd",
-        fullscreenNo: "No",
-        fullscreenYes: "Yes",
-        default: "Default",
-        repeatsLeft: "Repeats left:",
-      };
-      console.warn("EN fallback injected (no file available).");
-    }
-    return texts;
-  }
-
-  function getTexts(lang) {
-    return texts[lang] || texts.en;
-  }
-
-  return { loadLang, loadAll, getTexts };
-})();
-
-/* ===========================
- * Playback
- * Manages sequence playback and repeats
- * API:
- *   - buildPlayQueue(): builds the current play queue
- * Emits:
- *   - app:state:set
- *   - ui:highlight
- *   - ui:background:show/hide
- *   - ui:activeNumber:show/hide
- *   - ui:repeatLeft:set
- * Listens:
- *   - playback:start/resume/pause/stop/toggle
+ * Playback module
+ * Interface: buildPlayQueue()
+ * Listens: playback:start/resume/pause/stop/toggle
+ * Emits: app:state:set, ui:highlight, ui:background:show/hide, ui:activeNumber:show/hide, ui:repeatLeft:set
+ * Behavior mirrors original logic but uses Speaker DI and Events for coordination.
  * =========================== */
 const Playback = (() => {
   function buildPlayQueue() {
@@ -1005,6 +952,7 @@ const Playback = (() => {
     }
   }
 
+  // event handlers
   Events.on("playback:start", () => {
     const st = Store.get();
     st.repeatsRemaining = Utils.safeNumber(st.settings.repeat, 1);
@@ -1060,25 +1008,29 @@ const Playback = (() => {
 
 /* ===========================
  * App
- * API:
- *   - init()
- *   - resetToDefaultSettings()
- *   - fullReset()
- *   - handleKeyControls(event)
+ * Interface: init()
+ * Wiring: App listens for "app:state:set" and updates Store.get().appState WITHOUT re-emitting "app:state:set" to avoid recursion.
  * =========================== */
 const App = (() => {
-  async function loadUILangs() {
+  function loadUILangs() {
     const st = Store.get();
-    st.texts = await LangLoader.loadAll();
-    Events.emit("ui:texts:update");
+    return LangLoader.loadAll().then((texts) => {
+      st.texts = texts;
+      Events.emit("ui:texts:update");
+    });
   }
 
   function getDefaultSettings() {
     const type = Utils.isMobileDevice() ? "mobile" : "desktop";
-    return { ...Config.CONFIG.DEFAULT_SETTINGS[type] };
+    return {
+      ...(Config.DEFAULT_CONFIG.DEFAULT_SETTINGS[type]
+        ? Config.DEFAULT_CONFIG.DEFAULT_SETTINGS[type]
+        : Config.DEFAULT_CONFIG.DEFAULT_SETTINGS.desktop),
+    };
   }
 
-  function setAppState(s) {
+  function setAppStateDirect(s) {
+    // Set appState and emit single 'app:state' event (do NOT emit 'app:state:set' from here).
     const st = Store.get();
     st.appState = s;
     Events.emit("app:state", s);
@@ -1089,7 +1041,7 @@ const App = (() => {
     }
   }
 
-  async function resetToDefaultSettings() {
+  function resetToDefaultSettings() {
     const st = Store.get();
     Store.removeSettings();
     Speaker.cancel();
@@ -1099,8 +1051,8 @@ const App = (() => {
     if (UI.elements.languageCodeSelect) {
       UI.populateLanguageSelect();
       UI.setLanguageCodeFromSettings();
-      await Utils.delay(0);
-      UI.populateVoiceSelect();
+      // small delay to allow DOM updates before populating voices
+      setTimeout(() => UI.populateVoiceSelect(), 0);
     }
     if (UI.elements.voiceSelect) UI.setVoiceFromSettings();
     Store.saveSettings();
@@ -1144,10 +1096,18 @@ const App = (() => {
     UI.cache();
     await Config.load();
     const st = Store.get();
-    const initial = Config.CONFIG.USE_LOCAL_STORAGE
+    const initial = Config.CONFIG?.USE_LOCAL_STORAGE
       ? Store.loadSettings()
       : null;
-    st.settings = initial || getDefaultSettings();
+    st.settings =
+      initial ||
+      (Config.CONFIG
+        ? {
+            ...Config.CONFIG.DEFAULT_SETTINGS[
+              Utils.isMobileDevice() ? "mobile" : "desktop"
+            ],
+          }
+        : getDefaultSettings());
     UI.setSelectsFromSettings(st.settings);
     await loadUILangs();
     if (UI.elements.uiLangSelect) {
@@ -1158,7 +1118,7 @@ const App = (() => {
       }
     }
     UI.updateUILabels();
-    setAppState(Config.CONFIG.ENUMS.AppStates.READY);
+    setAppStateDirect(Config.CONFIG.ENUMS.AppStates.READY);
     UI.hideBackgroundOverlay();
     await Voices.load();
     if (Utils.isMobileDevice()) {
@@ -1194,7 +1154,8 @@ const App = (() => {
   }
 
   function bindEventSubscriptions() {
-    Events.on("app:state:set", (s) => setAppState(s));
+    // listen for requests to set app state and apply directly (no re-emit of same event)
+    Events.on("app:state:set", (s) => setAppStateDirect(s));
     Events.on("app:settings:resetToDefault", resetToDefaultSettings);
     Events.on("app:fullReset", fullReset);
   }
@@ -1216,12 +1177,10 @@ const App = (() => {
 
 /* ===========================
  * Cross-cutting / Init
- * API: none
- * Listens: settings:changed
- * Purpose: global subscriptions and app initialization
+ * minimal global subscriptions
  * =========================== */
 Events.on("settings:changed", () => {
-  // Future cross-cutting reactions can go here
+  // placeholder for future reactions
 });
 
 App.init();
