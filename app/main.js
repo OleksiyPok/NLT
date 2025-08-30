@@ -1,16 +1,13 @@
 "use strict";
 
-/**
- * Single-file, event-driven version.
- * Модули общаются ТОЛЬКО через Events.
- * UI не дергает напрямую Playback/App/Speaker — только Events.emit(...)
- * Playback/App/UI/Voices подписываются на события и реагируют.
- */
-
-// import { Speaker } from "./modules/speaker.js";
-
 /* ===========================
- * Utils (встроенный, без импортов)
+ * Utils
+ * API:
+ *   - safeNumber(v, defVal): number
+ *   - safeSetSelectValue(selectEl, val, fallback): string
+ *   - delay(ms): Promise<void>
+ *   - isMobileDevice(): boolean
+ *   - normalizeString(s): string
  * =========================== */
 const Utils = (() => {
   function safeNumber(v, defVal) {
@@ -47,36 +44,45 @@ const Utils = (() => {
 })();
 
 /* ===========================
- * Events — централизованная шина
+ * Events (event bus)
+ * API:
+ *   - on(event, fn)
+ *   - off(event, fn)
+ *   - emit(event, payload)
  * =========================== */
 const Events = (() => {
   const listeners = new Map();
-  return {
-    on(event, fn) {
-      if (!listeners.has(event)) listeners.set(event, new Set());
-      listeners.get(event).add(fn);
-      return () => listeners.get(event)?.delete(fn);
-    },
-    off(event, fn) {
-      listeners.get(event)?.delete(fn);
-    },
-    emit(event, payload) {
-      const set = listeners.get(event);
-      if (!set || !set.size) return;
-      for (const fn of set) {
-        try {
-          fn(payload);
-        } catch (e) {
-          console.warn("Event listener error for", event, e);
-        }
+  function on(event, fn) {
+    if (!listeners.has(event)) listeners.set(event, new Set());
+    listeners.get(event).add(fn);
+    return () => listeners.get(event)?.delete(fn);
+  }
+  function off(event, fn) {
+    listeners.get(event)?.delete(fn);
+  }
+  function emit(event, payload) {
+    const set = listeners.get(event);
+    if (!set) return;
+    for (const fn of set) {
+      try {
+        fn(payload);
+      } catch (e) {
+        console.warn("Event error", event, e);
       }
-    },
-  };
+    }
+  }
+  return { on, off, emit };
 })();
 
 /* ===========================
  * Config
- * =========================== */
+ * API:
+ *   - load(): Promise<void>
+ *   - CONFIG: current config
+ * ===========================
+ * Emits: none
+ * Listens: none
+ */
 const Config = {
   PATHS: {
     CONFIG: "./assets/configs/config.json",
@@ -161,8 +167,16 @@ const Config = {
 };
 
 /* ===========================
- * Store (глобальное состояние)
- * =========================== */
+ * Store
+ * API:
+ *   - get(): state
+ *   - saveSettings()
+ *   - loadSettings(): object|null
+ *   - removeSettings()
+ * ===========================
+ * Emits: none directly (UI triggers "settings:changed")
+ * Listens: none
+ */
 const Store = (() => {
   const state = {
     appState: null,
@@ -203,17 +217,31 @@ const Store = (() => {
     },
   };
 
-  return {
-    get: () => state,
-    saveSettings: () => Storage.save(state.settings),
-    loadSettings: () => Storage.load(),
-    removeSettings: () => Storage.remove(),
-  };
+  function get() {
+    return state;
+  }
+  function saveSettings() {
+    Storage.save(state.settings);
+  }
+  function loadSettings() {
+    return Storage.load();
+  }
+  function removeSettings() {
+    Storage.remove();
+  }
+  return { get, saveSettings, loadSettings, removeSettings };
 })();
 
 /* ===========================
  * WakeLock
- * =========================== */
+ * API:
+ *   - request()
+ *   - release()
+ *   - init()
+ * ===========================
+ * Emits: none
+ * Listens: document visibility
+ */
 const WakeLock = {
   wakeLock: null,
   async request() {
@@ -256,7 +284,16 @@ const WakeLock = {
 
 /* ===========================
  * Speaker
- * =========================== */
+ * API:
+ *   - init(voicesProvider, settingsProvider)
+ *   - speak(text, options?): Promise<void>
+ *   - cancel(), pause(), resume()
+ *   - isSpeaking(): boolean
+ *   - isPaused(): boolean
+ * ===========================
+ * Emits: none
+ * Listens: none
+ */
 const Speaker = (() => {
   let getVoices = () => [];
   let getSettings = () => ({});
@@ -313,8 +350,32 @@ const Speaker = (() => {
 })();
 
 /* ===========================
- * UI (ничего не знает о Playback/App/Speaker — только Events)
- * =========================== */
+ * UI
+ * API:
+ *   - cache(), cacheInputs()
+ *   - setSelectsFromSettings(s)
+ *   - populateLanguageSelect(), populateVoiceSelect()
+ *   - setLanguageCodeFromSettings(), setVoiceFromSettings()
+ *   - updateUILabels(), updateStartPauseButton(), updateControlsState()
+ *   - showBackgroundOverlay(), hideBackgroundOverlay()
+ *   - showActiveNumberOverlay(), hideActiveNumberOverlay()
+ *   - updateSettingsFromUI()
+ *   - attachEventHandlers(), bindEventSubscriptions()
+ *   - resetRepeatLeft(), fillRandom(), highlightSelection()
+ * ===========================
+ * Emits:
+ *   - settings:changed
+ *   - app:settings:resetToDefault
+ *   - playback:toggle
+ *   - app:fullReset
+ * Listens:
+ *   - ui:background:show/hide
+ *   - ui:activeNumber:show/hide
+ *   - ui:highlight
+ *   - ui:repeatLeft:set
+ *   - app:state
+ *   - ui:texts:update
+ */
 const UI = (() => {
   const SELECTORS = {
     uiLangSelect: "#uiLangSelect",
@@ -748,7 +809,14 @@ const UI = (() => {
 
 /* ===========================
  * Voices
- * =========================== */
+ * API:
+ *   - collect()
+ *   - load(): Promise<void>
+ *   - onVoicesChanged()
+ * ===========================
+ * Emits: voices:loaded
+ * Listens: none
+ */
 const Voices = {
   collect() {
     const st = Store.get();
@@ -792,7 +860,13 @@ speechSynthesis.onvoiceschanged = () => Voices.onVoicesChanged();
 
 /* ===========================
  * LangLoader
- * =========================== */
+ * API:
+ *   - loadLang(code): Promise<object|null>
+ *   - loadAll(): Promise<object>
+ * ===========================
+ * Emits: none
+ * Listens: none
+ */
 const LangLoader = {
   async loadLang(code) {
     const url = `${Config.PATHS.UI_TEXTS_DIR}/${code}.json`;
@@ -844,8 +918,19 @@ const LangLoader = {
 };
 
 /* ===========================
- * Playback (реакция на события, не знает UI/App)
- * =========================== */
+ * Playback
+ * API:
+ *   - buildPlayQueue()
+ * ===========================
+ * Emits:
+ *   - app:state:set
+ *   - ui:highlight
+ *   - ui:background:show/hide
+ *   - ui:activeNumber:show/hide
+ *   - ui:repeatLeft:set
+ * Listens:
+ *   - playback:start/resume/pause/stop/toggle
+ */
 const Playback = (() => {
   function buildPlayQueue() {
     const st = Store.get();
@@ -909,7 +994,6 @@ const Playback = (() => {
     }
   }
 
-  /* Подписки на события управляющих модулей */
   Events.on("playback:start", () => {
     const st = Store.get();
     st.repeatsRemaining = Utils.safeNumber(st.settings.repeat, 1);
@@ -1153,12 +1237,9 @@ const App = (() => {
 })();
 
 /* ===========================
- * Wire up cross-cutting settings updates
+ * Cross-cutting
  * =========================== */
-Events.on("settings:changed", () => {
-  // При смене настроек можно в будущем реагировать ещё где-то
-  // (сейчас UI сам уже перерисует части, а Store сохранил настройки)
-});
+Events.on("settings:changed", () => {});
 
 /* ===========================
  * Init
