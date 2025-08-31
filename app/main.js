@@ -1,14 +1,7 @@
 "use strict";
 
-const AppStates = Object.freeze({
-  INIT: "init",
-  READY: "ready",
-  PLAYING: "playing",
-  PAUSED: "paused",
-});
-
 /*
-Module: EventTypes
+EventTypes
 Interface: frozen map of event name constants
 */
 const EventTypes = Object.freeze({
@@ -39,7 +32,7 @@ const EventTypes = Object.freeze({
 });
 
 /*
-Module: Utils
+Utils
 Interface:
   - safeNumber(v, defVal)
   - safeSetSelectValue(selectEl, val, fallback)
@@ -92,7 +85,7 @@ const Utils = (() => {
 })();
 
 /*
-Module: EventBus
+EventBus
 Interface:
   - on(event, fn) => unsubscribe()
   - off(event, fn)
@@ -121,7 +114,7 @@ function createEventBus() {
 }
 
 /*
-Module: Config
+Config
 Interface:
   - PATHS, UI_LANGS, DEFAULT_CONFIG
   - CONFIG (after load)
@@ -162,14 +155,6 @@ function createConfig({ paths = null } = {}) {
       mobile: {},
       desktop: {},
     },
-    // ENUMS: {
-    //   AppStates: {
-    //     INIT: "init",
-    //     READY: "ready",
-    //     PLAYING: "playing",
-    //     PAUSED: "paused",
-    //   },
-    // },
   });
 
   const instance = {
@@ -207,7 +192,7 @@ function createConfig({ paths = null } = {}) {
 }
 
 /*
-Module: LangLoader
+LangLoader
 Interface:
   - loadLang(code) => Promise<object|null>
   - loadAll() => Promise<texts>
@@ -267,7 +252,7 @@ function createLangLoader({ config }) {
 }
 
 /*
-Module: Store
+Store
 Interface:
   - getState()
   - getSettings()
@@ -307,7 +292,7 @@ function createStore({ config, events }) {
   };
 
   let state = {
-    appState: AppStates.INIT,
+    appState: "init",
     settings: { pitch: 1.0, volume: 1.0 },
     texts: {},
     voices: [],
@@ -363,7 +348,7 @@ function createStore({ config, events }) {
 }
 
 /*
-Module: WakeLock
+WakeLock
 Interface:
   - init()
   - request()
@@ -394,13 +379,13 @@ function createWakeLock({ store, config, events }) {
       document.addEventListener("visibilitychange", () => {
         const appState = store.getAppState();
         if (document.visibilityState === "visible") {
-          if (appState === AppStates.PLAYING) this.request();
+          if (appState === "playing") this.request();
         } else {
           this.release();
         }
       });
       events.on(EventTypes.APP_STATE, (s) => {
-        if (s === AppStates.PLAYING) this.request();
+        if (s === "playing") this.request();
         else this.release();
       });
     },
@@ -409,7 +394,7 @@ function createWakeLock({ store, config, events }) {
 }
 
 /*
-Module: Speaker
+Speaker
 Interface:
   - init(voicesProviderFn, settingsProviderFn)
   - speak(text, options)
@@ -474,7 +459,7 @@ function createSpeaker() {
 }
 
 /*
-Module: UI
+UI
 Interface:
   - cache(), cacheInputs(), getInputs(), getSelectedInputs()
   - setSelectsFromSettings(s), populateLanguageSelect(), populateVoiceSelect()
@@ -689,9 +674,9 @@ function createUI({ events, store, utils, config, langLoader }) {
     const texts = langLoader.getTexts(elements.uiLangSelect?.value || "en");
     if (!texts) return;
     const labels = {
-      [AppStates.PLAYING]: texts.pause,
-      [AppStates.PAUSED]: texts.continue,
-      [AppStates.READY]: texts.start,
+      ["playing"]: texts.pause,
+      ["paused"]: texts.continue,
+      ["ready"]: texts.start,
     };
     const btn = elements.startPauseBtn;
     if (btn) {
@@ -702,9 +687,9 @@ function createUI({ events, store, utils, config, langLoader }) {
 
   function updateControlsState() {
     const s = store.getAppState();
-    const isPlaying = s === AppStates.PLAYING;
-    const isPaused = s === AppStates.PAUSED;
-    const isReady = s === AppStates.READY;
+    const isPlaying = s === "playing";
+    const isPaused = s === "paused";
+    const isReady = s === "ready";
 
     const setDisabled = (el, val) => {
       if (el && el.disabled !== val) el.disabled = val;
@@ -945,7 +930,7 @@ function createUI({ events, store, utils, config, langLoader }) {
 }
 
 /*
-Module: Voices
+Voices
 Interface:
   - collect()
   - load()
@@ -1004,9 +989,10 @@ function createVoices({ events }) {
 }
 
 /*
-Module: Playback
+Playback
 Interface:
   - buildPlayQueue()
+  - internal: responds to EventTypes for control
 */
 function createPlayback({
   events,
@@ -1030,17 +1016,17 @@ function createPlayback({
   }
 
   async function playSequence(runtime) {
-    if (store.getAppState() !== AppStates.PLAYING) return;
+    if (store.getAppState() !== "playing") return;
     const delayMs = utils.safeNumber(store.getSettings().delay, 500);
 
-    while (store.getAppState() === AppStates.PLAYING) {
+    while (store.getAppState() === "playing") {
       if (store.getState().currentIndex >= runtime.playQueue.length) {
         if (runtime.repeatsRemaining > 1) {
           runtime.repeatsRemaining -= 1;
           events.emit(EventTypes.UI_REPEAT_LEFT_SET, runtime.repeatsRemaining);
           store.setCurrentIndex(0);
         } else {
-          events.emit(EventTypes.APP_STATE_SET, AppStates.READY);
+          events.emit(EventTypes.APP_STATE_SET, "ready");
           events.emit(EventTypes.UI_BACKGROUND_HIDE);
           events.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
           resetRuntime(runtime);
@@ -1073,7 +1059,7 @@ function createPlayback({
         voiceName: store.getSettings().voiceName,
       });
 
-      if (store.getAppState() !== AppStates.PLAYING) break;
+      if (store.getAppState() !== "playing") break;
       store.setCurrentIndex(idx + 1);
       await utils.delay(delayMs);
     }
@@ -1086,26 +1072,26 @@ function createPlayback({
     events.emit(EventTypes.UI_REPEAT_LEFT_SET, runtime.repeatsRemaining);
     runtime.playQueue = buildPlayQueue();
     store.setCurrentIndex(0);
-    events.emit(EventTypes.APP_STATE_SET, AppStates.PLAYING);
+    events.emit(EventTypes.APP_STATE_SET, "playing");
     events.emit(EventTypes.UI_BACKGROUND_SHOW);
     playSequence(runtime).catch((e) => console.warn("playSequence failed", e));
   });
 
   events.on(EventTypes.PLAYBACK_RESUME, () => {
-    events.emit(EventTypes.APP_STATE_SET, AppStates.PLAYING);
+    events.emit(EventTypes.APP_STATE_SET, "playing");
     playSequence(runtime).catch((e) => console.warn("playSequence failed", e));
   });
 
   events.on(EventTypes.PLAYBACK_PAUSE, () => {
     speaker.cancel();
-    events.emit(EventTypes.APP_STATE_SET, AppStates.PAUSED);
+    events.emit(EventTypes.APP_STATE_SET, "paused");
     events.emit(EventTypes.UI_BACKGROUND_HIDE);
     events.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
   });
 
   events.on(EventTypes.PLAYBACK_STOP, () => {
     speaker.cancel();
-    events.emit(EventTypes.APP_STATE_SET, AppStates.READY);
+    events.emit(EventTypes.APP_STATE_SET, "ready");
     events.emit(EventTypes.UI_BACKGROUND_HIDE);
     events.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
     resetRuntime(runtime);
@@ -1119,10 +1105,8 @@ function createPlayback({
 
   events.on(EventTypes.PLAYBACK_TOGGLE, () => {
     const appState = store.getAppState();
-    if (appState === AppStates.PLAYING)
-      return events.emit(EventTypes.PLAYBACK_PAUSE);
-    if (appState === AppStates.PAUSED)
-      return events.emit(EventTypes.PLAYBACK_RESUME);
+    if (appState === "playing") return events.emit(EventTypes.PLAYBACK_PAUSE);
+    if (appState === "paused") return events.emit(EventTypes.PLAYBACK_RESUME);
     events.emit(EventTypes.PLAYBACK_START);
   });
 
@@ -1130,7 +1114,7 @@ function createPlayback({
 }
 
 /*
-Module: App
+App
 Interface:
   - init()
 */
@@ -1156,7 +1140,7 @@ function createApp({
 
   function setAppStateDirect(s) {
     store.setAppState(s);
-    if (s === AppStates.PLAYING) wakeLock.request();
+    if (s === "playing") wakeLock.request();
     else wakeLock.release();
   }
 
@@ -1231,7 +1215,7 @@ function createApp({
     }
     ui.updateUILabels();
 
-    setAppStateDirect(AppStates.READY);
+    setAppStateDirect("ready");
     ui.hideBackgroundOverlay();
 
     await voices.load();
@@ -1332,7 +1316,7 @@ const App = createApp({
   utils: Utils,
 });
 
-/* minimal cross-cutting subscription (reserved) */
+/* reserved subscription */
 Events.on(EventTypes.SETTINGS_CHANGED, () => {});
 
 /* start app */
