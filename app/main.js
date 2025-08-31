@@ -1,6 +1,36 @@
 "use strict";
 
 /*
+EventTypes
+Centralized list of event names
+*/
+const EventTypes = Object.freeze({
+  APP_STATE: "app:state",
+  APP_STATE_SET: "app:state:set",
+  APP_SETTINGS_RESET: "app:settings:resetToDefault",
+  APP_FULL_RESET: "app:fullReset",
+
+  UI_BACKGROUND_SHOW: "ui:background:show",
+  UI_BACKGROUND_HIDE: "ui:background:hide",
+  UI_ACTIVE_NUMBER_SHOW: "ui:activeNumber:show",
+  UI_ACTIVE_NUMBER_HIDE: "ui:activeNumber:hide",
+  UI_HIGHLIGHT: "ui:highlight",
+  UI_REPEAT_LEFT_SET: "ui:repeatLeft:set",
+  UI_TEXTS_UPDATE: "ui:texts:update",
+
+  VOICES_CHANGED: "voices:changed",
+  VOICES_LOADED: "voices:loaded",
+
+  PLAYBACK_START: "playback:start",
+  PLAYBACK_RESUME: "playback:resume",
+  PLAYBACK_PAUSE: "playback:pause",
+  PLAYBACK_STOP: "playback:stop",
+  PLAYBACK_TOGGLE: "playback:toggle",
+
+  SETTINGS_CHANGED: "settings:changed",
+});
+
+/*
 Utils
 Interface:
   - safeNumber(v, defVal)
@@ -341,7 +371,7 @@ function createWakeLock({ storeProvider, config, events }) {
         }
       });
       if (events) {
-        events.on("app:state", (s) => {
+        events.on(EventTypes.APP_STATE, (s) => {
           if (s === config.CONFIG.ENUMS.AppStates.PLAYING) this.request();
           else this.release();
         });
@@ -724,9 +754,8 @@ function createUI({ events, storeProvider, utils, config }) {
     upd("speed", E.speedSelect, s.speed);
     upd("delay", E.delaySelect, s.delay);
     upd("fullscreen", E.fullscreenSelect, s.fullscreen);
-    // save via Store object (not via state)
     Store.saveSettings();
-    events.emit("settings:changed", structuredClone(s));
+    events.emit(EventTypes.SETTINGS_CHANGED, structuredClone(s));
   }
 
   function attachEventHandlers() {
@@ -766,12 +795,14 @@ function createUI({ events, storeProvider, utils, config }) {
     );
 
     E.resetSettingsBtn?.addEventListener("click", () =>
-      events.emit("app:settings:resetToDefault")
+      events.emit(EventTypes.APP_SETTINGS_RESET)
     );
     E.startPauseBtn?.addEventListener("click", () =>
-      events.emit("playback:toggle")
+      events.emit(EventTypes.PLAYBACK_TOGGLE)
     );
-    E.resetBtn?.addEventListener("click", () => events.emit("app:fullReset"));
+    E.resetBtn?.addEventListener("click", () =>
+      events.emit(EventTypes.APP_FULL_RESET)
+    );
   }
 
   function resetRepeatLeft() {
@@ -806,14 +837,14 @@ function createUI({ events, storeProvider, utils, config }) {
   }
 
   function bindEventSubscriptions() {
-    events.on("ui:background:show", showBackgroundOverlay);
-    events.on("ui:background:hide", hideBackgroundOverlay);
-    events.on("ui:activeNumber:show", ({ value, delayMs }) =>
+    events.on(EventTypes.UI_BACKGROUND_SHOW, showBackgroundOverlay);
+    events.on(EventTypes.UI_BACKGROUND_HIDE, hideBackgroundOverlay);
+    events.on(EventTypes.UI_ACTIVE_NUMBER_SHOW, ({ value, delayMs }) =>
       showActiveNumberOverlay(value, delayMs)
     );
-    events.on("ui:activeNumber:hide", hideActiveNumberOverlay);
-    events.on("ui:highlight", highlightSelection);
-    events.on("ui:repeatLeft:set", (val) => {
+    events.on(EventTypes.UI_ACTIVE_NUMBER_HIDE, hideActiveNumberOverlay);
+    events.on(EventTypes.UI_HIGHLIGHT, highlightSelection);
+    events.on(EventTypes.UI_REPEAT_LEFT_SET, (val) => {
       if (
         elements.repeatLeft &&
         String(elements.repeatLeft.textContent) !== String(val)
@@ -822,11 +853,11 @@ function createUI({ events, storeProvider, utils, config }) {
       }
       updateControlsState();
     });
-    events.on("app:state", () => {
+    events.on(EventTypes.APP_STATE, () => {
       updateStartPauseButton();
       updateControlsState();
     });
-    events.on("ui:texts:update", updateUILabels);
+    events.on(EventTypes.UI_TEXTS_UPDATE, updateUILabels);
   }
 
   return {
@@ -879,7 +910,7 @@ function createVoices({ events, storeProvider, utils }) {
       storeProvider().availableLanguages.push("ALL");
 
     const lightweight = voices.map((v) => ({ name: v.name, lang: v.lang }));
-    events.emit("voices:changed", {
+    events.emit(EventTypes.VOICES_CHANGED, {
       voices: lightweight,
       availableLanguages: storeProvider().availableLanguages.slice(),
     });
@@ -901,7 +932,7 @@ function createVoices({ events, storeProvider, utils }) {
       name: v.name,
       lang: v.lang,
     }));
-    events.emit("voices:loaded", {
+    events.emit(EventTypes.VOICES_LOADED, {
       voices: lightweight,
       availableLanguages: storeProvider().availableLanguages.slice(),
     });
@@ -914,7 +945,7 @@ function createVoices({ events, storeProvider, utils }) {
         name: v.name,
         lang: v.lang,
       }));
-      events.emit("voices:changed", {
+      events.emit(EventTypes.VOICES_CHANGED, {
         voices: lightweight,
         availableLanguages: storeProvider().availableLanguages.slice(),
       });
@@ -962,14 +993,17 @@ function createPlayback({
       if (stNow.currentIndex >= stNow.playQueue.length) {
         if (stNow.repeatsRemaining > 1) {
           stNow.repeatsRemaining -= 1;
-          events.emit("ui:repeatLeft:set", stNow.repeatsRemaining);
+          events.emit(EventTypes.UI_REPEAT_LEFT_SET, stNow.repeatsRemaining);
           stNow.currentIndex = 0;
         } else {
-          events.emit("app:state:set", config.CONFIG.ENUMS.AppStates.READY);
-          events.emit("ui:background:hide");
-          events.emit("ui:activeNumber:hide");
+          events.emit(
+            EventTypes.APP_STATE_SET,
+            config.CONFIG.ENUMS.AppStates.READY
+          );
+          events.emit(EventTypes.UI_BACKGROUND_HIDE);
+          events.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
           resetRuntime();
-          events.emit("ui:highlight");
+          events.emit(EventTypes.UI_HIGHLIGHT);
           wakeLock.release();
           return;
         }
@@ -982,9 +1016,12 @@ function createPlayback({
         continue;
       }
 
-      events.emit("ui:highlight");
-      events.emit("ui:background:show");
-      events.emit("ui:activeNumber:show", { value: input.value, delayMs });
+      events.emit(EventTypes.UI_HIGHLIGHT);
+      events.emit(EventTypes.UI_BACKGROUND_SHOW);
+      events.emit(EventTypes.UI_ACTIVE_NUMBER_SHOW, {
+        value: input.value,
+        delayMs,
+      });
 
       await speaker.speak(input.value, {
         languageCode: stNow.settings.languageCode || "nl-NL",
@@ -1001,54 +1038,60 @@ function createPlayback({
     }
   }
 
-  events.on("playback:start", () => {
+  events.on(EventTypes.PLAYBACK_START, () => {
     const st = storeProvider();
     st.repeatsRemaining = utils.safeNumber(st.settings.repeat, 1);
-    events.emit("ui:repeatLeft:set", st.repeatsRemaining);
+    events.emit(EventTypes.UI_REPEAT_LEFT_SET, st.repeatsRemaining);
     buildPlayQueue();
     st.currentIndex = 0;
-    events.emit("app:state:set", config.CONFIG.ENUMS.AppStates.PLAYING);
-    events.emit("ui:background:show");
+    events.emit(
+      EventTypes.APP_STATE_SET,
+      config.CONFIG.ENUMS.AppStates.PLAYING
+    );
+    events.emit(EventTypes.UI_BACKGROUND_SHOW);
     playSequence().catch((e) => console.warn("playSequence failed", e));
   });
 
-  events.on("playback:resume", () => {
-    events.emit("app:state:set", config.CONFIG.ENUMS.AppStates.PLAYING);
+  events.on(EventTypes.PLAYBACK_RESUME, () => {
+    events.emit(
+      EventTypes.APP_STATE_SET,
+      config.CONFIG.ENUMS.AppStates.PLAYING
+    );
     playSequence().catch((e) => console.warn("playSequence failed", e));
   });
 
-  events.on("playback:pause", () => {
+  events.on(EventTypes.PLAYBACK_PAUSE, () => {
     speaker.cancel();
-    events.emit("app:state:set", config.CONFIG.ENUMS.AppStates.PAUSED);
-    events.emit("ui:background:hide");
-    events.emit("ui:activeNumber:hide");
+    events.emit(EventTypes.APP_STATE_SET, config.CONFIG.ENUMS.AppStates.PAUSED);
+    events.emit(EventTypes.UI_BACKGROUND_HIDE);
+    events.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
   });
 
-  events.on("playback:stop", () => {
+  events.on(EventTypes.PLAYBACK_STOP, () => {
     speaker.cancel();
-    events.emit("app:state:set", config.CONFIG.ENUMS.AppStates.READY);
-    events.emit("ui:background:hide");
-    events.emit("ui:activeNumber:hide");
+    events.emit(EventTypes.APP_STATE_SET, config.CONFIG.ENUMS.AppStates.READY);
+    events.emit(EventTypes.UI_BACKGROUND_HIDE);
+    events.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
     resetRuntime();
     events.emit(
-      "ui:repeatLeft:set",
+      EventTypes.UI_REPEAT_LEFT_SET,
       utils.safeNumber(storeProvider().settings.repeat, 1)
     );
-    events.emit("ui:highlight");
+    events.emit(EventTypes.UI_HIGHLIGHT);
     wakeLock.release();
   });
 
-  events.on("playback:toggle", () => {
+  events.on(EventTypes.PLAYBACK_TOGGLE, () => {
     const st = storeProvider();
     if (st.appState === config.CONFIG.ENUMS.AppStates.PLAYING) {
-      events.emit("playback:pause");
+      events.emit(EventTypes.PLAYBACK_PAUSE);
       return;
     }
     if (st.appState === config.CONFIG.ENUMS.AppStates.PAUSED) {
-      events.emit("playback:resume");
+      events.emit(EventTypes.PLAYBACK_RESUME);
       return;
     }
-    events.emit("playback:start");
+    events.emit(EventTypes.PLAYBACK_START);
   });
 
   return { buildPlayQueue };
@@ -1077,7 +1120,7 @@ function createApp({
     const st = store.get();
     return langLoader.loadAll().then((texts) => {
       st.texts = texts;
-      events.emit("ui:texts:update");
+      events.emit(EventTypes.UI_TEXTS_UPDATE);
     });
   }
 
@@ -1093,7 +1136,7 @@ function createApp({
   function setAppStateDirect(s) {
     const st = store.get();
     st.appState = s;
-    events.emit("app:state", s);
+    events.emit(EventTypes.APP_STATE, s);
     if (s === config.CONFIG.ENUMS.AppStates.PLAYING) {
       wakeLock.request();
     } else {
@@ -1105,7 +1148,7 @@ function createApp({
     const st = store.get();
     store.removeSettings();
     speaker.cancel();
-    events.emit("playback:stop");
+    events.emit(EventTypes.PLAYBACK_STOP);
     st.settings = getDefaultSettings();
     ui.setSelectsFromSettings(st.settings);
     if (ui.elements.languageCodeSelect) {
@@ -1123,7 +1166,7 @@ function createApp({
 
   function fullReset() {
     speaker.cancel();
-    events.emit("playback:stop");
+    events.emit(EventTypes.PLAYBACK_STOP);
   }
 
   function handleKeyControls(event) {
@@ -1136,7 +1179,7 @@ function createApp({
       event.keyCode === 27
     ) {
       event.preventDefault();
-      events.emit("app:fullReset");
+      events.emit(EventTypes.APP_FULL_RESET);
     }
     if (
       (event.key === " " ||
@@ -1146,7 +1189,7 @@ function createApp({
       !isTyping
     ) {
       event.preventDefault();
-      events.emit("playback:toggle");
+      events.emit(EventTypes.PLAYBACK_TOGGLE);
     }
   }
 
@@ -1194,7 +1237,7 @@ function createApp({
     ui.highlightSelection();
     ui.attachEventHandlers();
     ui.elements.resetBtn?.addEventListener("click", () =>
-      events.emit("app:fullReset")
+      events.emit(EventTypes.APP_FULL_RESET)
     );
     if (ui.elements.startPauseBtn) ui.elements.startPauseBtn.disabled = false;
     ui.resetRepeatLeft();
@@ -1213,9 +1256,9 @@ function createApp({
   }
 
   function bindEventSubscriptions() {
-    events.on("app:state:set", (s) => setAppStateDirect(s));
-    events.on("app:settings:resetToDefault", resetToDefaultSettings);
-    events.on("app:fullReset", fullReset);
+    events.on(EventTypes.APP_STATE_SET, (s) => setAppStateDirect(s));
+    events.on(EventTypes.APP_SETTINGS_RESET, resetToDefaultSettings);
+    events.on(EventTypes.APP_FULL_RESET, fullReset);
   }
 
   return {
@@ -1280,6 +1323,6 @@ const App = createApp({
 });
 
 /* minimal cross-cutting subscription */
-Events.on("settings:changed", () => {});
+Events.on(EventTypes.SETTINGS_CHANGED, () => {});
 
 App.init();
