@@ -1,5 +1,12 @@
 "use strict";
 
+const AppStates = Object.freeze({
+  INIT: "init",
+  READY: "ready",
+  PLAYING: "playing",
+  PAUSED: "paused",
+});
+
 /*
 Module: EventTypes
 Interface: frozen map of event name constants
@@ -155,14 +162,14 @@ function createConfig({ paths = null } = {}) {
       mobile: {},
       desktop: {},
     },
-    ENUMS: {
-      AppStates: {
-        INIT: "init",
-        READY: "ready",
-        PLAYING: "playing",
-        PAUSED: "paused",
-      },
-    },
+    // ENUMS: {
+    //   AppStates: {
+    //     INIT: "init",
+    //     READY: "ready",
+    //     PLAYING: "playing",
+    //     PAUSED: "paused",
+    //   },
+    // },
   });
 
   const instance = {
@@ -300,7 +307,7 @@ function createStore({ config, events }) {
   };
 
   let state = {
-    appState: config.DEFAULT_CONFIG.ENUMS.AppStates.INIT,
+    appState: AppStates.INIT,
     settings: { pitch: 1.0, volume: 1.0 },
     texts: {},
     voices: [],
@@ -387,14 +394,13 @@ function createWakeLock({ store, config, events }) {
       document.addEventListener("visibilitychange", () => {
         const appState = store.getAppState();
         if (document.visibilityState === "visible") {
-          if (appState === config.CONFIG.ENUMS.AppStates.PLAYING)
-            this.request();
+          if (appState === AppStates.PLAYING) this.request();
         } else {
           this.release();
         }
       });
       events.on(EventTypes.APP_STATE, (s) => {
-        if (s === config.CONFIG.ENUMS.AppStates.PLAYING) this.request();
+        if (s === AppStates.PLAYING) this.request();
         else this.release();
       });
     },
@@ -683,9 +689,9 @@ function createUI({ events, store, utils, config, langLoader }) {
     const texts = langLoader.getTexts(elements.uiLangSelect?.value || "en");
     if (!texts) return;
     const labels = {
-      [config.CONFIG.ENUMS.AppStates.PLAYING]: texts.pause,
-      [config.CONFIG.ENUMS.AppStates.PAUSED]: texts.continue,
-      [config.CONFIG.ENUMS.AppStates.READY]: texts.start,
+      [AppStates.PLAYING]: texts.pause,
+      [AppStates.PAUSED]: texts.continue,
+      [AppStates.READY]: texts.start,
     };
     const btn = elements.startPauseBtn;
     if (btn) {
@@ -696,9 +702,9 @@ function createUI({ events, store, utils, config, langLoader }) {
 
   function updateControlsState() {
     const s = store.getAppState();
-    const isPlaying = s === config.CONFIG.ENUMS.AppStates.PLAYING;
-    const isPaused = s === config.CONFIG.ENUMS.AppStates.PAUSED;
-    const isReady = s === config.CONFIG.ENUMS.AppStates.READY;
+    const isPlaying = s === AppStates.PLAYING;
+    const isPaused = s === AppStates.PAUSED;
+    const isReady = s === AppStates.READY;
 
     const setDisabled = (el, val) => {
       if (el && el.disabled !== val) el.disabled = val;
@@ -1024,20 +1030,17 @@ function createPlayback({
   }
 
   async function playSequence(runtime) {
-    if (store.getAppState() !== config.CONFIG.ENUMS.AppStates.PLAYING) return;
+    if (store.getAppState() !== AppStates.PLAYING) return;
     const delayMs = utils.safeNumber(store.getSettings().delay, 500);
 
-    while (store.getAppState() === config.CONFIG.ENUMS.AppStates.PLAYING) {
+    while (store.getAppState() === AppStates.PLAYING) {
       if (store.getState().currentIndex >= runtime.playQueue.length) {
         if (runtime.repeatsRemaining > 1) {
           runtime.repeatsRemaining -= 1;
           events.emit(EventTypes.UI_REPEAT_LEFT_SET, runtime.repeatsRemaining);
           store.setCurrentIndex(0);
         } else {
-          events.emit(
-            EventTypes.APP_STATE_SET,
-            config.CONFIG.ENUMS.AppStates.READY
-          );
+          events.emit(EventTypes.APP_STATE_SET, AppStates.READY);
           events.emit(EventTypes.UI_BACKGROUND_HIDE);
           events.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
           resetRuntime(runtime);
@@ -1070,7 +1073,7 @@ function createPlayback({
         voiceName: store.getSettings().voiceName,
       });
 
-      if (store.getAppState() !== config.CONFIG.ENUMS.AppStates.PLAYING) break;
+      if (store.getAppState() !== AppStates.PLAYING) break;
       store.setCurrentIndex(idx + 1);
       await utils.delay(delayMs);
     }
@@ -1083,32 +1086,26 @@ function createPlayback({
     events.emit(EventTypes.UI_REPEAT_LEFT_SET, runtime.repeatsRemaining);
     runtime.playQueue = buildPlayQueue();
     store.setCurrentIndex(0);
-    events.emit(
-      EventTypes.APP_STATE_SET,
-      config.CONFIG.ENUMS.AppStates.PLAYING
-    );
+    events.emit(EventTypes.APP_STATE_SET, AppStates.PLAYING);
     events.emit(EventTypes.UI_BACKGROUND_SHOW);
     playSequence(runtime).catch((e) => console.warn("playSequence failed", e));
   });
 
   events.on(EventTypes.PLAYBACK_RESUME, () => {
-    events.emit(
-      EventTypes.APP_STATE_SET,
-      config.CONFIG.ENUMS.AppStates.PLAYING
-    );
+    events.emit(EventTypes.APP_STATE_SET, AppStates.PLAYING);
     playSequence(runtime).catch((e) => console.warn("playSequence failed", e));
   });
 
   events.on(EventTypes.PLAYBACK_PAUSE, () => {
     speaker.cancel();
-    events.emit(EventTypes.APP_STATE_SET, config.CONFIG.ENUMS.AppStates.PAUSED);
+    events.emit(EventTypes.APP_STATE_SET, AppStates.PAUSED);
     events.emit(EventTypes.UI_BACKGROUND_HIDE);
     events.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
   });
 
   events.on(EventTypes.PLAYBACK_STOP, () => {
     speaker.cancel();
-    events.emit(EventTypes.APP_STATE_SET, config.CONFIG.ENUMS.AppStates.READY);
+    events.emit(EventTypes.APP_STATE_SET, AppStates.READY);
     events.emit(EventTypes.UI_BACKGROUND_HIDE);
     events.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
     resetRuntime(runtime);
@@ -1122,9 +1119,9 @@ function createPlayback({
 
   events.on(EventTypes.PLAYBACK_TOGGLE, () => {
     const appState = store.getAppState();
-    if (appState === config.CONFIG.ENUMS.AppStates.PLAYING)
+    if (appState === AppStates.PLAYING)
       return events.emit(EventTypes.PLAYBACK_PAUSE);
-    if (appState === config.CONFIG.ENUMS.AppStates.PAUSED)
+    if (appState === AppStates.PAUSED)
       return events.emit(EventTypes.PLAYBACK_RESUME);
     events.emit(EventTypes.PLAYBACK_START);
   });
@@ -1159,7 +1156,7 @@ function createApp({
 
   function setAppStateDirect(s) {
     store.setAppState(s);
-    if (s === config.CONFIG.ENUMS.AppStates.PLAYING) wakeLock.request();
+    if (s === AppStates.PLAYING) wakeLock.request();
     else wakeLock.release();
   }
 
@@ -1234,7 +1231,7 @@ function createApp({
     }
     ui.updateUILabels();
 
-    setAppStateDirect(config.CONFIG.ENUMS.AppStates.READY);
+    setAppStateDirect(AppStates.READY);
     ui.hideBackgroundOverlay();
 
     await voices.load();
