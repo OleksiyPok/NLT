@@ -1,8 +1,8 @@
 "use strict";
 
 /*
-EventTypes
-Centralized list of event names
+Module: EventTypes
+Interface: frozen map of event name constants
 */
 const EventTypes = Object.freeze({
   APP_STATE: "app:state",
@@ -26,55 +26,66 @@ const EventTypes = Object.freeze({
   PLAYBACK_PAUSE: "playback:pause",
   PLAYBACK_STOP: "playback:stop",
   PLAYBACK_TOGGLE: "playback:toggle",
+  PLAYBACK_INDEX: "playback:currentIndex",
 
   SETTINGS_CHANGED: "settings:changed",
 });
 
 /*
-Utils
+Module: Utils
 Interface:
   - safeNumber(v, defVal)
   - safeSetSelectValue(selectEl, val, fallback)
   - delay(ms)
   - isMobileDevice()
   - normalizeString(s)
+  - deepMerge(target, source)
 */
 const Utils = (() => {
-  function safeNumber(v, defVal) {
+  const safeNumber = (v, defVal) => {
     const n = Number(v);
     return Number.isFinite(n) ? n : defVal;
-  }
-  function safeSetSelectValue(selectEl, val, fallback) {
+  };
+  const safeSetSelectValue = (selectEl, val, fallback) => {
     if (!selectEl) return fallback;
     const values = Array.from(selectEl.options).map((o) => o.value);
     const chosen = values.includes(val) ? val : fallback;
     if (selectEl.value !== chosen) selectEl.value = chosen;
     return chosen;
-  }
-  function delay(ms) {
-    return new Promise((r) => setTimeout(r, Number(ms) || 0));
-  }
-  function isMobileDevice() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+  };
+  const delay = (ms) => new Promise((r) => setTimeout(r, Number(ms) || 0));
+  const isMobileDevice = () =>
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent || ""
     );
-  }
-  function normalizeString(s) {
-    return String(s || "")
+  const normalizeString = (s) =>
+    String(s || "")
       .trim()
       .toLowerCase();
-  }
+  const deepMerge = (t, s) => {
+    if (!s || typeof s !== "object") return t;
+    Object.keys(s).forEach((k) => {
+      if (s[k] && typeof s[k] === "object" && !Array.isArray(s[k])) {
+        if (!t[k] || typeof t[k] !== "object") t[k] = {};
+        deepMerge(t[k], s[k]);
+      } else {
+        t[k] = s[k];
+      }
+    });
+    return t;
+  };
   return {
     safeNumber,
     safeSetSelectValue,
     delay,
     isMobileDevice,
     normalizeString,
+    deepMerge,
   };
 })();
 
 /*
-EventBus factory
+Module: EventBus
 Interface:
   - on(event, fn) => unsubscribe()
   - off(event, fn)
@@ -82,15 +93,13 @@ Interface:
 */
 function createEventBus() {
   const listeners = new Map();
-  function on(event, fn) {
+  const on = (event, fn) => {
     if (!listeners.has(event)) listeners.set(event, new Set());
     listeners.get(event).add(fn);
     return () => listeners.get(event)?.delete(fn);
-  }
-  function off(event, fn) {
-    listeners.get(event)?.delete(fn);
-  }
-  function emit(event, payload) {
+  };
+  const off = (event, fn) => listeners.get(event)?.delete(fn);
+  const emit = (event, payload) => {
     const set = listeners.get(event);
     if (!set) return;
     for (const fn of Array.from(set)) {
@@ -100,14 +109,15 @@ function createEventBus() {
         console.warn("Event error", event, e);
       }
     }
-  }
+  };
   return { on, off, emit };
 }
 
 /*
-Config factory
+Module: Config
 Interface:
-  - CONFIG property after load
+  - PATHS, UI_LANGS, DEFAULT_CONFIG
+  - CONFIG (after load)
   - load()
 */
 function createConfig({ paths = null } = {}) {
@@ -131,7 +141,7 @@ function createConfig({ paths = null } = {}) {
     USE_LOCAL_STORAGE: true,
     DEFAULT_VOICE: "Google Nederlands",
     DEFAULT_SETTINGS: {
-      mobile: {
+      shared: {
         uiLang: "en",
         delay: "1000",
         speed: "1.0",
@@ -142,17 +152,8 @@ function createConfig({ paths = null } = {}) {
         languageCode: "nl-NL",
         voiceName: "Google Nederlands",
       },
-      desktop: {
-        uiLang: "en",
-        delay: "1000",
-        speed: "1.0",
-        digitLength: "2",
-        count: "40",
-        repeat: "1",
-        fullscreen: "0",
-        languageCode: "nl-NL",
-        voiceName: "Google Nederlands",
-      },
+      mobile: {},
+      desktop: {},
     },
     ENUMS: {
       AppStates: {
@@ -163,6 +164,7 @@ function createConfig({ paths = null } = {}) {
       },
     },
   });
+
   const instance = {
     PATHS,
     UI_LANGS,
@@ -174,22 +176,20 @@ function createConfig({ paths = null } = {}) {
         const res = await fetch(this.PATHS.CONFIG);
         if (res.ok) {
           const ext = await res.json();
-          if (ext.DEFAULT_SETTINGS?.mobile)
-            Object.assign(
-              this.CONFIG.DEFAULT_SETTINGS.mobile,
-              ext.DEFAULT_SETTINGS.mobile
-            );
-          if (ext.DEFAULT_SETTINGS?.desktop)
-            Object.assign(
-              this.CONFIG.DEFAULT_SETTINGS.desktop,
-              ext.DEFAULT_SETTINGS.desktop
-            );
-          if (typeof ext.DEVELOPER_MODE === "boolean")
-            this.CONFIG.DEVELOPER_MODE = ext.DEVELOPER_MODE;
-          if (typeof ext.USE_LOCAL_STORAGE === "boolean")
-            this.CONFIG.USE_LOCAL_STORAGE = ext.USE_LOCAL_STORAGE;
-          if (typeof ext.DEFAULT_VOICE === "string")
-            this.CONFIG.DEFAULT_VOICE = ext.DEFAULT_VOICE;
+          if (ext && typeof ext === "object") {
+            if (ext.DEFAULT_SETTINGS) {
+              Utils.deepMerge(
+                this.CONFIG.DEFAULT_SETTINGS,
+                ext.DEFAULT_SETTINGS
+              );
+            }
+            if (typeof ext.DEVELOPER_MODE === "boolean")
+              this.CONFIG.DEVELOPER_MODE = ext.DEVELOPER_MODE;
+            if (typeof ext.USE_LOCAL_STORAGE === "boolean")
+              this.CONFIG.USE_LOCAL_STORAGE = ext.USE_LOCAL_STORAGE;
+            if (typeof ext.DEFAULT_VOICE === "string")
+              this.CONFIG.DEFAULT_VOICE = ext.DEFAULT_VOICE;
+          }
         }
       } catch (e) {
         console.warn("Config load failed, using defaults", e);
@@ -200,7 +200,7 @@ function createConfig({ paths = null } = {}) {
 }
 
 /*
-LangLoader factory
+Module: LangLoader
 Interface:
   - loadLang(code) => Promise<object|null>
   - loadAll() => Promise<texts>
@@ -209,10 +209,29 @@ Interface:
 function createLangLoader({ config }) {
   const PATH = config.PATHS.UI_TEXTS_DIR;
   let texts = {};
+  const FALLBACK_EN = {
+    uiLangLabel: "Interface",
+    labelLang: "Language",
+    labelVoice: "Voice",
+    labelDigitLength: "Digit length",
+    labelCount: "Count",
+    labelRepeat: "Repeat",
+    labelSpeed: "Speed",
+    labelDelay: "Delay (ms)",
+    labelFullscreen: "Fullscreen",
+    start: "Start",
+    continue: "Continue",
+    pause: "Pause",
+    reset: "Reset",
+    fillRandom: "🎲 Rnd",
+    fullscreenNo: "No",
+    fullscreenYes: "Yes",
+    default: "Default",
+    repeatsLeft: "Repeats left:",
+  };
   async function loadLang(code) {
-    const url = `${PATH}/${code}.json`;
     try {
-      const res = await fetch(url, { cache: "no-cache" });
+      const res = await fetch(`${PATH}/${code}.json`, { cache: "no-cache" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       if (!json || typeof json !== "object") throw new Error("Bad JSON");
@@ -231,38 +250,17 @@ function createLangLoader({ config }) {
       })
     );
     if (!texts.en) {
-      texts.en = {
-        uiLangLabel: "Interface",
-        labelLang: "Language",
-        labelVoice: "Voice",
-        labelDigitLength: "Digit length",
-        labelCount: "Count",
-        labelRepeat: "Repeat",
-        labelSpeed: "Speed",
-        labelDelay: "Delay (ms)",
-        labelFullscreen: "Fullscreen",
-        start: "Start",
-        continue: "Continue",
-        pause: "Pause",
-        reset: "Reset",
-        fillRandom: "🎲 Rnd",
-        fullscreenNo: "No",
-        fullscreenYes: "Yes",
-        default: "Default",
-        repeatsLeft: "Repeats left:",
-      };
-      console.warn("EN fallback injected (no file available).");
+      texts.en = FALLBACK_EN;
+      console.warn("EN fallback injected.");
     }
     return texts;
   }
-  function getTexts(lang) {
-    return texts[lang] || texts.en;
-  }
+  const getTexts = (lang) => texts[lang] || texts.en || FALLBACK_EN;
   return { loadLang, loadAll, getTexts };
 }
 
 /*
-Store factory
+Module: Store
 Interface:
   - getState()
   - getSettings()
@@ -270,23 +268,12 @@ Interface:
   - resetSettings(defaults)
   - getAppState()
   - setAppState(newState)
+  - setCurrentIndex(i)
   - loadSettings()
 */
 function createStore({ config, events }) {
-  let state = {
-    appState: config.DEFAULT_CONFIG.ENUMS.AppStates.INIT,
-    settings: { pitch: 1.0, volume: 1.0 },
-    texts: {},
-    voices: [],
-    availableLanguages: [],
-    inputs: [],
-    playQueue: [],
-    currentIndex: 0,
-    repeatsRemaining: 1,
-  };
-
   const Storage = {
-    KEY: "NLT_settings",
+    KEY: "NLT:v2:settings",
     save(settings) {
       if (!config.CONFIG?.USE_LOCAL_STORAGE) return;
       try {
@@ -308,43 +295,53 @@ function createStore({ config, events }) {
     remove() {
       try {
         localStorage.removeItem(this.KEY);
-      } catch (e) {}
+      } catch (_e) {}
     },
   };
 
-  function getState() {
-    return structuredClone(state);
-  }
-  function getSettings() {
-    return { ...state.settings };
-  }
-  function updateSettings(patch) {
+  let state = {
+    appState: config.DEFAULT_CONFIG.ENUMS.AppStates.INIT,
+    settings: { pitch: 1.0, volume: 1.0 },
+    texts: {},
+    voices: [],
+    availableLanguages: [],
+    currentIndex: 0,
+  };
+
+  const getState = () => structuredClone(state);
+  const getSettings = () => ({ ...state.settings });
+  const updateSettings = (patch) => {
     state.settings = { ...state.settings, ...patch };
     Storage.save(state.settings);
-    events.emit(EventTypes.SETTINGS_CHANGED, structuredClone(state.settings));
-  }
-  function resetSettings(defaults) {
+    events.emit(EventTypes.SETTINGS_CHANGED, { ...state.settings });
+  };
+  const resetSettings = (defaults) => {
     state.settings = { ...defaults };
     Storage.save(state.settings);
-    events.emit(EventTypes.SETTINGS_CHANGED, structuredClone(state.settings));
-  }
-  function getAppState() {
-    return state.appState;
-  }
-  function setAppState(newState) {
+    events.emit(EventTypes.SETTINGS_CHANGED, { ...state.settings });
+  };
+  const getAppState = () => state.appState;
+  const setAppState = (newState) => {
     if (state.appState !== newState) {
       state.appState = newState;
       events.emit(EventTypes.APP_STATE, newState);
     }
-  }
-  function loadSettings() {
+  };
+  const setCurrentIndex = (i) => {
+    const idx = Math.max(0, Number(i) | 0);
+    if (state.currentIndex !== idx) {
+      state.currentIndex = idx;
+      events.emit(EventTypes.PLAYBACK_INDEX, idx);
+    }
+  };
+  const loadSettings = () => {
     const loaded = Storage.load();
     if (loaded) {
       state.settings = { ...state.settings, ...loaded };
-      events.emit(EventTypes.SETTINGS_CHANGED, structuredClone(state.settings));
+      events.emit(EventTypes.SETTINGS_CHANGED, { ...state.settings });
     }
     return getSettings();
-  }
+  };
 
   return {
     getState,
@@ -353,12 +350,13 @@ function createStore({ config, events }) {
     resetSettings,
     getAppState,
     setAppState,
+    setCurrentIndex,
     loadSettings,
   };
 }
 
 /*
-WakeLock factory
+Module: WakeLock
 Interface:
   - init()
   - request()
@@ -371,12 +369,7 @@ function createWakeLock({ store, config, events }) {
       try {
         if ("wakeLock" in navigator && !this.wakeLock) {
           this.wakeLock = await navigator.wakeLock.request("screen");
-          if (this.wakeLock?.addEventListener) {
-            this.wakeLock.addEventListener("release", () =>
-              console.log("Wake Lock released")
-            );
-          }
-          console.log("Wake Lock acquired");
+          this.wakeLock?.addEventListener?.("release", () => {});
         }
       } catch (e) {
         console.warn("WakeLock request failed", e);
@@ -387,7 +380,7 @@ function createWakeLock({ store, config, events }) {
       if (!this.wakeLock) return;
       try {
         this.wakeLock.release?.();
-      } catch (e) {}
+      } catch (_e) {}
       this.wakeLock = null;
     },
     init() {
@@ -400,21 +393,19 @@ function createWakeLock({ store, config, events }) {
           this.release();
         }
       });
-      if (events) {
-        events.on(EventTypes.APP_STATE, (s) => {
-          if (s === config.CONFIG.ENUMS.AppStates.PLAYING) this.request();
-          else this.release();
-        });
-      }
+      events.on(EventTypes.APP_STATE, (s) => {
+        if (s === config.CONFIG.ENUMS.AppStates.PLAYING) this.request();
+        else this.release();
+      });
     },
   };
   return instance;
 }
 
 /*
-Speaker factory
+Module: Speaker
 Interface:
-  - init(voicesProvider, settingsProvider)
+  - init(voicesProviderFn, settingsProviderFn)
   - speak(text, options)
   - cancel(), pause(), resume(), isSpeaking(), isPaused()
 */
@@ -430,7 +421,7 @@ function createSpeaker() {
     const s = { ...getSettings(), ...options };
     if (options.interrupt !== false) speechSynthesis.cancel();
 
-    const utter = new SpeechSynthesisUtterance(text);
+    const utter = new SpeechSynthesisUtterance(String(text));
     if (s.voiceName) {
       const v = getVoices().find((vv) => vv.name === s.voiceName);
       if (v) utter.voice = v;
@@ -477,7 +468,7 @@ function createSpeaker() {
 }
 
 /*
-UI factory
+Module: UI
 Interface:
   - cache(), cacheInputs(), getInputs(), getSelectedInputs()
   - setSelectsFromSettings(s), populateLanguageSelect(), populateVoiceSelect()
@@ -486,17 +477,8 @@ Interface:
   - showBackgroundOverlay(), hideBackgroundOverlay(), showActiveNumberOverlay(), hideActiveNumberOverlay()
   - updateSettingsFromUI(), attachEventHandlers(), bindEventSubscriptions()
   - resetRepeatLeft(), fillRandom(), highlightSelection(), elements
-Needs:
-  - events, store, utils, config, langLoader, voicesProvider
 */
-function createUI({
-  events,
-  store,
-  utils,
-  config,
-  langLoader,
-  voicesProvider,
-}) {
+function createUI({ events, store, utils, config, langLoader }) {
   const SELECTORS = {
     uiLangSelect: "#uiLangSelect",
     repeatLeft: "#repeatLeft",
@@ -530,33 +512,21 @@ function createUI({
 
   const elements = {};
   let inputsCache = [];
-  let voicesList = []; // local cache of voices (lightweight: {name, lang})
+  let voicesList = [];
   let availableLanguages = [];
 
   function cache() {
-    for (const key in SELECTORS) {
+    for (const key in SELECTORS)
       elements[key] = document.querySelector(SELECTORS[key]) || null;
-    }
   }
-
   function cacheInputs() {
-    if (elements.numberGrid) {
-      inputsCache = Array.from(
-        elements.numberGrid.querySelectorAll("input[type='text']")
-      );
-    } else {
-      inputsCache = [];
-    }
+    inputsCache = elements.numberGrid
+      ? Array.from(elements.numberGrid.querySelectorAll("input[type='text']"))
+      : [];
   }
-
-  function getInputs() {
-    return inputsCache.slice();
-  }
-
-  function getSelectedInputs() {
-    // return inputs DOM elements that are marked selected
-    return inputsCache.filter((i) => i.classList.contains("selected"));
-  }
+  const getInputs = () => inputsCache.slice();
+  const getSelectedInputs = () =>
+    inputsCache.filter((i) => i.classList.contains("selected"));
 
   function setSelectsFromSettings(s) {
     const E = elements;
@@ -654,11 +624,10 @@ function createUI({
         );
     if (!match && voicesToShow.length) match = voicesToShow[0];
     if (match && el.value !== match.name) el.value = match.name;
-    // sync chosen into stored settings
+
     const s = store.getSettings();
-    if (el.value && s.voiceName !== el.value) {
+    if (el.value && s.voiceName !== el.value)
       store.updateSettings({ voiceName: el.value });
-    }
   }
 
   function setLanguageCodeFromSettings() {
@@ -670,7 +639,6 @@ function createUI({
       E.languageCodeSelect.value = langPart;
     }
   }
-
   function setVoiceFromSettings() {
     const E = elements;
     const voice = store.getSettings().voiceName;
@@ -683,7 +651,7 @@ function createUI({
 
   function updateUILabels() {
     const uiLang = elements.uiLangSelect?.value || "en";
-    const texts = langLoader.getTexts(uiLang) || langLoader.getTexts("en");
+    const texts = langLoader.getTexts(uiLang);
     if (!texts) return;
     const E = elements;
     const setText = (el, val) => {
@@ -727,11 +695,10 @@ function createUI({
   }
 
   function updateControlsState() {
-    const isPlaying =
-      store.getAppState() === config.CONFIG.ENUMS.AppStates.PLAYING;
-    const isPaused =
-      store.getAppState() === config.CONFIG.ENUMS.AppStates.PAUSED;
-    const isReady = store.getAppState() === config.CONFIG.ENUMS.AppStates.READY;
+    const s = store.getAppState();
+    const isPlaying = s === config.CONFIG.ENUMS.AppStates.PLAYING;
+    const isPaused = s === config.CONFIG.ENUMS.AppStates.PAUSED;
+    const isReady = s === config.CONFIG.ENUMS.AppStates.READY;
 
     const setDisabled = (el, val) => {
       if (el && el.disabled !== val) el.disabled = val;
@@ -757,14 +724,10 @@ function createUI({
 
   function showBackgroundOverlay() {
     if ((elements.fullscreenSelect?.value || "0") !== "1") return;
-    const overlay = elements.backgroundOverlay;
-    if (!overlay) return;
-    overlay.classList.add("show");
+    elements.backgroundOverlay?.classList.add("show");
   }
   function hideBackgroundOverlay() {
-    const overlay = elements.backgroundOverlay;
-    if (!overlay) return;
-    overlay.classList.remove("show");
+    elements.backgroundOverlay?.classList.remove("show");
   }
   function showActiveNumberOverlay(value, delayMs) {
     if ((elements.fullscreenSelect?.value || "0") !== "1") return;
@@ -772,14 +735,13 @@ function createUI({
     if (!overlay) return;
     if (overlay.textContent !== value) overlay.textContent = value || "";
     overlay.classList.add("show");
-    setTimeout(() => {
-      overlay.classList.remove("show");
-    }, 1000 + Number(delayMs || 0));
+    setTimeout(
+      () => overlay.classList.remove("show"),
+      1000 + Number(delayMs || 0)
+    );
   }
   function hideActiveNumberOverlay() {
-    const overlay = elements.activeNumberOverlay;
-    if (!overlay) return;
-    overlay.classList.remove("show");
+    elements.activeNumberOverlay?.classList.remove("show");
   }
 
   function updateSettingsFromUI() {
@@ -797,41 +759,51 @@ function createUI({
     upd("speed", E.speedSelect, store.getSettings().speed);
     upd("delay", E.delaySelect, store.getSettings().delay);
     upd("fullscreen", E.fullscreenSelect, store.getSettings().fullscreen);
-    // apply patch via store
     store.updateSettings(s);
   }
 
   function attachEventHandlers() {
     const E = elements;
+
     E.uiLangSelect?.addEventListener("change", () => {
       updateUILabels();
       updateSettingsFromUI();
     });
-    if (!utils.isMobileDevice())
+
+    if (!utils.isMobileDevice()) {
       E.languageCodeSelect?.addEventListener("change", () => {
+        store.updateSettings({ languageCode: E.languageCodeSelect.value });
         populateVoiceSelect();
-        updateSettingsFromUI();
+        setVoiceFromSettings();
       });
+    }
+
     E.voiceSelect?.addEventListener("change", () => updateSettingsFromUI());
+
     E.digitLengthSelect?.addEventListener("change", () => {
       updateSettingsFromUI();
       fillRandom();
       highlightSelection();
     });
+
     E.countSelect?.addEventListener("change", () => {
       updateSettingsFromUI();
       highlightSelection();
     });
+
     E.repeatSelect?.addEventListener("change", () => {
       updateSettingsFromUI();
       resetRepeatLeft();
     });
+
     E.speedSelect?.addEventListener("change", () => updateSettingsFromUI());
     E.delaySelect?.addEventListener("change", () => updateSettingsFromUI());
+
     E.fillRandomBtn?.addEventListener("click", () => {
       fillRandom();
       highlightSelection();
     });
+
     E.fullscreenSelect?.addEventListener("change", () =>
       updateSettingsFromUI()
     );
@@ -900,7 +872,6 @@ function createUI({
     });
     events.on(EventTypes.UI_TEXTS_UPDATE, updateUILabels);
 
-    // listen for voices updates emitted by Voices factory
     events.on(
       EventTypes.VOICES_CHANGED,
       ({ voices, availableLanguages: langs }) => {
@@ -929,7 +900,6 @@ function createUI({
       }
     );
 
-    // settings changed externally (store) -> update UI selects
     events.on(EventTypes.SETTINGS_CHANGED, (newSettings) => {
       setSelectsFromSettings(newSettings);
       setLanguageCodeFromSettings();
@@ -937,6 +907,8 @@ function createUI({
       updateUILabels();
       highlightSelection();
     });
+
+    events.on(EventTypes.PLAYBACK_INDEX, () => highlightSelection());
   }
 
   return {
@@ -967,13 +939,11 @@ function createUI({
 }
 
 /*
-Voices factory
+Module: Voices
 Interface:
   - collect()
   - load()
   - getVoices() => array
-Needs:
-  - events
 */
 function createVoices({ events }) {
   let voices = [];
@@ -992,14 +962,18 @@ function createVoices({ events }) {
     if (!availableLanguages.includes("ALL")) availableLanguages.push("ALL");
   }
 
-  function collect() {
-    voices = speechSynthesis.getVoices() || [];
-    computeAvailableLanguages();
+  function publish(evt) {
     const lightweight = voices.map((v) => ({ name: v.name, lang: v.lang }));
-    events.emit(EventTypes.VOICES_CHANGED, {
+    events.emit(evt, {
       voices: lightweight,
       availableLanguages: availableLanguages.slice(),
     });
+  }
+
+  function collect() {
+    voices = speechSynthesis.getVoices() || [];
+    computeAvailableLanguages();
+    publish(EventTypes.VOICES_CHANGED);
   }
 
   async function load() {
@@ -1013,39 +987,20 @@ function createVoices({ events }) {
         console.warn("Voices.load fallback failed", err);
       }
     }
-    const lightweight = voices.map((v) => ({ name: v.name, lang: v.lang }));
-    events.emit(EventTypes.VOICES_LOADED, {
-      voices: lightweight,
-      availableLanguages: availableLanguages.slice(),
-    });
+    publish(EventTypes.VOICES_LOADED);
   }
 
   if ("onvoiceschanged" in speechSynthesis) {
-    speechSynthesis.onvoiceschanged = () => {
-      collect();
-      const lightweight = voices.map((v) => ({ name: v.name, lang: v.lang }));
-      events.emit(EventTypes.VOICES_CHANGED, {
-        voices: lightweight,
-        availableLanguages: availableLanguages.slice(),
-      });
-    };
+    speechSynthesis.onvoiceschanged = () => collect();
   }
 
-  function getVoices() {
-    return voices.slice();
-  }
-
-  return { collect, load, getVoices };
+  return { collect, load, getVoices: () => voices.slice() };
 }
 
 /*
-Playback factory
+Module: Playback
 Interface:
   - buildPlayQueue()
-Needs:
-  - events, store, speaker, utils, wakeLock, uiProvider, config
-Notes:
-  - uiProvider expected to expose getSelectedInputs() -> [inputElements]
 */
 function createPlayback({
   events,
@@ -1057,15 +1012,13 @@ function createPlayback({
   config,
 }) {
   function buildPlayQueue() {
-    const inputs = uiProvider.getSelectedInputs();
-    // turn DOM inputs into an array of simple objects {value, element}
-    const q = inputs.map((i) => ({ value: i.value, el: i }));
-    // keep playQueue local to playback runtime
-    return q;
+    return uiProvider
+      .getSelectedInputs()
+      .map((i) => ({ value: i.value, el: i }));
   }
 
   function resetRuntime(runtime) {
-    runtime.currentIndex = 0;
+    store.setCurrentIndex(0);
     runtime.playQueue = [];
     runtime.repeatsRemaining = utils.safeNumber(store.getSettings().repeat, 1);
   }
@@ -1075,11 +1028,11 @@ function createPlayback({
     const delayMs = utils.safeNumber(store.getSettings().delay, 500);
 
     while (store.getAppState() === config.CONFIG.ENUMS.AppStates.PLAYING) {
-      if (runtime.currentIndex >= runtime.playQueue.length) {
+      if (store.getState().currentIndex >= runtime.playQueue.length) {
         if (runtime.repeatsRemaining > 1) {
           runtime.repeatsRemaining -= 1;
           events.emit(EventTypes.UI_REPEAT_LEFT_SET, runtime.repeatsRemaining);
-          runtime.currentIndex = 0;
+          store.setCurrentIndex(0);
         } else {
           events.emit(
             EventTypes.APP_STATE_SET,
@@ -1094,14 +1047,14 @@ function createPlayback({
         }
       }
 
-      const item = runtime.playQueue[runtime.currentIndex];
+      const idx = store.getState().currentIndex;
+      const item = runtime.playQueue[idx];
       if (!item || !item.value) {
-        runtime.currentIndex += 1;
+        store.setCurrentIndex(idx + 1);
         await utils.delay(delayMs);
         continue;
       }
 
-      // highlight
       events.emit(EventTypes.UI_HIGHLIGHT);
       events.emit(EventTypes.UI_BACKGROUND_SHOW);
       events.emit(EventTypes.UI_ACTIVE_NUMBER_SHOW, {
@@ -1118,24 +1071,18 @@ function createPlayback({
       });
 
       if (store.getAppState() !== config.CONFIG.ENUMS.AppStates.PLAYING) break;
-      runtime.currentIndex += 1;
-      // update app-wide currentIndex for UI highlight
-      // store does not expose direct setter for currentIndex in this design; use events to inform UI
-      // we'll emit a UI_HIGHLIGHT to let UI read status (UI uses its own logic based on store.settings.count and runtime.currentIndex)
-      // but we also want UI to know current index - use a custom event
-      events.emit("playback:currentIndex", runtime.currentIndex);
+      store.setCurrentIndex(idx + 1);
       await utils.delay(delayMs);
     }
   }
 
-  // runtime container per session
-  let runtime = { playQueue: [], currentIndex: 0, repeatsRemaining: 1 };
+  const runtime = { playQueue: [], repeatsRemaining: 1 };
 
   events.on(EventTypes.PLAYBACK_START, () => {
     runtime.repeatsRemaining = utils.safeNumber(store.getSettings().repeat, 1);
     events.emit(EventTypes.UI_REPEAT_LEFT_SET, runtime.repeatsRemaining);
     runtime.playQueue = buildPlayQueue();
-    runtime.currentIndex = 0;
+    store.setCurrentIndex(0);
     events.emit(
       EventTypes.APP_STATE_SET,
       config.CONFIG.ENUMS.AppStates.PLAYING
@@ -1175,34 +1122,20 @@ function createPlayback({
 
   events.on(EventTypes.PLAYBACK_TOGGLE, () => {
     const appState = store.getAppState();
-    if (appState === config.CONFIG.ENUMS.AppStates.PLAYING) {
-      events.emit(EventTypes.PLAYBACK_PAUSE);
-      return;
-    }
-    if (appState === config.CONFIG.ENUMS.AppStates.PAUSED) {
-      events.emit(EventTypes.PLAYBACK_RESUME);
-      return;
-    }
+    if (appState === config.CONFIG.ENUMS.AppStates.PLAYING)
+      return events.emit(EventTypes.PLAYBACK_PAUSE);
+    if (appState === config.CONFIG.ENUMS.AppStates.PAUSED)
+      return events.emit(EventTypes.PLAYBACK_RESUME);
     events.emit(EventTypes.PLAYBACK_START);
-  });
-
-  // forward runtime.currentIndex changes to UI highlight handler
-  events.on("playback:currentIndex", (idx) => {
-    // pass index to UI via UI_HIGHLIGHT event (UI reads store.settings.count + index when highlighting)
-    // store does not hold currentIndex in this design; UI keeps index via closure when needed.
-    // For simplicity, also emit UI_HIGHLIGHT and let UI re-evaluate DOM.
-    events.emit(EventTypes.UI_HIGHLIGHT);
   });
 
   return { buildPlayQueue };
 }
 
 /*
-App factory
+Module: App
 Interface:
   - init()
-Needs:
-  - events, config, langLoader, store, ui, voices, speaker, wakeLock, playback, utils
 */
 function createApp({
   events,
@@ -1213,38 +1146,27 @@ function createApp({
   voices,
   speaker,
   wakeLock,
-  playback,
   utils,
 }) {
-  function loadUILangs() {
-    return langLoader.loadAll().then((texts) => {
-      // UI reads texts via langLoader.getTexts
-      events.emit(EventTypes.UI_TEXTS_UPDATE);
-    });
-  }
-
-  function getDefaultSettings() {
+  function defaultSettings() {
+    const shared = config.DEFAULT_CONFIG.DEFAULT_SETTINGS.shared;
     const type = utils.isMobileDevice() ? "mobile" : "desktop";
     return {
-      ...(config.DEFAULT_CONFIG.DEFAULT_SETTINGS[type]
-        ? config.DEFAULT_CONFIG.DEFAULT_SETTINGS[type]
-        : config.DEFAULT_CONFIG.DEFAULT_SETTINGS.desktop),
+      ...shared,
+      ...(config.DEFAULT_CONFIG.DEFAULT_SETTINGS[type] || {}),
     };
   }
 
   function setAppStateDirect(s) {
     store.setAppState(s);
-    if (s === config.CONFIG.ENUMS.AppStates.PLAYING) {
-      wakeLock.request();
-    } else {
-      wakeLock.release();
-    }
+    if (s === config.CONFIG.ENUMS.AppStates.PLAYING) wakeLock.request();
+    else wakeLock.release();
   }
 
   function resetToDefaultSettings() {
     speaker.cancel();
     events.emit(EventTypes.PLAYBACK_STOP);
-    const defaults = getDefaultSettings();
+    const defaults = defaultSettings();
     store.resetSettings(defaults);
     ui.setSelectsFromSettings(store.getSettings());
     if (ui.elements.languageCodeSelect) {
@@ -1268,7 +1190,6 @@ function createApp({
     const isTyping = ["INPUT", "TEXTAREA"].includes(tag);
     if (
       event.key === "Escape" ||
-      event.key === "Esc" ||
       event.code === "Escape" ||
       event.keyCode === 27
     ) {
@@ -1276,10 +1197,7 @@ function createApp({
       events.emit(EventTypes.APP_FULL_RESET);
     }
     if (
-      (event.key === " " ||
-        event.key === "Spacebar" ||
-        event.code === "Space" ||
-        event.keyCode === 32) &&
+      (event.key === " " || event.code === "Space" || event.keyCode === 32) &&
       !isTyping
     ) {
       event.preventDefault();
@@ -1291,38 +1209,42 @@ function createApp({
     ui.bindEventSubscriptions();
     ui.cache();
     await config.load();
-    // load settings from storage if available
-    const initial = config.CONFIG?.USE_LOCAL_STORAGE
+
+    const stored = config.CONFIG?.USE_LOCAL_STORAGE
       ? store.loadSettings()
       : null;
     const st =
-      initial ||
+      stored ||
       (config.CONFIG
         ? {
-            ...config.CONFIG.DEFAULT_SETTINGS[
+            ...config.CONFIG.DEFAULT_SETTINGS.shared,
+            ...(config.CONFIG.DEFAULT_SETTINGS[
               utils.isMobileDevice() ? "mobile" : "desktop"
-            ],
+            ] || {}),
           }
-        : getDefaultSettings());
-    store.resetSettings(st); // set initial settings into store (and emit)
+        : defaultSettings());
+    store.resetSettings(st);
     ui.setSelectsFromSettings(store.getSettings());
-    await loadUILangs();
+
+    await langLoader.loadAll();
     if (ui.elements.uiLangSelect) {
       const chosen = ui.elements.uiLangSelect.value || "en";
-      // check texts exist
-      // langLoader.getTexts will fallback to en if missing
       ui.elements.uiLangSelect.value = chosen;
       store.updateSettings({ uiLang: chosen });
     }
     ui.updateUILabels();
+
     setAppStateDirect(config.CONFIG.ENUMS.AppStates.READY);
     ui.hideBackgroundOverlay();
+
     await voices.load();
+
     if (utils.isMobileDevice()) {
       [ui.elements.languageCodeSelect, ui.elements.labelLanguageCode].forEach(
         (el) => el && (el.style.display = "none")
       );
     }
+
     ui.cacheInputs();
     ui.populateLanguageSelect();
     ui.setLanguageCodeFromSettings();
@@ -1337,13 +1259,13 @@ function createApp({
     if (ui.elements.startPauseBtn) ui.elements.startPauseBtn.disabled = false;
     ui.resetRepeatLeft();
     document.addEventListener("keydown", handleKeyControls);
+
     if (ui.elements.developerPanel) {
       ui.elements.developerPanel.style.display = config.CONFIG.DEVELOPER_MODE
         ? "flex"
         : "none";
     }
-    // save initial settings
-    // store.save is already called inside resetSettings / updateSettings
+
     speaker.init(
       () => voices.getVoices(),
       () => store.getSettings()
@@ -1372,9 +1294,7 @@ function createApp({
   };
 }
 
-/* =========================
-   Wire together with DI in one file
-   ========================= */
+/* ===== Wire together (single-file) ===== */
 
 const Events = createEventBus();
 const Config = createConfig();
@@ -1392,7 +1312,6 @@ const UI = createUI({
   utils: Utils,
   config: Config,
   langLoader: LangLoader,
-  voicesProvider: null, // UI gets voices via events; provider unused here
 });
 const Voices = createVoices({ events: Events });
 const Playback = createPlayback({
@@ -1413,11 +1332,10 @@ const App = createApp({
   voices: Voices,
   speaker: Speaker,
   wakeLock: WakeLock,
-  playback: Playback,
   utils: Utils,
 });
 
-/* minimal cross-cutting subscription */
+/* minimal cross-cutting subscription (reserved) */
 Events.on(EventTypes.SETTINGS_CHANGED, () => {});
 
 /* start app */
