@@ -270,7 +270,7 @@ Interface:
 */
 function createStore({ config, events }) {
   const Storage = {
-    KEY: "NLT:v2:settings",
+    KEY: "NLT-settings",
     save(settings) {
       if (!config.CONFIG?.USE_LOCAL_STORAGE) return;
       try {
@@ -1188,6 +1188,33 @@ function createApp({
       ui.highlightSelection();
       ui.resetRepeatLeft();
     }
+
+    const settings = store.getSettings();
+    const defaultVoiceName =
+      settings.voiceName || Config.DEFAULT_CONFIG.DEFAULT_VOICE;
+    const defaultLangCode = (
+      settings.languageCode ||
+      Config.DEFAULT_CONFIG.DEFAULT_SETTINGS.shared.languageCode ||
+      ""
+    )
+      .replace("_", "-")
+      .toLowerCase();
+
+    const voices = Voices.getVoices();
+    const match = voices.find((v) => {
+      const voiceLang = (v.lang || "").replace("_", "-").toLowerCase();
+      return (
+        utils.normalizeString(v.name) ===
+          utils.normalizeString(defaultVoiceName) ||
+        voiceLang === defaultLangCode
+      );
+    });
+
+    if (match) {
+      Events.emit(EventTypes.SETTINGS_UPDATE, { voiceName: match.name });
+    } else if (voices.length) {
+      Events.emit(EventTypes.SETTINGS_UPDATE, { voiceName: voices[0].name });
+    }
   }
 
   function fullReset() {
@@ -1221,28 +1248,25 @@ function createApp({
 
     await config.load();
 
-    const stored = config.CONFIG?.USE_LOCAL_STORAGE
-      ? store.loadSettings()
-      : null;
-    const st =
-      stored ||
-      (config.CONFIG
-        ? {
-            ...config.CONFIG.DEFAULT_SETTINGS.shared,
-            ...(config.CONFIG.DEFAULT_SETTINGS[
-              utils.isMobileDevice() ? "mobile" : "desktop"
-            ] || {}),
-          }
-        : defaultSettings());
+    let stored = store.loadSettings() || {};
+    const defaults = config.CONFIG
+      ? {
+          ...config.CONFIG.DEFAULT_SETTINGS.shared,
+          ...(config.CONFIG.DEFAULT_SETTINGS[
+            utils.isMobileDevice() ? "mobile" : "desktop"
+          ] || {}),
+        }
+      : defaultSettings();
 
-    store.resetSettings(st);
+    const mergedSettings = Utils.deepMerge(defaults, stored);
+    store.resetSettings(mergedSettings);
 
     await langLoader.loadAll();
 
+    const uiLang = mergedSettings.uiLang || "en";
     if (ui.elements.uiLangSelect) {
-      const chosen = ui.elements.uiLangSelect.value || "en";
-      ui.elements.uiLangSelect.value = chosen;
-      events.emit(EventTypes.SETTINGS_UPDATE, { uiLang: chosen });
+      ui.elements.uiLangSelect.value = uiLang;
+      events.emit(EventTypes.SETTINGS_UPDATE, { uiLang });
     }
     events.emit(EventTypes.UI_TEXTS_UPDATE);
 
@@ -1256,6 +1280,7 @@ function createApp({
     ui.fillRandom();
     ui.highlightSelection();
     ui.attachEventHandlers();
+
     ui.elements.resetBtn?.addEventListener("click", () =>
       events.emit(EventTypes.APP_FULL_RESET)
     );
@@ -1280,9 +1305,24 @@ function createApp({
       ui.setLanguageCodeFromSettings();
       ui.populateVoiceSelect();
       ui.setVoiceFromSettings();
+
+      const settings = store.getSettings();
+      if (!settings.voiceName) {
+        const firstVoice = Voices.getVoices()[0];
+        if (firstVoice)
+          events.emit(EventTypes.SETTINGS_UPDATE, {
+            voiceName: firstVoice.name,
+          });
+      }
     });
 
     await Voices.load();
+
+    const currentSettings = store.getSettings();
+    events.emit(EventTypes.SETTINGS_CHANGED, currentSettings);
+
+    setAppStateDirect("ready");
+    ui.hideBackgroundOverlay();
   }
 
   function bindEventSubscriptions() {
