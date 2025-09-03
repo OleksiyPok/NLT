@@ -128,6 +128,7 @@ function createConfig({ paths = null } = {}) {
     UI_TEXTS_DIR: "./assets/locales",
   };
   const UI_LANGS = Object.freeze([
+    "ar",
     "de",
     "en",
     "fr",
@@ -139,7 +140,7 @@ function createConfig({ paths = null } = {}) {
     "uk",
   ]);
   const DEFAULT_CONFIG = Object.freeze({
-    DEVELOPER_MODE: false,
+    DEVELOPER_MODE: true,
     USE_LOCAL_STORAGE: true,
     DEFAULT_VOICE: "Google Nederlands",
     DEFAULT_SETTINGS: {
@@ -164,6 +165,7 @@ function createConfig({ paths = null } = {}) {
     UI_LANGS,
     DEFAULT_CONFIG,
     CONFIG: null,
+    CONFIG_EXT: null,
     async load() {
       this.CONFIG = structuredClone(this.DEFAULT_CONFIG);
       try {
@@ -171,6 +173,7 @@ function createConfig({ paths = null } = {}) {
         if (res.ok) {
           const ext = await res.json();
           if (ext && typeof ext === "object") {
+            this.CONFIG_EXT = ext;
             if (ext.DEFAULT_SETTINGS) {
               Utils.deepMerge(
                 this.CONFIG.DEFAULT_SETTINGS,
@@ -1163,14 +1166,28 @@ function createApp({
     else wakeLock.release();
   }
 
-  function resetToDefaultSettings() {
+  async function resetToDefaultSettings() {
     speaker.cancel();
     events.emit(EventTypes.PLAYBACK_STOP);
-    const defaults = defaultSettings();
+
+    let defaults = defaultSettings();
     store.resetSettings(defaults);
     ui.fillRandom();
     ui.highlightSelection();
     ui.resetRepeatLeft();
+
+    if (config.CONFIG_EXT) {
+      const shared = config.CONFIG_EXT.DEFAULT_SETTINGS?.shared || {};
+      const type = utils.isMobileDevice() ? "mobile" : "desktop";
+      const extDefaults = {
+        ...shared,
+        ...(config.CONFIG_EXT.DEFAULT_SETTINGS?.[type] || {}),
+      };
+      store.resetSettings(extDefaults);
+      ui.fillRandom();
+      ui.highlightSelection();
+      ui.resetRepeatLeft();
+    }
   }
 
   function fullReset() {
