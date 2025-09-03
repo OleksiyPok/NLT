@@ -8,7 +8,7 @@
       "delay": "1000",
       "speed": "1.0",
       "digitLength": "2",
-      "count": "20",
+      "count": "40",
       "repeat": "1",
       "fullscreen": "0",
       "languageCode": "nl-NL",
@@ -19,12 +19,11 @@
       "delay": "1000",
       "speed": "1.0",
       "digitLength": "2",
-      "count": "20",
+      "count": "40",
       "repeat": "1",
       "fullscreen": "0",
       "languageCode": "nl-NL",
-      "voiceName": "Google Nederlands"
-    
+      "voiceName": "Google Nederlands"    
     }
   }
 }

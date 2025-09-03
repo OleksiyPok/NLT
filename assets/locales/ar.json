@@ -1,0 +1,22 @@
+{
+    "languageCode": "AR",
+    "uiLangLabel": "الواجهة",
+    "labelLang": "اللغة",
+    "labelVoice": "الصوت",
+    "labelDigitLength": "عدد الأرقام",
+    "labelCount": "العدد",
+    "labelRepeat": "التكرار",
+    "labelSpeed": "السرعة",
+    "labelDelay": "التأخير (مللي ثانية)",
+    "labelFullscreen": "ملء الشاشة",
+    "start": "ابدأ",
+    "continue": "متابعة",
+    "pause": "إيقاف مؤقت",
+    "reset": "إعادة ضبط",
+    "fillRandom": "🎲 عشوائي",
+    "fullscreenNo": "لا",
+    "fullscreenYes": "نعم",
+    "default": "افتراضي",
+    "repeatsLeft": "عدد التكرارات المتبقية:"
+  }
+  
