@@ -596,16 +596,24 @@ function createUI({ events, utils, config, langLoader }) {
   function populateVoiceSelect() {
     const el = elements.voiceSelect;
     if (!el) return;
+
     const isMobile = utils.isMobileDevice();
     const selectedLang = (
       elements.languageCodeSelect?.value || "ALL"
     ).toUpperCase();
+
+    if (!voicesList || !voicesList.length) {
+      el.replaceChildren();
+      return;
+    }
+
     const voicesToShow =
       isMobile || selectedLang === "ALL"
         ? voicesList
         : voicesList.filter((v) =>
             (v.lang || "").toUpperCase().startsWith(selectedLang)
           );
+
     const frag = document.createDocumentFragment();
     voicesToShow.forEach((v) => {
       const opt = document.createElement("option");
@@ -614,25 +622,17 @@ function createUI({ events, utils, config, langLoader }) {
       frag.appendChild(opt);
     });
     el.replaceChildren(frag);
-    const requestedVoice = utils.normalizeString(
-      currentSettings.voiceName || ""
-    );
-    const requestedLang = utils.normalizeString(
-      currentSettings.languageCode || ""
-    );
-    let match = null;
-    match = isMobile
-      ? voicesToShow.find(
-          (v) => utils.normalizeString(v.lang) === requestedLang
-        )
-      : voicesToShow.find(
-          (v) => utils.normalizeString(v.name) === requestedVoice
-        );
-    if (!match && voicesToShow.length) match = voicesToShow[0];
-    if (match && el.value !== match.name) el.value = match.name;
 
-    if (el.value && currentSettings.voiceName !== el.value) {
-      events.emit(EventTypes.SETTINGS_UPDATE, { voiceName: el.value });
+    let match = voicesToShow.find(
+      (v) =>
+        utils.normalizeString(v.name) ===
+        utils.normalizeString(currentSettings.voiceName)
+    );
+    if (!match && voicesToShow.length) match = voicesToShow[0];
+
+    if (match && el.value !== match.name) {
+      el.value = match.name;
+      events.emit(EventTypes.SETTINGS_UPDATE, { voiceName: match.name });
     }
   }
 
@@ -1218,6 +1218,7 @@ function createApp({
   async function handleDOMContentLoaded() {
     ui.bindEventSubscriptions();
     ui.cache();
+
     await config.load();
 
     const stored = config.CONFIG?.USE_LOCAL_STORAGE
@@ -1233,20 +1234,17 @@ function createApp({
             ] || {}),
           }
         : defaultSettings());
+
     store.resetSettings(st);
 
     await langLoader.loadAll();
+
     if (ui.elements.uiLangSelect) {
       const chosen = ui.elements.uiLangSelect.value || "en";
       ui.elements.uiLangSelect.value = chosen;
       events.emit(EventTypes.SETTINGS_UPDATE, { uiLang: chosen });
     }
     events.emit(EventTypes.UI_TEXTS_UPDATE);
-
-    setAppStateDirect("ready");
-    ui.hideBackgroundOverlay();
-
-    await voices.load();
 
     if (utils.isMobileDevice()) {
       [ui.elements.languageCodeSelect, ui.elements.labelLanguageCode].forEach(
@@ -1255,10 +1253,6 @@ function createApp({
     }
 
     ui.cacheInputs();
-    ui.populateLanguageSelect();
-    ui.setLanguageCodeFromSettings();
-    ui.populateVoiceSelect();
-    ui.setVoiceFromSettings();
     ui.fillRandom();
     ui.highlightSelection();
     ui.attachEventHandlers();
@@ -1276,10 +1270,19 @@ function createApp({
     }
 
     speaker.init(
-      () => voices.getVoices(),
+      () => Voices.getVoices(),
       () => store.getSettings()
     );
     wakeLock.init();
+
+    Events.on(EventTypes.VOICES_LOADED, () => {
+      ui.populateLanguageSelect();
+      ui.setLanguageCodeFromSettings();
+      ui.populateVoiceSelect();
+      ui.setVoiceFromSettings();
+    });
+
+    await Voices.load();
   }
 
   function bindEventSubscriptions() {
