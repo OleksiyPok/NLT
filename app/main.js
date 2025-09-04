@@ -141,7 +141,7 @@ function createConfig({ paths = null } = {}) {
   ]);
   const DEFAULT_CONFIG = Object.freeze({
     DEVELOPER_MODE: true,
-    USE_LOCAL_STORAGE: true,
+    USE_LOCAL_STORAGE: 0,
     DEFAULT_VOICE: "Google Nederlands",
     DEFAULT_SETTINGS: {
       shared: {
@@ -151,12 +151,12 @@ function createConfig({ paths = null } = {}) {
         digitLength: "2",
         count: "40",
         repeat: "1",
-        fullscreen: "0",
+        fullscreen: true,
         languageCode: "nl-NL",
         voiceName: "Google Nederlands",
       },
-      mobile: {},
-      desktop: {},
+      mobile: { fullscreen: true },
+      desktop: { fullscreen: false },
     },
   });
 
@@ -166,31 +166,75 @@ function createConfig({ paths = null } = {}) {
     DEFAULT_CONFIG,
     CONFIG: null,
     CONFIG_EXT: null,
+
     async load() {
       this.CONFIG = structuredClone(this.DEFAULT_CONFIG);
+
+      function parseBinary(val, defaultVal = false) {
+        if (typeof val === "string") {
+          const lower = val.toLowerCase();
+          if (lower === "true" || lower === "1") return true;
+          if (lower === "false" || lower === "0") return false;
+        }
+        if (val === true || val === 1) return true;
+        if (val === false || val === 0) return false;
+        return defaultVal;
+      }
+
       try {
         const res = await fetch(this.PATHS.CONFIG);
         if (res.ok) {
           const ext = await res.json();
-          if (ext && typeof ext === "object") {
-            this.CONFIG_EXT = ext;
-            if (ext.DEFAULT_SETTINGS) {
-              Utils.deepMerge(
-                this.CONFIG.DEFAULT_SETTINGS,
-                ext.DEFAULT_SETTINGS
-              );
-            }
-            if (typeof ext.DEVELOPER_MODE === "boolean")
-              this.CONFIG.DEVELOPER_MODE = ext.DEVELOPER_MODE;
-            if (typeof ext.USE_LOCAL_STORAGE === "boolean")
-              this.CONFIG.USE_LOCAL_STORAGE = ext.USE_LOCAL_STORAGE;
-            if (typeof ext.DEFAULT_VOICE === "string")
-              this.CONFIG.DEFAULT_VOICE = ext.DEFAULT_VOICE;
-          }
+          if (ext && typeof ext === "object") this.CONFIG_EXT = ext;
         }
       } catch (e) {
         console.warn("Config load failed, using defaults", e);
       }
+
+      if (this.CONFIG_EXT) {
+        if ("DEVELOPER_MODE" in this.CONFIG_EXT)
+          this.CONFIG.DEVELOPER_MODE = this.CONFIG_EXT.DEVELOPER_MODE;
+        if ("USE_LOCAL_STORAGE" in this.CONFIG_EXT)
+          this.CONFIG.USE_LOCAL_STORAGE = this.CONFIG_EXT.USE_LOCAL_STORAGE;
+        if (typeof this.CONFIG_EXT.DEFAULT_VOICE === "string")
+          this.CONFIG.DEFAULT_VOICE = this.CONFIG_EXT.DEFAULT_VOICE;
+
+        if (this.CONFIG_EXT.DEFAULT_SETTINGS) {
+          const sharedExt = this.CONFIG_EXT.DEFAULT_SETTINGS.shared || {};
+          const mobileExt = this.CONFIG_EXT.DEFAULT_SETTINGS.mobile || {};
+          const desktopExt = this.CONFIG_EXT.DEFAULT_SETTINGS.desktop || {};
+
+          const mergedShared = Utils.deepMerge(
+            structuredClone(this.CONFIG.DEFAULT_SETTINGS.shared),
+            sharedExt
+          );
+          const mergedMobile = Utils.deepMerge(
+            structuredClone(this.CONFIG.DEFAULT_SETTINGS.mobile),
+            mobileExt
+          );
+          const mergedDesktop = Utils.deepMerge(
+            structuredClone(this.CONFIG.DEFAULT_SETTINGS.desktop),
+            desktopExt
+          );
+
+          this.CONFIG.DEFAULT_SETTINGS = {
+            shared: mergedShared,
+            mobile: mergedMobile,
+            desktop: mergedDesktop,
+          };
+        }
+      }
+
+      this.CONFIG.DEVELOPER_MODE = parseBinary(this.CONFIG.DEVELOPER_MODE);
+      this.CONFIG.USE_LOCAL_STORAGE = parseBinary(
+        this.CONFIG.USE_LOCAL_STORAGE
+      );
+
+      ["shared", "mobile", "desktop"].forEach((k) => {
+        const set = this.CONFIG.DEFAULT_SETTINGS[k];
+        if (set && "fullscreen" in set)
+          set.fullscreen = parseBinary(set.fullscreen) ? 1 : 0;
+      });
     },
   };
   return instance;
@@ -419,17 +463,73 @@ function createSpeaker() {
     if (typeof voicesProvider === "function") getVoices = voicesProvider;
     if (typeof settingsProvider === "function") getSettings = settingsProvider;
   }
+
+  function _selectVoice(s) {
+    const voices = getVoices() || [];
+    if (!voices.length) return null;
+    const desiredName = String(s.voiceName || "").trim();
+    const desiredLang = String(s.languageCode || "")
+      .trim()
+      .toLowerCase();
+
+    if (desiredName) {
+      let exact = voices.find((v) => v.name === desiredName);
+      if (exact) return exact;
+      const norm = (n) =>
+        String(n || "")
+          .trim()
+          .toLowerCase();
+      let partial = voices.find((v) =>
+        norm(v.name).includes(norm(desiredName))
+      );
+      if (partial) return partial;
+    }
+
+    if (desiredLang) {
+      const langFull = desiredLang;
+      let byFull = voices.find(
+        (v) => (v.lang || "").toLowerCase() === langFull
+      );
+      if (byFull) return byFull;
+      const base = langFull.split(/[-_]/)[0];
+      if (base) {
+        let byBase = voices.find((v) =>
+          (v.lang || "").toLowerCase().startsWith(base)
+        );
+        if (byBase) return byBase;
+      }
+    }
+
+    // fallback: try any voice with same base as browser default lang
+    const navigatorBase = (navigator.language || "").split(/[-_]/)[0];
+    if (navigatorBase) {
+      const navMatch = voices.find((v) =>
+        (v.lang || "").toLowerCase().startsWith(navigatorBase)
+      );
+      if (navMatch) return navMatch;
+    }
+
+    return voices[0] || null;
+  }
+
   function speak(text, options = {}) {
     if (!text) return Promise.resolve();
     const s = { ...getSettings(), ...options };
     if (options.interrupt !== false) speechSynthesis.cancel();
 
     const utter = new SpeechSynthesisUtterance(String(text));
-    if (s.voiceName) {
-      const v = getVoices().find((vv) => vv.name === s.voiceName);
-      if (v) utter.voice = v;
+    const chosen = _selectVoice(s);
+
+    if (chosen) {
+      try {
+        utter.voice = chosen;
+        utter.lang = chosen.lang || s.languageCode || utter.lang || "";
+      } catch (e) {
+        if (s.languageCode) utter.lang = s.languageCode;
+      }
+    } else {
+      if (s.languageCode) utter.lang = s.languageCode;
     }
-    if (s.languageCode) utter.lang = s.languageCode;
 
     const rate =
       Number.isFinite(Number(s.rate ?? s.speed)) &&
@@ -596,7 +696,6 @@ function createUI({ events, utils, config, langLoader }) {
   function populateVoiceSelect() {
     const el = elements.voiceSelect;
     if (!el) return;
-
     const isMobile = utils.isMobileDevice();
     const selectedLang = (
       elements.languageCodeSelect?.value || "ALL"
@@ -724,7 +823,7 @@ function createUI({ events, utils, config, langLoader }) {
     setDisabled(elements.voiceSelect, isPlaying);
     toggleClass(elements.labelLanguageCode, "disabled", isPlaying);
     toggleClass(elements.labelVoice, "disabled", isPlaying);
-    setDisabled(elements.fillRandomBtn, !(isReady || isPaused));
+    setDisabled(elements.fillRandomBtn, !isReady);
     setDisabled(elements.resetBtn, !isPaused);
   }
 
@@ -778,10 +877,12 @@ function createUI({ events, utils, config, langLoader }) {
 
     if (!utils.isMobileDevice()) {
       E.languageCodeSelect?.addEventListener("change", () => {
-        events.emit(EventTypes.SETTINGS_UPDATE, {
-          languageCode: E.languageCodeSelect.value,
-        });
+        const selectedLang = E.languageCodeSelect.value;
+        let newSettings = { languageCode: selectedLang };
         populateVoiceSelect();
+        const selectedVoice = E.voiceSelect?.value || null;
+        if (selectedVoice) newSettings.voiceName = selectedVoice;
+        events.emit(EventTypes.SETTINGS_UPDATE, newSettings);
         setVoiceFromSettings();
       });
     }
@@ -1295,28 +1396,66 @@ function createApp({
     }
 
     speaker.init(
-      () => Voices.getVoices(),
+      () => voices.getVoices(),
       () => store.getSettings()
     );
     wakeLock.init();
 
-    Events.on(EventTypes.VOICES_LOADED, () => {
+    events.on(EventTypes.VOICES_LOADED, () => {
       ui.populateLanguageSelect();
       ui.setLanguageCodeFromSettings();
       ui.populateVoiceSelect();
       ui.setVoiceFromSettings();
 
       const settings = store.getSettings();
+      const allVoices = voices.getVoices() || [];
+
       if (!settings.voiceName) {
-        const firstVoice = Voices.getVoices()[0];
-        if (firstVoice)
+        if (allVoices.length) {
           events.emit(EventTypes.SETTINGS_UPDATE, {
-            voiceName: firstVoice.name,
+            voiceName: allVoices[0].name,
           });
+        }
+        return;
+      }
+
+      // if saved voiceName exists - ensure it actually exists in runtime
+      let match = allVoices.find(
+        (v) =>
+          Utils.normalizeString(v.name) ===
+          Utils.normalizeString(settings.voiceName)
+      );
+      if (!match) {
+        // try partial name match
+        match = allVoices.find((v) =>
+          Utils.normalizeString(v.name).includes(
+            Utils.normalizeString(settings.voiceName)
+          )
+        );
+      }
+      if (!match && settings.languageCode) {
+        const wanted = (settings.languageCode || "").toLowerCase();
+        // exact lang match
+        match = allVoices.find((v) => (v.lang || "").toLowerCase() === wanted);
+        // startsWith full code or base
+        if (!match) {
+          match = allVoices.find((v) =>
+            (v.lang || "").toLowerCase().startsWith(wanted.split(/[-_]/)[0])
+          );
+        }
+      }
+      if (match) {
+        if (match.name !== settings.voiceName) {
+          events.emit(EventTypes.SETTINGS_UPDATE, { voiceName: match.name });
+        }
+      } else if (allVoices.length) {
+        events.emit(EventTypes.SETTINGS_UPDATE, {
+          voiceName: allVoices[0].name,
+        });
       }
     });
 
-    await Voices.load();
+    await voices.load();
 
     const currentSettings = store.getSettings();
     events.emit(EventTypes.SETTINGS_CHANGED, currentSettings);
