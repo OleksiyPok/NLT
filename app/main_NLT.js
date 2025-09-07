@@ -1,9 +1,5 @@
 "use strict";
 
-/*
-EventTypes
-Interface: frozen map of event name constants
-*/
 const EventTypes = Object.freeze({
   APP_STATE: "app:state",
   APP_STATE_SET: "app:state:set",
@@ -33,16 +29,6 @@ const EventTypes = Object.freeze({
   SETTINGS_UPDATE: "settings:update",
 });
 
-/*
-Utils
-Interface:
-  - safeNumber(v, defVal)
-  - safeSetSelectValue(selectEl, val, fallback)
-  - delay(ms)
-  - isMobileDevice()
-  - normalizeString(s)
-  - deepMerge(target, source)
-*/
 const Utils = (() => {
   const safeNumber = (v, defVal) => {
     const n = Number(v);
@@ -86,13 +72,6 @@ const Utils = (() => {
   };
 })();
 
-/*
-EventBus
-Interface:
-  - on(event, fn) => unsubscribe()
-  - off(event, fn)
-  - emit(event, payload)
-*/
 function createEventBus() {
   const listeners = new Map();
   const on = (event, fn) => {
@@ -115,13 +94,6 @@ function createEventBus() {
   return { on, off, emit };
 }
 
-/*
-Config
-Interface:
-  - PATHS, UI_LANGS, DEFAULT_CONFIG
-  - CONFIG (after load)
-  - load()
-*/
 function createConfig({ paths = null } = {}) {
   const PATHS = paths || {
     CONFIG: "./assets/configs/config.json",
@@ -240,13 +212,6 @@ function createConfig({ paths = null } = {}) {
   return instance;
 }
 
-/*
-LangLoader
-Interface:
-  - loadLang(code) => Promise<object|null>
-  - loadAll() => Promise<texts>
-  - getTexts(lang) => object
-*/
 function createLangLoader({ config }) {
   const PATH = config.PATHS.UI_TEXTS_DIR;
   let texts = {};
@@ -300,18 +265,6 @@ function createLangLoader({ config }) {
   return { loadLang, loadAll, getTexts };
 }
 
-/*
-Store
-Interface:
-  - getState()
-  - getSettings()
-  - updateSettings(patch)
-  - resetSettings(defaults)
-  - getAppState()
-  - setAppState(newState)
-  - setCurrentIndex(i)
-  - loadSettings()
-*/
 function createStore({ config, events }) {
   const Storage = {
     KEY: "NLT-settings",
@@ -404,13 +357,6 @@ function createStore({ config, events }) {
   };
 }
 
-/*
-WakeLock
-Interface:
-  - init()
-  - request()
-  - release()
-*/
 function createWakeLock({ events }) {
   const instance = {
     wakeLock: null,
@@ -449,13 +395,6 @@ function createWakeLock({ events }) {
   return instance;
 }
 
-/*
-Speaker
-Interface:
-  - init(voicesProviderFn, settingsProviderFn)
-  - speak(text, options)
-  - cancel(), pause(), resume(), isSpeaking(), isPaused()
-*/
 function createSpeaker() {
   let getVoices = () => [];
   let getSettings = () => ({});
@@ -570,17 +509,6 @@ function createSpeaker() {
   };
 }
 
-/*
-UI
-Interface:
-  - cache(), cacheInputs(), getInputs(), getSelectedInputs()
-  - setSelectsFromSettings(s), populateLanguageSelect(), populateVoiceSelect()
-  - setLanguageCodeFromSettings(), setVoiceFromSettings()
-  - updateUILabels(), updateStartPauseButton(), updateControlsState()
-  - showBackgroundOverlay(), hideBackgroundOverlay(), showActiveNumberOverlay(), hideActiveNumberOverlay()
-  - updateSettingsFromUI(), attachEventHandlers(), bindEventSubscriptions()
-  - resetRepeatLeft(), fillRandom(), highlightSelection(), elements
-*/
 function createUI({ events, utils, config, langLoader }) {
   const SELECTORS = {
     uiLangSelect: "#uiLangSelect",
@@ -1051,13 +979,6 @@ function createUI({ events, utils, config, langLoader }) {
   };
 }
 
-/*
-Voices
-Interface:
-  - collect()
-  - load()
-  - getVoices() => array
-*/
 function createVoices({ events }) {
   let voices = [];
   let availableLanguages = [];
@@ -1104,11 +1025,6 @@ function createVoices({ events }) {
   return { collect, load, getVoices: () => voices.slice() };
 }
 
-/*
-Playback
-Interface:
-  - buildPlayQueue()
-*/
 function createPlayback({
   events,
   speaker,
@@ -1236,11 +1152,6 @@ function createPlayback({
   return { buildPlayQueue };
 }
 
-/*
-App
-Interface:
-  - init()
-*/
 function createApp({
   events,
   config,
@@ -1484,8 +1395,6 @@ function createApp({
     },
   };
 }
-
-/* ===== Wire together (single-file) ===== */
 
 const Events = createEventBus();
 const Config = createConfig();
