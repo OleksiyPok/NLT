@@ -3,7 +3,7 @@
 
 ---
 
-# CLT Clock Listening Trainer
+# NLT Number Listening Trainer
 Dies ist eine kompakte, einseitige Anwendung, die zum Erlernen von Zahlen in Fremdsprachen entwickelt wurde.  
 Die App nutzt eine Methode der gleichzeitigen auditiven und visuellen Wahrnehmung, die ein schnelles und effektives Einprägen ermöglicht.
 

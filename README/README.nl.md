@@ -3,7 +3,7 @@
 
 ---
 
-# CLT Clock Listening Trainer
+# NLT Number Listening Trainer
 Dit is een compacte, eendelige applicatie ontworpen om getallen in vreemde talen te leren.  
 De app maakt gebruik van een methode van gelijktijdige auditieve en visuele waarneming, waardoor snelle en effectieve memorisatie mogelijk is.
 
