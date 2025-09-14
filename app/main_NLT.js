@@ -1,0 +1,1488 @@
+"use strict";
+
+const EventTypes = Object.freeze({
+  APP_STATE: "app:state",
+  APP_STATE_SET: "app:state:set",
+  APP_SETTINGS_RESET: "app:settings:resetToDefault",
+  APP_FULL_RESET: "app:fullReset",
+
+  UI_BACKGROUND_SHOW: "ui:background:show",
+  UI_BACKGROUND_HIDE: "ui:background:hide",
+  UI_ACTIVE_NUMBER_SHOW: "ui:activeNumber:show",
+  UI_ACTIVE_NUMBER_HIDE: "ui:activeNumber:hide",
+  UI_HIGHLIGHT: "ui:highlight",
+  UI_REPEAT_LEFT_SET: "ui:repeatLeft:set",
+  UI_TEXTS_UPDATE: "ui:texts:update",
+
+  VOICES_CHANGED: "voices:changed",
+  VOICES_LOADED: "voices:loaded",
+
+  PLAYBACK_START: "playback:start",
+  PLAYBACK_RESUME: "playback:resume",
+  PLAYBACK_PAUSE: "playback:pause",
+  PLAYBACK_STOP: "playback:stop",
+  PLAYBACK_TOGGLE: "playback:toggle",
+  PLAYBACK_INDEX: "playback:currentIndex",
+  PLAYBACK_INDEX_SET: "playback:currentIndex:set",
+
+  SETTINGS_CHANGED: "settings:changed",
+  SETTINGS_UPDATE: "settings:update",
+});
+
+const Utils = (() => {
+  const safeNumber = (v, defVal) => {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : defVal;
+  };
+  const safeSetSelectValue = (selectEl, val, fallback) => {
+    if (!selectEl) return fallback;
+    const values = Array.from(selectEl.options).map((o) => o.value);
+    const chosen = values.includes(val) ? val : fallback;
+    if (selectEl.value !== chosen) selectEl.value = chosen;
+    return chosen;
+  };
+  const delay = (ms) => new Promise((r) => setTimeout(r, Number(ms) || 0));
+  const isMobileDevice = () =>
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent || ""
+    );
+  const normalizeString = (s) =>
+    String(s || "")
+      .trim()
+      .toLowerCase();
+  const deepMerge = (t, s) => {
+    if (!s || typeof s !== "object") return t;
+    Object.keys(s).forEach((k) => {
+      if (s[k] && typeof s[k] === "object" && !Array.isArray(s[k])) {
+        if (!t[k] || typeof t[k] !== "object") t[k] = {};
+        deepMerge(t[k], s[k]);
+      } else {
+        t[k] = s[k];
+      }
+    });
+    return t;
+  };
+  return {
+    safeNumber,
+    safeSetSelectValue,
+    delay,
+    isMobileDevice,
+    normalizeString,
+    deepMerge,
+  };
+})();
+
+function createEventBus() {
+  const listeners = new Map();
+  const on = (event, fn) => {
+    if (!listeners.has(event)) listeners.set(event, new Set());
+    listeners.get(event).add(fn);
+    return () => listeners.get(event)?.delete(fn);
+  };
+  const off = (event, fn) => listeners.get(event)?.delete(fn);
+  const emit = (event, payload) => {
+    const set = listeners.get(event);
+    if (!set) return;
+    for (const fn of Array.from(set)) {
+      try {
+        fn(payload);
+      } catch (e) {
+        console.warn("Event error", event, e);
+      }
+    }
+  };
+  return { on, off, emit };
+}
+
+function createConfig({ paths = null } = {}) {
+  const PATHS = paths || {
+    CONFIG: "./assets/configs/config.json",
+    UI_TEXTS_DIR: "./assets/locales",
+  };
+  const UI_LANGS = Object.freeze([
+    "ar",
+    "de",
+    "en",
+    "fr",
+    "nl",
+    "pl",
+    "pt",
+    "ru",
+    "tr",
+    "uk",
+  ]);
+  const DEFAULT_CONFIG = Object.freeze({
+    DEVELOPER_MODE: true,
+    USE_LOCAL_STORAGE: 0,
+    DEFAULT_VOICE: "Google Nederlands",
+    DEFAULT_SETTINGS: {
+      shared: {
+        uiLang: "en",
+        delay: "1000",
+        speed: "1.0",
+        digitLength: "2",
+        count: "40",
+        repeat: "1",
+        fullscreen: true,
+        languageCode: "nl-NL",
+        voiceName: "Google Nederlands",
+      },
+      mobile: { fullscreen: true },
+      desktop: { fullscreen: false },
+    },
+  });
+
+  const instance = {
+    PATHS,
+    UI_LANGS,
+    DEFAULT_CONFIG,
+    CONFIG: null,
+    CONFIG_EXT: null,
+
+    async load() {
+      this.CONFIG = structuredClone(this.DEFAULT_CONFIG);
+
+      function parseBinary(val, defaultVal = false) {
+        if (typeof val === "string") {
+          const lower = val.toLowerCase();
+          if (lower === "true" || lower === "1") return true;
+          if (lower === "false" || lower === "0") return false;
+        }
+        if (val === true || val === 1) return true;
+        if (val === false || val === 0) return false;
+        return defaultVal;
+      }
+
+      try {
+        const res = await fetch(this.PATHS.CONFIG);
+        if (res.ok) {
+          const ext = await res.json();
+          if (ext && typeof ext === "object") this.CONFIG_EXT = ext;
+        }
+      } catch (e) {
+        console.warn("Config load failed, using defaults", e);
+      }
+
+      if (this.CONFIG_EXT) {
+        if ("DEVELOPER_MODE" in this.CONFIG_EXT)
+          this.CONFIG.DEVELOPER_MODE = this.CONFIG_EXT.DEVELOPER_MODE;
+        if ("USE_LOCAL_STORAGE" in this.CONFIG_EXT)
+          this.CONFIG.USE_LOCAL_STORAGE = this.CONFIG_EXT.USE_LOCAL_STORAGE;
+        if (typeof this.CONFIG_EXT.DEFAULT_VOICE === "string")
+          this.CONFIG.DEFAULT_VOICE = this.CONFIG_EXT.DEFAULT_VOICE;
+
+        if (this.CONFIG_EXT.DEFAULT_SETTINGS) {
+          const sharedExt = this.CONFIG_EXT.DEFAULT_SETTINGS.shared || {};
+          const mobileExt = this.CONFIG_EXT.DEFAULT_SETTINGS.mobile || {};
+          const desktopExt = this.CONFIG_EXT.DEFAULT_SETTINGS.desktop || {};
+
+          const mergedShared = Utils.deepMerge(
+            structuredClone(this.CONFIG.DEFAULT_SETTINGS.shared),
+            sharedExt
+          );
+          const mergedMobile = Utils.deepMerge(
+            structuredClone(this.CONFIG.DEFAULT_SETTINGS.mobile),
+            mobileExt
+          );
+          const mergedDesktop = Utils.deepMerge(
+            structuredClone(this.CONFIG.DEFAULT_SETTINGS.desktop),
+            desktopExt
+          );
+
+          this.CONFIG.DEFAULT_SETTINGS = {
+            shared: mergedShared,
+            mobile: mergedMobile,
+            desktop: mergedDesktop,
+          };
+        }
+      }
+
+      this.CONFIG.DEVELOPER_MODE = parseBinary(this.CONFIG.DEVELOPER_MODE);
+      this.CONFIG.USE_LOCAL_STORAGE = parseBinary(
+        this.CONFIG.USE_LOCAL_STORAGE
+      );
+
+      ["shared", "mobile", "desktop"].forEach((k) => {
+        const set = this.CONFIG.DEFAULT_SETTINGS[k];
+        if (set && "fullscreen" in set)
+          set.fullscreen = parseBinary(set.fullscreen) ? 1 : 0;
+      });
+    },
+  };
+  return instance;
+}
+
+function createLangLoader({ config }) {
+  const PATH = config.PATHS.UI_TEXTS_DIR;
+  let texts = {};
+  const FALLBACK_EN = {
+    uiLangLabel: "Interface",
+    labelLang: "Language",
+    labelVoice: "Voice",
+    labelDigitLength: "Digit length",
+    labelCount: "Count",
+    labelRepeat: "Repeat",
+    labelSpeed: "Speed",
+    labelDelay: "Delay (ms)",
+    labelFullscreen: "Fullscreen",
+    start: "Start",
+    continue: "Continue",
+    pause: "Pause",
+    reset: "Reset",
+    fillRandom: "🎲 Rnd",
+    fullscreenNo: "No",
+    fullscreenYes: "Yes",
+    default: "Default",
+    repeatsLeft: "Repeats left:",
+  };
+  async function loadLang(code) {
+    try {
+      const res = await fetch(`${PATH}/${code}.json`, { cache: "no-cache" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      if (!json || typeof json !== "object") throw new Error("Bad JSON");
+      return json;
+    } catch (e) {
+      console.warn(`UI texts load failed for ${code}:`, e);
+      return null;
+    }
+  }
+  async function loadAll() {
+    texts = {};
+    await Promise.all(
+      config.UI_LANGS.map(async (code) => {
+        const data = await loadLang(code);
+        if (data) texts[code] = data;
+      })
+    );
+    if (!texts.en) {
+      texts.en = FALLBACK_EN;
+      console.warn("EN fallback injected.");
+    }
+    return texts;
+  }
+  const getTexts = (lang) => texts[lang] || texts.en || FALLBACK_EN;
+  return { loadLang, loadAll, getTexts };
+}
+
+function createStore({ config, bus }) {
+  const Storage = {
+    KEY: "NLT-settings",
+    save(settings) {
+      if (!config.CONFIG?.USE_LOCAL_STORAGE) return;
+      try {
+        localStorage.setItem(this.KEY, JSON.stringify(settings));
+      } catch (e) {
+        console.warn("LS save failed", e);
+      }
+    },
+    load() {
+      if (!config.CONFIG?.USE_LOCAL_STORAGE) return null;
+      try {
+        const v = localStorage.getItem(this.KEY);
+        return v ? JSON.parse(v) : null;
+      } catch (e) {
+        console.warn("LS load failed", e);
+        return null;
+      }
+    },
+    remove() {
+      try {
+        localStorage.removeItem(this.KEY);
+      } catch (_e) {}
+    },
+  };
+
+  let state = {
+    appState: "init",
+    settings: { pitch: 1.0, volume: 1.0 },
+    texts: {},
+    voices: [],
+    availableLanguages: [],
+    currentIndex: 0,
+  };
+
+  const getState = () => structuredClone(state);
+  const getSettings = () => ({ ...state.settings });
+  const updateSettings = (patch) => {
+    state.settings = { ...state.settings, ...patch };
+    Storage.save(state.settings);
+    bus.emit(EventTypes.SETTINGS_CHANGED, { ...state.settings });
+  };
+  const resetSettings = (defaults) => {
+    state.settings = { ...defaults };
+    Storage.save(state.settings);
+    bus.emit(EventTypes.SETTINGS_CHANGED, { ...state.settings });
+  };
+  const getAppState = () => state.appState;
+  const setAppState = (newState) => {
+    if (state.appState !== newState) {
+      state.appState = newState;
+      bus.emit(EventTypes.APP_STATE, newState);
+    }
+  };
+  const setCurrentIndex = (i) => {
+    const idx = Math.max(0, Number(i) | 0);
+    if (state.currentIndex !== idx) {
+      state.currentIndex = idx;
+      bus.emit(EventTypes.PLAYBACK_INDEX, idx);
+    }
+  };
+  const loadSettings = () => {
+    const loaded = Storage.load();
+    if (loaded) {
+      state.settings = { ...state.settings, ...loaded };
+      bus.emit(EventTypes.SETTINGS_CHANGED, { ...state.settings });
+    }
+    return getSettings();
+  };
+
+  bus.on(EventTypes.SETTINGS_UPDATE, (patch) => {
+    if (patch && typeof patch === "object") updateSettings(patch);
+  });
+
+  bus.on(EventTypes.PLAYBACK_INDEX_SET, (i) => {
+    setCurrentIndex(i);
+  });
+
+  return {
+    getState,
+    getSettings,
+    updateSettings,
+    resetSettings,
+    getAppState,
+    setAppState,
+    setCurrentIndex,
+    loadSettings,
+  };
+}
+
+function createWakeLock({ bus }) {
+  const instance = {
+    wakeLock: null,
+    async request() {
+      try {
+        if ("wakeLock" in navigator && !this.wakeLock) {
+          this.wakeLock = await navigator.wakeLock.request("screen");
+          this.wakeLock?.addEventListener?.("release", () => {});
+        }
+      } catch (e) {
+        console.warn("WakeLock request failed", e);
+        this.wakeLock = null;
+      }
+    },
+    release() {
+      if (!this.wakeLock) return;
+      try {
+        this.wakeLock.release?.();
+      } catch (_e) {}
+      this.wakeLock = null;
+    },
+    init() {
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+          bus.emit(EventTypes.APP_STATE, "resume-visibility");
+        } else {
+          this.release();
+        }
+      });
+      bus.on(EventTypes.APP_STATE, (s) => {
+        if (s === "playing") this.request();
+        else this.release();
+      });
+    },
+  };
+  return instance;
+}
+
+function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
+  const emitter = bus;
+  let getVoices = () =>
+    typeof voicesProvider === "function" ? voicesProvider() : [];
+  let getSettings = () =>
+    typeof settingsProvider === "function" ? settingsProvider() : {};
+  let currentUtterance = null;
+
+  function init(voicesProv, settingsProv) {
+    if (typeof voicesProv === "function") getVoices = voicesProv;
+    if (typeof settingsProv === "function") getSettings = settingsProv;
+  }
+
+  function _selectVoice(s) {
+    const voices = getVoices() || [];
+    if (!voices.length) return null;
+    const desiredName = String(s.voiceName || "").trim();
+    const desiredLang = String(s.languageCode || "")
+      .trim()
+      .toLowerCase();
+
+    if (desiredName) {
+      let exact = voices.find((v) => v.name === desiredName);
+      if (exact) return exact;
+      const norm = (n) =>
+        String(n || "")
+          .trim()
+          .toLowerCase();
+      let partial = voices.find((v) =>
+        norm(v.name).includes(norm(desiredName))
+      );
+      if (partial) return partial;
+    }
+
+    if (desiredLang) {
+      const langFull = desiredLang;
+      let byFull = voices.find(
+        (v) => (v.lang || "").toLowerCase() === langFull
+      );
+      if (byFull) return byFull;
+      const base = langFull.split(/[-_]/)[0];
+      if (base) {
+        let byBase = voices.find((v) =>
+          (v.lang || "").toLowerCase().startsWith(base)
+        );
+        if (byBase) return byBase;
+      }
+    }
+
+    const navigatorBase = (navigator.language || "").split(/[-_]/)[0];
+    if (navigatorBase) {
+      const navMatch = voices.find((v) =>
+        (v.lang || "").toLowerCase().startsWith(navigatorBase)
+      );
+      if (navMatch) return navMatch;
+    }
+
+    return voices[0] || null;
+  }
+
+  async function speakAsync(text, options = {}) {
+    if (!text) return;
+    const settings =
+      (typeof getSettings === "function" ? getSettings() : {}) || {};
+    const s = { ...settings, ...options };
+    if (options.interrupt !== false) speechSynthesis.cancel();
+
+    const utter = new SpeechSynthesisUtterance(String(text));
+    const chosen = _selectVoice(s);
+
+    if (chosen) {
+      try {
+        utter.voice = chosen;
+        utter.lang = chosen.lang || s.languageCode || utter.lang || "";
+      } catch (e) {
+        if (s.languageCode) utter.lang = s.languageCode;
+      }
+    } else {
+      if (s.languageCode) utter.lang = s.languageCode;
+    }
+
+    const rate =
+      Number.isFinite(Number(s.rate ?? s.speed)) &&
+      Number(s.rate ?? s.speed) > 0
+        ? Number(s.rate ?? s.speed)
+        : 1.0;
+    const pitch =
+      Number.isFinite(Number(s.pitch)) && Number(s.pitch) > 0
+        ? Number(s.pitch)
+        : 1.0;
+    const volume =
+      Number.isFinite(Number(s.volume)) &&
+      Number(s.volume) >= 0 &&
+      Number(s.volume) <= 1
+        ? Number(s.volume)
+        : 1.0;
+
+    utter.rate = rate;
+    utter.pitch = pitch;
+    utter.volume = volume;
+
+    return new Promise((resolve) => {
+      const done = () => {
+        currentUtterance = null;
+        emitter?.emit?.("speech:end", { button: options.button || null });
+        resolve();
+      };
+      utter.onend = done;
+      utter.onerror = done;
+      currentUtterance = utter;
+      emitter?.emit?.("speech:start", { button: options.button || null });
+      speechSynthesis.speak(utter);
+    });
+  }
+
+  function speak(obj) {
+    if (!obj) return;
+    if (typeof obj === "string") {
+      return speakAsync(obj).catch((e) => console.warn("speak failed", e));
+    }
+    const { text, rate = 1, lang, button, voiceName, pitch, volume } = obj;
+    return speakAsync(text, {
+      rate,
+      languageCode: lang,
+      speed: rate,
+      voiceName,
+      pitch,
+      volume,
+      button,
+    }).catch((e) => console.warn("speak failed", e));
+  }
+
+  function cancel() {
+    if (speechSynthesis.speaking || speechSynthesis.pending)
+      speechSynthesis.cancel();
+    if (currentUtterance) {
+      emitter?.emit?.("speech:end", { button: null });
+      currentUtterance = null;
+    }
+  }
+
+  const pause = () => {
+    try {
+      speechSynthesis.pause();
+    } catch (_) {}
+  };
+  const resume = () => {
+    try {
+      speechSynthesis.resume();
+    } catch (_) {}
+  };
+  const isSpeaking = () => speechSynthesis.speaking;
+  const isPaused = () => speechSynthesis.paused;
+
+  return {
+    init,
+    speak,
+    speakAsync,
+    cancel,
+    pause,
+    resume,
+    isSpeaking,
+    isPaused,
+  };
+}
+
+function createUI({ bus, utils, config, langLoader }) {
+  const SELECTORS = {
+    uiLangSelect: "#uiLangSelect",
+    repeatLeft: "#repeatLeft",
+    speedSelect: "#speedSelect",
+    delaySelect: "#delaySelect",
+    digitLengthSelect: "#digitLengthSelect",
+    countSelect: "#countSelect",
+    repeatSelect: "#repeatSelect",
+    fullscreenSelect: "#fullscreenSelect",
+    languageCodeSelect: ".language-code-select",
+    labelLanguageCode: ".label-language-code",
+    voiceSelect: "#voiceSelect",
+    numberGrid: "#numberGrid",
+    labelRepeatsText: "#labelRepeatsText",
+    fillRandomBtn: "#fillRandomBtn",
+    resetSettingsBtn: "#resetSettingsBtn",
+    startPauseBtn: "#startPauseBtn",
+    resetBtn: "#resetBtn",
+    uiLangLabel: "#uiLangLabel",
+    labelVoice: "#labelVoice",
+    labelDigitLength: "#labelDigitLength",
+    labelCount: "#labelCount",
+    labelRepeat: "#labelRepeat",
+    labelSpeed: "#labelSpeed",
+    labelDelay: "#labelDelay",
+    labelFullscreen: "#labelFullscreen",
+    developerPanel: "#developer",
+    backgroundOverlay: "#backgroundOverlay",
+    activeNumberOverlay: "#activeNumberOverlay",
+  };
+
+  const elements = {};
+  let inputsCache = [];
+  let voicesList = [];
+  let availableLanguages = [];
+  let currentSettings = { pitch: 1.0, volume: 1.0 };
+  let currentAppState = "init";
+  let currentIndex = 0;
+
+  function cache() {
+    for (const key in SELECTORS)
+      elements[key] = document.querySelector(SELECTORS[key]) || null;
+  }
+  function cacheInputs() {
+    inputsCache = elements.numberGrid
+      ? Array.from(elements.numberGrid.querySelectorAll("input[type='text']"))
+      : [];
+  }
+  const getInputs = () => inputsCache.slice();
+  const getSelectedInputs = () =>
+    inputsCache.filter((i) => i.classList.contains("selected"));
+
+  function setSelectsFromSettings(s) {
+    const E = elements;
+    s.digitLength = utils.safeNumber(
+      utils.safeSetSelectValue(E.digitLengthSelect, String(s.digitLength), "2"),
+      2
+    );
+    s.count = utils.safeNumber(
+      utils.safeSetSelectValue(E.countSelect, String(s.count), "40"),
+      40
+    );
+    s.repeat = utils.safeNumber(
+      utils.safeSetSelectValue(E.repeatSelect, String(s.repeat), "1"),
+      1
+    );
+    s.speed = utils.safeNumber(
+      utils.safeSetSelectValue(
+        E.speedSelect,
+        Number(s.speed).toFixed(1),
+        "1.0"
+      ),
+      1.0
+    );
+    s.delay = utils.safeNumber(
+      utils.safeSetSelectValue(E.delaySelect, String(s.delay), "1000"),
+      1000
+    );
+    s.fullscreen = utils.safeSetSelectValue(
+      E.fullscreenSelect,
+      String(s.fullscreen),
+      "0"
+    );
+    if (s.uiLang && E.uiLangSelect) E.uiLangSelect.value = s.uiLang;
+    if (E.languageCodeSelect) {
+      const langPart = (s.languageCode || "ALL").split(/[-_]/)[0].toUpperCase();
+      E.languageCodeSelect.value = langPart;
+    }
+  }
+
+  function populateLanguageSelect() {
+    const el = elements.languageCodeSelect;
+    if (!el) return;
+    const frag = document.createDocumentFragment();
+    availableLanguages.forEach((lang) => {
+      const opt = document.createElement("option");
+      opt.value = lang;
+      opt.textContent = lang;
+      frag.appendChild(opt);
+    });
+    el.replaceChildren(frag);
+    const configLang = (
+      (currentSettings.languageCode || "ALL").split(/[-_]/)[0] || "ALL"
+    ).toUpperCase();
+    el.value = availableLanguages.includes(configLang)
+      ? configLang
+      : utils.isMobileDevice()
+      ? "ALL"
+      : el.value;
+  }
+
+  function populateVoiceSelect() {
+    const el = elements.voiceSelect;
+    if (!el) return;
+    const isMobile = utils.isMobileDevice();
+    const selectedLang = (
+      elements.languageCodeSelect?.value || "ALL"
+    ).toUpperCase();
+
+    if (!voicesList || !voicesList.length) {
+      el.replaceChildren();
+      return;
+    }
+
+    const voicesToShow =
+      isMobile || selectedLang === "ALL"
+        ? voicesList
+        : voicesList.filter((v) =>
+            (v.lang || "").toUpperCase().startsWith(selectedLang)
+          );
+
+    const frag = document.createDocumentFragment();
+    voicesToShow.forEach((v) => {
+      const opt = document.createElement("option");
+      opt.value = v.name;
+      opt.textContent = `${v.name} (${v.lang || ""})`;
+      frag.appendChild(opt);
+    });
+    el.replaceChildren(frag);
+
+    let match = voicesToShow.find(
+      (v) =>
+        utils.normalizeString(v.name) ===
+        utils.normalizeString(currentSettings.voiceName)
+    );
+    if (!match && voicesToShow.length) match = voicesToShow[0];
+
+    if (match && el.value !== match.name) {
+      el.value = match.name;
+      bus.emit(EventTypes.SETTINGS_UPDATE, { voiceName: match.name });
+    }
+  }
+
+  function setLanguageCodeFromSettings() {
+    const E = elements;
+    const langPart = (
+      (currentSettings.languageCode || "ALL").split(/[-_]/)[0] || "ALL"
+    ).toUpperCase();
+    if (E.languageCodeSelect && E.languageCodeSelect.value !== langPart) {
+      E.languageCodeSelect.value = langPart;
+    }
+  }
+  function setVoiceFromSettings() {
+    const E = elements;
+    const voice = currentSettings.voiceName;
+    if (!E.voiceSelect || !voice) return;
+    const opts = Array.from(E.voiceSelect.options).map((o) => o.value);
+    if (opts.includes(voice) && E.voiceSelect.value !== voice) {
+      E.voiceSelect.value = voice;
+    }
+  }
+
+  function updateUILabels() {
+    const uiLang = elements.uiLangSelect?.value || "en";
+    const texts = langLoader.getTexts(uiLang);
+    if (!texts) return;
+    const E = elements;
+    const setText = (el, val) => {
+      if (el && el.textContent !== val) el.textContent = val;
+    };
+    setText(E.uiLangLabel, texts.uiLangLabel);
+    setText(E.labelLanguageCode, texts.labelLang);
+    setText(E.labelVoice, texts.labelVoice);
+    setText(E.labelDigitLength, texts.labelDigitLength);
+    setText(E.labelCount, texts.labelCount);
+    setText(E.labelRepeat, texts.labelRepeat);
+    setText(E.labelSpeed, texts.labelSpeed);
+    setText(E.labelDelay, texts.labelDelay);
+    setText(E.labelRepeatsText, texts.repeatsLeft);
+    setText(E.fillRandomBtn, texts.fillRandom);
+    setText(E.resetBtn, texts.reset);
+    setText(E.labelFullscreen, texts.labelFullscreen);
+    if (E.fullscreenSelect) {
+      if (E.fullscreenSelect.options[0].textContent !== texts.fullscreenNo)
+        E.fullscreenSelect.options[0].textContent = texts.fullscreenNo;
+      if (E.fullscreenSelect.options[1].textContent !== texts.fullscreenYes)
+        E.fullscreenSelect.options[1].textContent = texts.fullscreenYes;
+    }
+    updateStartPauseButton();
+    updateControlsState();
+  }
+
+  function updateStartPauseButton() {
+    const texts = langLoader.getTexts(elements.uiLangSelect?.value || "en");
+    if (!texts) return;
+    const labels = {
+      ["playing"]: texts.pause,
+      ["paused"]: texts.continue,
+      ["ready"]: texts.start,
+    };
+    const btn = elements.startPauseBtn;
+    if (btn) {
+      const val = labels[currentAppState] || texts.start;
+      if (btn.textContent !== val) btn.textContent = val;
+    }
+  }
+
+  function updateControlsState() {
+    const s = currentAppState;
+    const isPlaying = s === "playing";
+    const isPaused = s === "paused";
+    const isReady = s === "ready";
+
+    const setDisabled = (el, val) => {
+      if (el && el.disabled !== val) el.disabled = val;
+    };
+    const toggleClass = (el, cls, on) => {
+      if (el) el.classList.toggle(cls, on);
+    };
+
+    setDisabled(elements.digitLengthSelect, !isReady);
+    setDisabled(elements.countSelect, !isReady);
+    setDisabled(elements.repeatSelect, !isReady);
+    toggleClass(elements.labelDigitLength, "disabled", !isReady);
+    toggleClass(elements.labelCount, "disabled", !isReady);
+    toggleClass(elements.labelRepeat, "disabled", !isReady);
+
+    setDisabled(elements.languageCodeSelect, isPlaying);
+    setDisabled(elements.voiceSelect, isPlaying);
+    toggleClass(elements.labelLanguageCode, "disabled", isPlaying);
+    toggleClass(elements.labelVoice, "disabled", isPlaying);
+    setDisabled(elements.fillRandomBtn, !isReady);
+    setDisabled(elements.resetBtn, !isPaused);
+  }
+
+  function showBackgroundOverlay() {
+    if ((elements.fullscreenSelect?.value || "0") !== "1") return;
+    elements.backgroundOverlay?.classList.add("show");
+  }
+  function hideBackgroundOverlay() {
+    elements.backgroundOverlay?.classList.remove("show");
+  }
+  function showActiveNumberOverlay(value, delayMs) {
+    if ((elements.fullscreenSelect?.value || "0") !== "1") return;
+    const overlay = elements.activeNumberOverlay;
+    if (!overlay) return;
+    if (overlay.textContent !== value) overlay.textContent = value || "";
+    overlay.classList.add("show");
+    setTimeout(
+      () => overlay.classList.remove("show"),
+      1000 + Number(delayMs || 0)
+    );
+  }
+  function hideActiveNumberOverlay() {
+    elements.activeNumberOverlay?.classList.remove("show");
+  }
+
+  function updateSettingsFromUI() {
+    const E = elements;
+    const s = {};
+    const upd = (key, el, fallback) => {
+      if (el) s[key] = el.value || fallback;
+    };
+    upd("digitLength", E.digitLengthSelect, currentSettings.digitLength);
+    upd("count", E.countSelect, currentSettings.count);
+    upd("repeat", E.repeatSelect, currentSettings.repeat);
+    upd("uiLang", E.uiLangSelect, currentSettings.uiLang);
+    upd("languageCode", E.languageCodeSelect, currentSettings.languageCode);
+    upd("voiceName", E.voiceSelect, currentSettings.voiceName);
+    upd("speed", E.speedSelect, currentSettings.speed);
+    upd("delay", E.delaySelect, currentSettings.delay);
+    upd("fullscreen", E.fullscreenSelect, currentSettings.fullscreen);
+    bus.emit(EventTypes.SETTINGS_UPDATE, s);
+  }
+
+  function attachEventHandlers() {
+    const E = elements;
+
+    E.uiLangSelect?.addEventListener("change", () => {
+      updateUILabels();
+      updateSettingsFromUI();
+    });
+
+    if (!utils.isMobileDevice()) {
+      E.languageCodeSelect?.addEventListener("change", () => {
+        const selectedLang = E.languageCodeSelect.value;
+        let newSettings = { languageCode: selectedLang };
+        populateVoiceSelect();
+        const selectedVoice = E.voiceSelect?.value || null;
+        if (selectedVoice) newSettings.voiceName = selectedVoice;
+        bus.emit(EventTypes.SETTINGS_UPDATE, newSettings);
+        setVoiceFromSettings();
+      });
+    }
+
+    E.voiceSelect?.addEventListener("change", () => updateSettingsFromUI());
+
+    E.digitLengthSelect?.addEventListener("change", () => {
+      updateSettingsFromUI();
+      fillRandom();
+      highlightSelection();
+    });
+
+    E.countSelect?.addEventListener("change", () => {
+      updateSettingsFromUI();
+      highlightSelection();
+    });
+
+    E.repeatSelect?.addEventListener("change", () => {
+      updateSettingsFromUI();
+      resetRepeatLeft();
+    });
+
+    E.speedSelect?.addEventListener("change", () => updateSettingsFromUI());
+    E.delaySelect?.addEventListener("change", () => updateSettingsFromUI());
+
+    E.fillRandomBtn?.addEventListener("click", () => {
+      fillRandom();
+      highlightSelection();
+    });
+
+    E.fullscreenSelect?.addEventListener("change", () =>
+      updateSettingsFromUI()
+    );
+
+    E.resetSettingsBtn?.addEventListener("click", () =>
+      bus.emit(EventTypes.APP_SETTINGS_RESET)
+    );
+    E.startPauseBtn?.addEventListener("click", () =>
+      bus.emit(EventTypes.PLAYBACK_TOGGLE)
+    );
+    E.resetBtn?.addEventListener("click", () =>
+      bus.emit(EventTypes.APP_FULL_RESET)
+    );
+  }
+
+  function resetRepeatLeft() {
+    if (elements.repeatLeft && elements.repeatSelect) {
+      const val = elements.repeatSelect.value;
+      if (elements.repeatLeft.textContent !== val)
+        elements.repeatLeft.textContent = val;
+    }
+    updateControlsState();
+  }
+
+  function fillRandom() {
+    const maxValue = 10 ** utils.safeNumber(currentSettings.digitLength, 2) - 1;
+    getInputs().forEach((input) => {
+      input.value = String(Math.floor(Math.random() * (maxValue + 1)));
+    });
+  }
+
+  function highlightSelection() {
+    const count = Number(currentSettings.count || 0);
+    const ci = currentIndex || 0;
+    getInputs().forEach((input, idx) => {
+      const sel = idx < count;
+      const hi = idx === ci;
+      if (input.classList.contains("selected") !== sel)
+        input.classList.toggle("selected", sel);
+      if (input.classList.contains("highlight") !== hi)
+        input.classList.toggle("highlight", hi);
+    });
+  }
+
+  function bindEventSubscriptions() {
+    bus.on(EventTypes.UI_BACKGROUND_SHOW, showBackgroundOverlay);
+    bus.on(EventTypes.UI_BACKGROUND_HIDE, hideBackgroundOverlay);
+    bus.on(EventTypes.UI_ACTIVE_NUMBER_SHOW, ({ value, delayMs }) =>
+      showActiveNumberOverlay(value, delayMs)
+    );
+    bus.on(EventTypes.UI_ACTIVE_NUMBER_HIDE, hideActiveNumberOverlay);
+    bus.on(EventTypes.UI_HIGHLIGHT, highlightSelection);
+    bus.on(EventTypes.UI_REPEAT_LEFT_SET, (val) => {
+      if (
+        elements.repeatLeft &&
+        String(elements.repeatLeft.textContent) !== String(val)
+      ) {
+        elements.repeatLeft.textContent = String(val);
+      }
+      updateControlsState();
+    });
+    bus.on(EventTypes.APP_STATE, (s) => {
+      currentAppState = s;
+      updateStartPauseButton();
+      updateControlsState();
+    });
+    bus.on(EventTypes.UI_TEXTS_UPDATE, updateUILabels);
+
+    bus.on(
+      EventTypes.VOICES_CHANGED,
+      ({ voices, availableLanguages: langs }) => {
+        voicesList = (voices || []).map((v) => ({
+          name: v.name,
+          lang: v.lang,
+        }));
+        availableLanguages = (langs || []).slice();
+        if (!availableLanguages.includes("ALL")) availableLanguages.push("ALL");
+        populateLanguageSelect();
+        populateVoiceSelect();
+      }
+    );
+
+    bus.on(
+      EventTypes.VOICES_LOADED,
+      ({ voices, availableLanguages: langs }) => {
+        voicesList = (voices || []).map((v) => ({
+          name: v.name,
+          lang: v.lang,
+        }));
+        availableLanguages = (langs || []).slice();
+        if (!availableLanguages.includes("ALL")) availableLanguages.push("ALL");
+        populateLanguageSelect();
+        populateVoiceSelect();
+      }
+    );
+
+    bus.on(EventTypes.SETTINGS_CHANGED, (newSettings) => {
+      currentSettings = { ...newSettings };
+      setSelectsFromSettings(newSettings);
+      setLanguageCodeFromSettings();
+      setVoiceFromSettings();
+      updateUILabels();
+      highlightSelection();
+    });
+
+    bus.on(EventTypes.PLAYBACK_INDEX, (idx) => {
+      currentIndex = idx;
+      highlightSelection();
+    });
+  }
+
+  return {
+    cache,
+    cacheInputs,
+    getInputs,
+    getSelectedInputs,
+    setSelectsFromSettings,
+    populateLanguageSelect,
+    populateVoiceSelect,
+    setLanguageCodeFromSettings,
+    setVoiceFromSettings,
+    updateUILabels,
+    updateStartPauseButton,
+    updateControlsState,
+    showBackgroundOverlay,
+    hideBackgroundOverlay,
+    showActiveNumberOverlay,
+    hideActiveNumberOverlay,
+    updateSettingsFromUI,
+    attachEventHandlers,
+    bindEventSubscriptions,
+    resetRepeatLeft,
+    fillRandom,
+    highlightSelection,
+    elements,
+  };
+}
+
+function createVoices({ bus }) {
+  let voices = [];
+  let availableLanguages = [];
+  const emitter = bus || bus;
+
+  function computeAvailableLanguages() {
+    availableLanguages = Array.from(
+      new Set(
+        voices
+          .map((v) => (v.lang || "").split(/[-_]/)[0].toUpperCase())
+          .filter(Boolean)
+      )
+    ).sort();
+    if (!availableLanguages.includes("ALL")) availableLanguages.push("ALL");
+  }
+
+  function publish(evt) {
+    const lightweight = voices.map((v) => ({ name: v.name, lang: v.lang }));
+    emitter?.emit?.(evt, {
+      voices: lightweight,
+      availableLanguages: availableLanguages.slice(),
+    });
+  }
+
+  function collect() {
+    voices = speechSynthesis.getVoices() || [];
+    computeAvailableLanguages();
+    publish("voices:changed");
+  }
+
+  async function load() {
+    collect();
+    if (!voices.length) {
+      try {
+        speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+        await new Promise((r) => setTimeout(r, 250));
+        collect();
+      } catch (err) {
+        console.warn("Voices.load fallback failed", err);
+      }
+    }
+    publish("voices:loaded");
+  }
+
+  if ("onvoiceschanged" in speechSynthesis)
+    speechSynthesis.onvoiceschanged = () => collect();
+
+  return {
+    collect,
+    load,
+    getVoices: () => voices.slice(),
+    getAvailableLanguages: () => availableLanguages.slice(),
+  };
+}
+
+function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, config }) {
+  let currentSettings = { pitch: 1.0, volume: 1.0 };
+  let currentAppState = "init";
+  let currentIndex = 0;
+
+  function buildPlayQueue() {
+    return uiProvider
+      .getSelectedInputs()
+      .map((i) => ({ value: i.value, el: i }));
+  }
+
+  function resetRuntime(runtime) {
+    bus.emit(EventTypes.PLAYBACK_INDEX_SET, 0);
+    runtime.playQueue = [];
+    runtime.repeatsRemaining = utils.safeNumber(currentSettings.repeat, 1);
+  }
+
+  async function playSequence(runtime) {
+    if (currentAppState !== "playing") return;
+    const delayMs = utils.safeNumber(currentSettings.delay, 500);
+
+    while (currentAppState === "playing") {
+      if (currentIndex >= runtime.playQueue.length) {
+        if (runtime.repeatsRemaining > 1) {
+          runtime.repeatsRemaining -= 1;
+          bus.emit(EventTypes.UI_REPEAT_LEFT_SET, runtime.repeatsRemaining);
+          bus.emit(EventTypes.PLAYBACK_INDEX_SET, 0);
+        } else {
+          bus.emit(EventTypes.APP_STATE_SET, "ready");
+          bus.emit(EventTypes.UI_BACKGROUND_HIDE);
+          bus.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
+          resetRuntime(runtime);
+          bus.emit(EventTypes.UI_HIGHLIGHT);
+          wakeLock.release();
+          return;
+        }
+      }
+
+      const idx = currentIndex;
+      const item = runtime.playQueue[idx];
+      if (!item || !item.value) {
+        bus.emit(EventTypes.PLAYBACK_INDEX_SET, idx + 1);
+        await utils.delay(delayMs);
+        continue;
+      }
+
+      bus.emit(EventTypes.UI_HIGHLIGHT);
+      bus.emit(EventTypes.UI_BACKGROUND_SHOW);
+      bus.emit(EventTypes.UI_ACTIVE_NUMBER_SHOW, {
+        value: item.value,
+        delayMs,
+      });
+
+      await speaker.speak(item.value, {
+        languageCode: currentSettings.languageCode || "nl-NL",
+        speed: currentSettings.speed,
+        pitch: currentSettings.pitch,
+        volume: currentSettings.volume,
+        voiceName: currentSettings.voiceName,
+      });
+
+      if (currentAppState !== "playing") break;
+      bus.emit(EventTypes.PLAYBACK_INDEX_SET, idx + 1);
+      await utils.delay(delayMs);
+    }
+  }
+
+  const runtime = { playQueue: [], repeatsRemaining: 1 };
+
+  bus.on(EventTypes.PLAYBACK_START, () => {
+    runtime.repeatsRemaining = utils.safeNumber(currentSettings.repeat, 1);
+    bus.emit(EventTypes.UI_REPEAT_LEFT_SET, runtime.repeatsRemaining);
+    runtime.playQueue = buildPlayQueue();
+    bus.emit(EventTypes.PLAYBACK_INDEX_SET, 0);
+    bus.emit(EventTypes.APP_STATE_SET, "playing");
+    bus.emit(EventTypes.UI_BACKGROUND_SHOW);
+    playSequence(runtime).catch((e) => console.warn("playSequence failed", e));
+  });
+
+  bus.on(EventTypes.PLAYBACK_RESUME, () => {
+    bus.emit(EventTypes.APP_STATE_SET, "playing");
+    playSequence(runtime).catch((e) => console.warn("playSequence failed", e));
+  });
+
+  bus.on(EventTypes.PLAYBACK_PAUSE, () => {
+    speaker.cancel();
+    bus.emit(EventTypes.APP_STATE_SET, "paused");
+    bus.emit(EventTypes.UI_BACKGROUND_HIDE);
+    bus.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
+  });
+
+  bus.on(EventTypes.PLAYBACK_STOP, () => {
+    speaker.cancel();
+    bus.emit(EventTypes.APP_STATE_SET, "ready");
+    bus.emit(EventTypes.UI_BACKGROUND_HIDE);
+    bus.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
+    resetRuntime(runtime);
+    bus.emit(
+      EventTypes.UI_REPEAT_LEFT_SET,
+      utils.safeNumber(currentSettings.repeat, 1)
+    );
+    bus.emit(EventTypes.UI_HIGHLIGHT);
+    wakeLock.release();
+  });
+
+  bus.on(EventTypes.PLAYBACK_TOGGLE, () => {
+    if (currentAppState === "playing")
+      return bus.emit(EventTypes.PLAYBACK_PAUSE);
+    if (currentAppState === "paused")
+      return bus.emit(EventTypes.PLAYBACK_RESUME);
+    bus.emit(EventTypes.PLAYBACK_START);
+  });
+
+  bus.on(EventTypes.SETTINGS_CHANGED, (s) => (currentSettings = { ...s }));
+  bus.on(EventTypes.APP_STATE, (s) => (currentAppState = s));
+  bus.on(EventTypes.PLAYBACK_INDEX, (i) => (currentIndex = i));
+
+  return { buildPlayQueue };
+}
+
+function createApp({
+  bus,
+  config,
+  langLoader,
+  store,
+  ui,
+  voices,
+  speaker,
+  wakeLock,
+  utils,
+}) {
+  function defaultSettings() {
+    const shared = config.DEFAULT_CONFIG.DEFAULT_SETTINGS.shared;
+    const type = utils.isMobileDevice() ? "mobile" : "desktop";
+    return {
+      ...shared,
+      ...(config.DEFAULT_CONFIG.DEFAULT_SETTINGS[type] || {}),
+    };
+  }
+
+  function setAppStateDirect(s) {
+    store.setAppState(s);
+    if (s === "playing") wakeLock.request();
+    else wakeLock.release();
+  }
+
+  async function resetToDefaultSettings() {
+    speaker.cancel();
+    bus.emit(EventTypes.PLAYBACK_STOP);
+
+    let defaults = defaultSettings();
+    store.resetSettings(defaults);
+    ui.fillRandom();
+    ui.highlightSelection();
+    ui.resetRepeatLeft();
+
+    if (config.CONFIG_EXT) {
+      const shared = config.CONFIG_EXT.DEFAULT_SETTINGS?.shared || {};
+      const type = utils.isMobileDevice() ? "mobile" : "desktop";
+      const extDefaults = {
+        ...shared,
+        ...(config.CONFIG_EXT.DEFAULT_SETTINGS?.[type] || {}),
+      };
+      store.resetSettings(extDefaults);
+      ui.fillRandom();
+      ui.highlightSelection();
+      ui.resetRepeatLeft();
+    }
+
+    const settings = store.getSettings();
+    const defaultVoiceName =
+      settings.voiceName || Config.DEFAULT_CONFIG.DEFAULT_VOICE;
+    const defaultLangCode = (
+      settings.languageCode ||
+      Config.DEFAULT_CONFIG.DEFAULT_SETTINGS.shared.languageCode ||
+      ""
+    )
+      .replace("_", "-")
+      .toLowerCase();
+
+    const voices = Voices.getVoices();
+    const match = voices.find((v) => {
+      const voiceLang = (v.lang || "").replace("_", "-").toLowerCase();
+      return (
+        utils.normalizeString(v.name) ===
+          utils.normalizeString(defaultVoiceName) ||
+        voiceLang === defaultLangCode
+      );
+    });
+
+    if (match) {
+      bus.emit(EventTypes.SETTINGS_UPDATE, { voiceName: match.name });
+    } else if (voices.length) {
+      bus.emit(EventTypes.SETTINGS_UPDATE, { voiceName: voices[0].name });
+    }
+  }
+
+  function fullReset() {
+    speaker.cancel();
+    bus.emit(EventTypes.PLAYBACK_STOP);
+  }
+
+  function handleKeyControls(event) {
+    const tag = document.activeElement?.tagName || "";
+    const isTyping = ["INPUT", "TEXTAREA"].includes(tag);
+    if (
+      event.key === "Escape" ||
+      event.code === "Escape" ||
+      event.keyCode === 27
+    ) {
+      event.preventDefault();
+      bus.emit(EventTypes.APP_FULL_RESET);
+    }
+    if (
+      (event.key === " " || event.code === "Space" || event.keyCode === 32) &&
+      !isTyping
+    ) {
+      event.preventDefault();
+      bus.emit(EventTypes.PLAYBACK_TOGGLE);
+    }
+  }
+
+  async function handleDOMContentLoaded() {
+    ui.bindEventSubscriptions();
+    ui.cache();
+
+    await config.load();
+
+    let stored = store.loadSettings() || {};
+    const defaults = config.CONFIG
+      ? {
+          ...config.CONFIG.DEFAULT_SETTINGS.shared,
+          ...(config.CONFIG.DEFAULT_SETTINGS[
+            utils.isMobileDevice() ? "mobile" : "desktop"
+          ] || {}),
+        }
+      : defaultSettings();
+
+    const mergedSettings = Utils.deepMerge(defaults, stored);
+    store.resetSettings(mergedSettings);
+
+    await langLoader.loadAll();
+
+    const uiLang = mergedSettings.uiLang || "en";
+    if (ui.elements.uiLangSelect) {
+      ui.elements.uiLangSelect.value = uiLang;
+      bus.emit(EventTypes.SETTINGS_UPDATE, { uiLang });
+    }
+    bus.emit(EventTypes.UI_TEXTS_UPDATE);
+
+    if (utils.isMobileDevice()) {
+      [ui.elements.languageCodeSelect, ui.elements.labelLanguageCode].forEach(
+        (el) => el && (el.style.display = "none")
+      );
+    }
+
+    ui.cacheInputs();
+    ui.fillRandom();
+    ui.highlightSelection();
+    ui.attachEventHandlers();
+
+    ui.elements.resetBtn?.addEventListener("click", () =>
+      bus.emit(EventTypes.APP_FULL_RESET)
+    );
+    if (ui.elements.startPauseBtn) ui.elements.startPauseBtn.disabled = false;
+    ui.resetRepeatLeft();
+    document.addEventListener("keydown", handleKeyControls);
+
+    if (ui.elements.developerPanel) {
+      ui.elements.developerPanel.style.display = config.CONFIG.DEVELOPER_MODE
+        ? "flex"
+        : "none";
+    }
+
+    speaker.init(
+      () => voices.getVoices(),
+      () => store.getSettings()
+    );
+    wakeLock.init();
+
+    bus.on(EventTypes.VOICES_LOADED, () => {
+      ui.populateLanguageSelect();
+      ui.setLanguageCodeFromSettings();
+      ui.populateVoiceSelect();
+      ui.setVoiceFromSettings();
+
+      const settings = store.getSettings();
+      const allVoices = voices.getVoices() || [];
+
+      if (!settings.voiceName) {
+        if (allVoices.length) {
+          bus.emit(EventTypes.SETTINGS_UPDATE, {
+            voiceName: allVoices[0].name,
+          });
+        }
+        return;
+      }
+
+      // if saved voiceName exists - ensure it actually exists in runtime
+      let match = allVoices.find(
+        (v) =>
+          Utils.normalizeString(v.name) ===
+          Utils.normalizeString(settings.voiceName)
+      );
+      if (!match) {
+        // try partial name match
+        match = allVoices.find((v) =>
+          Utils.normalizeString(v.name).includes(
+            Utils.normalizeString(settings.voiceName)
+          )
+        );
+      }
+      if (!match && settings.languageCode) {
+        const wanted = (settings.languageCode || "").toLowerCase();
+        // exact lang match
+        match = allVoices.find((v) => (v.lang || "").toLowerCase() === wanted);
+        // startsWith full code or base
+        if (!match) {
+          match = allVoices.find((v) =>
+            (v.lang || "").toLowerCase().startsWith(wanted.split(/[-_]/)[0])
+          );
+        }
+      }
+      if (match) {
+        if (match.name !== settings.voiceName) {
+          bus.emit(EventTypes.SETTINGS_UPDATE, { voiceName: match.name });
+        }
+      } else if (allVoices.length) {
+        bus.emit(EventTypes.SETTINGS_UPDATE, {
+          voiceName: allVoices[0].name,
+        });
+      }
+    });
+
+    await voices.load();
+
+    const currentSettings = store.getSettings();
+    bus.emit(EventTypes.SETTINGS_CHANGED, currentSettings);
+
+    setAppStateDirect("ready");
+    ui.hideBackgroundOverlay();
+  }
+
+  function bindEventSubscriptions() {
+    bus.on(EventTypes.APP_STATE_SET, (s) => setAppStateDirect(s));
+    bus.on(EventTypes.APP_SETTINGS_RESET, resetToDefaultSettings);
+    bus.on(EventTypes.APP_FULL_RESET, fullReset);
+  }
+
+  return {
+    init() {
+      bindEventSubscriptions();
+      const updateViewportHeight = () => {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+      };
+      window.addEventListener("resize", updateViewportHeight);
+      window.addEventListener("orientationchange", updateViewportHeight);
+      window.addEventListener("load", updateViewportHeight);
+      document.addEventListener("DOMContentLoaded", handleDOMContentLoaded);
+    },
+  };
+}
+
+const bus = createEventBus();
+const Config = createConfig();
+const LangLoader = createLangLoader({ config: Config });
+const Store = createStore({ config: Config, bus: bus });
+const WakeLock = createWakeLock({ bus: bus });
+const Speaker = createSpeaker();
+const UI = createUI({
+  bus: bus,
+  utils: Utils,
+  config: Config,
+  langLoader: LangLoader,
+});
+const Voices = createVoices({ bus: bus });
+const Playback = createPlayback({
+  bus: bus,
+  speaker: Speaker,
+  utils: Utils,
+  wakeLock: WakeLock,
+  uiProvider: UI,
+  config: Config,
+});
+const App = createApp({
+  bus: bus,
+  config: Config,
+  langLoader: LangLoader,
+  store: Store,
+  ui: UI,
+  voices: Voices,
+  speaker: Speaker,
+  wakeLock: WakeLock,
+  utils: Utils,
+});
+
+bus.on(EventTypes.SETTINGS_CHANGED, () => {});
+
+App.init();

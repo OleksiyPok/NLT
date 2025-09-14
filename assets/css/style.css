@@ -1,6 +1,19 @@
 /* style.css */
 :root {
-  --max-content-width: 425px;
+  --content-max-xs: 425px; /* small containers */
+  --content-max-sm: 540px; /* small containers */
+  --content-max-md: 720px; /* medium */
+  --content-max-lg: 960px; /* large */
+  --content-max-xl: 1140px; /* extra large */
+  --content-max-2xl: 1320px; /* very large desktops */
+
+  --bp-xs: 480px; /* extra small phones */
+  --bp-sm: 576px; /* phones */
+  --bp-md: 640px; /* phablets / small tablets */
+  --bp-lg: 768px; /* tablets portrait */
+  --bp-xl: 1024px; /* tablets landscape / laptops */
+  --bp-2xl: 1280px; /* desktops */
+
   /*:root.theme-yellowblue-normal */
   --text-color: #1a1a1a;
   --text-muted: #555555;
@@ -86,7 +99,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: var(--max-content-width);
+  max-width: var(--content-max-xs);
   margin: 0 auto;
 }
 h2,
@@ -243,26 +256,33 @@ button:disabled {
 .section-block {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  justify-content: space-around;
   gap: 12px;
   width: 100%;
-  margin-top: 8px;
   padding: 10px;
   background: var(--surface-color);
   border: 2px solid var(--border-color);
   border-radius: 15px;
   box-shadow: 0 4px 12px var(--shadow-light);
 }
+.section-row {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12px;
+}
 .section-block-buttons {
   display: flex;
   flex-direction: row;
   flex: 1;
   justify-content: space-between;
-  gap: 8px;
+  gap: 12px;
 }
 .setting-button-wrapper {
   display: flex;
   flex-direction: column;
-  /* gap: 8px; */
+  gap: 12px;
   width: 100%;
 }
 .speed-delay-wrapper,
@@ -343,9 +363,10 @@ button:disabled {
   color: var(--text-placeholder);
 }
 .number-input.highlight {
+  color: var(--primary-active);
+  border: 3px solid var(--border-color);
   font-weight: bold;
   background-color: var(--surface-alt-color);
-  color: var(--danger-hover);
 }
 .repeat-info-group {
   padding: 8px 8px 0;
@@ -437,101 +458,27 @@ button:disabled {
   z-index: 99999;
 }
 
-@media (min-width: 768px) {
-  /* .layout {
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
+@media (min-width: 640px) {
+  .layout {
+    max-width: var(--content-max-md);
     align-items: stretch;
   }
-  .block-setting select {
-    min-width: 60px;
+  .section-row {
+    flex-direction: row;
+    gap: 12px;
   }
-  .repeats-text {
-    font-size: 1em;
-  }
-  .block-numbers,
-  .setting-button-wrapper {
-    align-self: stretch;
+  .section-block-exercises {
+    flex: 1 1 0%;
   }
   .setting-button-wrapper {
-    display: flex;
-    flex-direction: column-reverse;
-    gap: 6px;
     flex: 1;
-  }
-  .block-setting {
-    display: flex;
-    flex-direction: column-reverse;
-    gap: 14px;
-    width: 240px;
-  } 
-  .language-group-wrapper {
-    display: block;
-  }
-  .language-group {
-    display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
   }
-  .language-group select {
-    width: 100%;
-    padding: 6px;
-    font-size: 0.95em;
+  .setting-button-wrapper .section-block-settings {
+    order: 1;
   }
-  .controls-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
+  .setting-button-wrapper .section-block-buttons {
+    order: 2;
+    margin-top: auto;
   }
-  .controls-buttons button {
-    width: 100%;
-    padding: 10px 0;
-    font-size: 1em;
-  }
-  .block-numbers {
-    display: flex;
-    flex-direction: column;
-    width: 420px;
-    min-width: 420px;
-    flex-shrink: 0;
-    padding-top: 26px;
-    padding-bottom: 12px;
-    padding-left: 16px;
-    padding-right: 16px;
-
-    height: 100%;
-  }
-  .number-area {
-    width: 384px;
-    margin-left: auto;
-    margin-right: auto;
-    gap: 12px;
-    padding-top: 0;
-    margin-bottom: 0;
-  }
-  .number-area .column {
-    gap: 14px;
-  }
-  .number-input {
-    width: 75px;
-    height: 34px;
-    font-size: 1.6em;
-  }
-  .repeat-info-group {
-    border-bottom: none;
-    border-top: 1px solid var(--border-color);
-    margin-top: 12px;
-    padding-top: 6px;
-    padding-bottom: 6px;
-  }
-  .setting-row {
-    margin-left: 0;
-    margin-bottom: 8px;
-  }
-  .developer {
-    margin-left: auto;
-  } */
 }
