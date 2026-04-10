@@ -516,6 +516,7 @@ function createUI({ bus, utils, config, langLoader }) {
     helpAppBtn: "#helpAppBtn",
     helpAppModal: "#helpAppModal",
     helpAppCloseBtn: "#helpAppCloseBtn",
+    helpAppContent: "#helpAppContent",
     uiLangSelect: "#uiLangSelect",
     repeatLeft: "#repeatLeft",
     speedSelect: "#speedSelect",
@@ -578,12 +579,57 @@ function createUI({ bus, utils, config, langLoader }) {
     }
   }
 
+  function isAppHelpModalOpen() {
+    return !elements.helpAppModal?.classList.contains("hidden");
+  }
+
+  function loadHelpContent() {
+    const el = elements.helpAppContent;
+    if (!el) return;
+
+    loadHelpContentLang("en");
+  }
+
+  function loadHelpContentLang(lang) {
+    const el = elements.helpAppContent;
+    if (!el) return;
+
+    fetch(`./assets/help/help.${lang}.html`)
+      .then((r) => {
+        if (!r.ok) throw new Error("Help file not found");
+        return r.text();
+      })
+      .then((html) => {
+        el.innerHTML = html;
+        el.dataset.loaded = "1";
+        bindHelpLangLinks();
+      })
+      .catch((e) => console.warn("Help lang load failed", e));
+  }
+
+  function bindHelpLangLinks() {
+    const el = elements.helpAppContent;
+    if (!el) return;
+
+    el.querySelectorAll("[data-lang]").forEach((a) => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        loadHelpContentLang(a.dataset.lang);
+      });
+    });
+  }
+
   function openHelpModal() {
     elements.helpAppModal?.classList.remove("hidden");
   }
 
   function closeHelpModal() {
     elements.helpAppModal?.classList.add("hidden");
+
+    if (elements.helpAppContent) {
+      elements.helpAppContent.innerHTML = "";
+      elements.helpAppContent.dataset.loaded = "0";
+    }
   }
 
   function populateLanguageSelect() {
@@ -818,6 +864,15 @@ function createUI({ bus, utils, config, langLoader }) {
         bus.emit(EventTypes.UI_HELP_MODAL_CLOSE);
       }
     });
+    E.helpAppContent?.addEventListener("click", (e) => {
+      const link = e.target.closest("[data-lang]");
+      if (!link) return;
+
+      e.preventDefault();
+
+      const lang = link.dataset.lang;
+      loadHelpContentLang(lang);
+    });
   }
 
   function resetRepeatLeft() {
@@ -847,7 +902,10 @@ function createUI({ bus, utils, config, langLoader }) {
   }
 
   function bindEventSubscriptions() {
-    bus.on(EventTypes.UI_HELP_MODAL_OPEN, openHelpModal);
+    bus.on(EventTypes.UI_HELP_MODAL_OPEN, () => {
+      loadHelpContent();
+      openHelpModal();
+    });
     bus.on(EventTypes.UI_HELP_MODAL_CLOSE, closeHelpModal);
     bus.on(EventTypes.UI_BACKGROUND_SHOW, showBackgroundOverlay);
     bus.on(EventTypes.UI_BACKGROUND_HIDE, hideBackgroundOverlay);
@@ -927,6 +985,7 @@ function createUI({ bus, utils, config, langLoader }) {
     resetRepeatLeft,
     fillRandom,
     highlightSelection,
+    isAppHelpModalOpen,
     elements,
   };
 }
@@ -1156,10 +1215,18 @@ function createApp({ bus, config, langLoader, store, ui, voices, speaker, wakeLo
   function handleKeyControls(event) {
     const tag = document.activeElement?.tagName || "";
     const isTyping = ["INPUT", "TEXTAREA"].includes(tag);
+
     if (event.key === "Escape" || event.code === "Escape" || event.keyCode === 27) {
       event.preventDefault();
+
+      if (ui.isAppHelpModalOpen()) {
+        bus.emit(EventTypes.UI_HELP_MODAL_CLOSE);
+        return;
+      }
+
       bus.emit(EventTypes.APP_FULL_RESET);
     }
+
     if ((event.key === " " || event.code === "Space" || event.keyCode === 32) && !isTyping) {
       event.preventDefault();
       bus.emit(EventTypes.PLAYBACK_TOGGLE);
