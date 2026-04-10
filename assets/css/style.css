@@ -238,6 +238,7 @@ button:disabled {
   gap: 12px;
   border-top: 1px solid var(--border-color);
 }
+.help-app-btn,
 .reset-settings-btn {
   display: flex;
   justify-content: center;
@@ -252,6 +253,11 @@ button:disabled {
   cursor: pointer;
   outline: none;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+.help-app-btn .i-icon {
+  display: inline-block;
+  transform: scaleY(0.98);
+  line-height: 1;
 }
 .section-block {
   display: flex;
@@ -456,6 +462,41 @@ button:disabled {
 .start-pause-btn {
   position: relative;
   z-index: 99999;
+}
+.help-app-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+}
+.help-app-modal.hidden {
+  display: none;
+}
+.help-app-modal-content {
+  width: min(900px, 92vw);
+  height: min(90vh, 900px);
+  background: var(--background-color);
+  color: var(--text-color);
+  border-radius: 10px;
+  padding: 16px;
+  overflow-y: auto;
+  position: relative;
+  font-size: 16px;
+  line-height: 1.6;
+  box-shadow: 0 8px 24px var(--shadow-medium);
+}
+.help-app-close-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--text-color);
 }
 
 @media (min-width: 640px) {

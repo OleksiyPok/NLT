@@ -25,6 +25,9 @@ const EventTypes = Object.freeze({
   PLAYBACK_INDEX: "playback:currentIndex",
   PLAYBACK_INDEX_SET: "playback:currentIndex:set",
 
+  UI_HELP_MODAL_OPEN: "ui:helpModal:open",
+  UI_HELP_MODAL_CLOSE: "ui:helpModal:close",
+
   SETTINGS_CHANGED: "settings:changed",
   SETTINGS_UPDATE: "settings:update",
 });
@@ -42,10 +45,7 @@ const Utils = (() => {
     return chosen;
   };
   const delay = (ms) => new Promise((r) => setTimeout(r, Number(ms) || 0));
-  const isMobileDevice = () =>
-    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent || ""
-    );
+  const isMobileDevice = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent || "");
   const normalizeString = (s) =>
     String(s || "")
       .trim()
@@ -99,18 +99,7 @@ function createConfig({ paths = null } = {}) {
     CONFIG: "./assets/configs/config.json",
     UI_TEXTS_DIR: "./assets/locales",
   };
-  const UI_LANGS = Object.freeze([
-    "ar",
-    "de",
-    "en",
-    "fr",
-    "nl",
-    "pl",
-    "pt",
-    "ru",
-    "tr",
-    "uk",
-  ]);
+  const UI_LANGS = Object.freeze(["ar", "de", "en", "fr", "nl", "pl", "pt", "ru", "tr", "uk"]);
   const DEFAULT_CONFIG = Object.freeze({
     DEVELOPER_MODE: true,
     USE_LOCAL_STORAGE: 0,
@@ -164,30 +153,18 @@ function createConfig({ paths = null } = {}) {
       }
 
       if (this.CONFIG_EXT) {
-        if ("DEVELOPER_MODE" in this.CONFIG_EXT)
-          this.CONFIG.DEVELOPER_MODE = this.CONFIG_EXT.DEVELOPER_MODE;
-        if ("USE_LOCAL_STORAGE" in this.CONFIG_EXT)
-          this.CONFIG.USE_LOCAL_STORAGE = this.CONFIG_EXT.USE_LOCAL_STORAGE;
-        if (typeof this.CONFIG_EXT.DEFAULT_VOICE === "string")
-          this.CONFIG.DEFAULT_VOICE = this.CONFIG_EXT.DEFAULT_VOICE;
+        if ("DEVELOPER_MODE" in this.CONFIG_EXT) this.CONFIG.DEVELOPER_MODE = this.CONFIG_EXT.DEVELOPER_MODE;
+        if ("USE_LOCAL_STORAGE" in this.CONFIG_EXT) this.CONFIG.USE_LOCAL_STORAGE = this.CONFIG_EXT.USE_LOCAL_STORAGE;
+        if (typeof this.CONFIG_EXT.DEFAULT_VOICE === "string") this.CONFIG.DEFAULT_VOICE = this.CONFIG_EXT.DEFAULT_VOICE;
 
         if (this.CONFIG_EXT.DEFAULT_SETTINGS) {
           const sharedExt = this.CONFIG_EXT.DEFAULT_SETTINGS.shared || {};
           const mobileExt = this.CONFIG_EXT.DEFAULT_SETTINGS.mobile || {};
           const desktopExt = this.CONFIG_EXT.DEFAULT_SETTINGS.desktop || {};
 
-          const mergedShared = Utils.deepMerge(
-            structuredClone(this.CONFIG.DEFAULT_SETTINGS.shared),
-            sharedExt
-          );
-          const mergedMobile = Utils.deepMerge(
-            structuredClone(this.CONFIG.DEFAULT_SETTINGS.mobile),
-            mobileExt
-          );
-          const mergedDesktop = Utils.deepMerge(
-            structuredClone(this.CONFIG.DEFAULT_SETTINGS.desktop),
-            desktopExt
-          );
+          const mergedShared = Utils.deepMerge(structuredClone(this.CONFIG.DEFAULT_SETTINGS.shared), sharedExt);
+          const mergedMobile = Utils.deepMerge(structuredClone(this.CONFIG.DEFAULT_SETTINGS.mobile), mobileExt);
+          const mergedDesktop = Utils.deepMerge(structuredClone(this.CONFIG.DEFAULT_SETTINGS.desktop), desktopExt);
 
           this.CONFIG.DEFAULT_SETTINGS = {
             shared: mergedShared,
@@ -198,14 +175,11 @@ function createConfig({ paths = null } = {}) {
       }
 
       this.CONFIG.DEVELOPER_MODE = parseBinary(this.CONFIG.DEVELOPER_MODE);
-      this.CONFIG.USE_LOCAL_STORAGE = parseBinary(
-        this.CONFIG.USE_LOCAL_STORAGE
-      );
+      this.CONFIG.USE_LOCAL_STORAGE = parseBinary(this.CONFIG.USE_LOCAL_STORAGE);
 
       ["shared", "mobile", "desktop"].forEach((k) => {
         const set = this.CONFIG.DEFAULT_SETTINGS[k];
-        if (set && "fullscreen" in set)
-          set.fullscreen = parseBinary(set.fullscreen) ? 1 : 0;
+        if (set && "fullscreen" in set) set.fullscreen = parseBinary(set.fullscreen) ? 1 : 0;
       });
     },
   };
@@ -397,10 +371,8 @@ function createWakeLock({ bus }) {
 
 function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
   const emitter = bus;
-  let getVoices = () =>
-    typeof voicesProvider === "function" ? voicesProvider() : [];
-  let getSettings = () =>
-    typeof settingsProvider === "function" ? settingsProvider() : {};
+  let getVoices = () => (typeof voicesProvider === "function" ? voicesProvider() : []);
+  let getSettings = () => (typeof settingsProvider === "function" ? settingsProvider() : {});
   let currentUtterance = null;
 
   function init(voicesProv, settingsProv) {
@@ -423,32 +395,24 @@ function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
         String(n || "")
           .trim()
           .toLowerCase();
-      let partial = voices.find((v) =>
-        norm(v.name).includes(norm(desiredName))
-      );
+      let partial = voices.find((v) => norm(v.name).includes(norm(desiredName)));
       if (partial) return partial;
     }
 
     if (desiredLang) {
       const langFull = desiredLang;
-      let byFull = voices.find(
-        (v) => (v.lang || "").toLowerCase() === langFull
-      );
+      let byFull = voices.find((v) => (v.lang || "").toLowerCase() === langFull);
       if (byFull) return byFull;
       const base = langFull.split(/[-_]/)[0];
       if (base) {
-        let byBase = voices.find((v) =>
-          (v.lang || "").toLowerCase().startsWith(base)
-        );
+        let byBase = voices.find((v) => (v.lang || "").toLowerCase().startsWith(base));
         if (byBase) return byBase;
       }
     }
 
     const navigatorBase = (navigator.language || "").split(/[-_]/)[0];
     if (navigatorBase) {
-      const navMatch = voices.find((v) =>
-        (v.lang || "").toLowerCase().startsWith(navigatorBase)
-      );
+      const navMatch = voices.find((v) => (v.lang || "").toLowerCase().startsWith(navigatorBase));
       if (navMatch) return navMatch;
     }
 
@@ -457,8 +421,7 @@ function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
 
   async function speakAsync(text, options = {}) {
     if (!text) return;
-    const settings =
-      (typeof getSettings === "function" ? getSettings() : {}) || {};
+    const settings = (typeof getSettings === "function" ? getSettings() : {}) || {};
     const s = { ...settings, ...options };
     if (options.interrupt !== false) speechSynthesis.cancel();
 
@@ -476,21 +439,9 @@ function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
       if (s.languageCode) utter.lang = s.languageCode;
     }
 
-    const rate =
-      Number.isFinite(Number(s.rate ?? s.speed)) &&
-      Number(s.rate ?? s.speed) > 0
-        ? Number(s.rate ?? s.speed)
-        : 1.0;
-    const pitch =
-      Number.isFinite(Number(s.pitch)) && Number(s.pitch) > 0
-        ? Number(s.pitch)
-        : 1.0;
-    const volume =
-      Number.isFinite(Number(s.volume)) &&
-      Number(s.volume) >= 0 &&
-      Number(s.volume) <= 1
-        ? Number(s.volume)
-        : 1.0;
+    const rate = Number.isFinite(Number(s.rate ?? s.speed)) && Number(s.rate ?? s.speed) > 0 ? Number(s.rate ?? s.speed) : 1.0;
+    const pitch = Number.isFinite(Number(s.pitch)) && Number(s.pitch) > 0 ? Number(s.pitch) : 1.0;
+    const volume = Number.isFinite(Number(s.volume)) && Number(s.volume) >= 0 && Number(s.volume) <= 1 ? Number(s.volume) : 1.0;
 
     utter.rate = rate;
     utter.pitch = pitch;
@@ -528,8 +479,7 @@ function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
   }
 
   function cancel() {
-    if (speechSynthesis.speaking || speechSynthesis.pending)
-      speechSynthesis.cancel();
+    if (speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel();
     if (currentUtterance) {
       emitter?.emit?.("speech:end", { button: null });
       currentUtterance = null;
@@ -563,6 +513,9 @@ function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
 
 function createUI({ bus, utils, config, langLoader }) {
   const SELECTORS = {
+    helpAppBtn: "#helpAppBtn",
+    helpAppModal: "#helpAppModal",
+    helpAppCloseBtn: "#helpAppCloseBtn",
     uiLangSelect: "#uiLangSelect",
     repeatLeft: "#repeatLeft",
     speedSelect: "#speedSelect",
@@ -571,8 +524,8 @@ function createUI({ bus, utils, config, langLoader }) {
     countSelect: "#countSelect",
     repeatSelect: "#repeatSelect",
     fullscreenSelect: "#fullscreenSelect",
-    languageCodeSelect: ".language-code-select",
-    labelLanguageCode: ".label-language-code",
+    languageCodeSelect: "#languageCodeSelect",
+    labelLanguageCode: "#labelLanguageCode",
     voiceSelect: "#voiceSelect",
     numberGrid: "#numberGrid",
     labelRepeatsText: "#labelRepeatsText",
@@ -602,54 +555,35 @@ function createUI({ bus, utils, config, langLoader }) {
   let currentIndex = 0;
 
   function cache() {
-    for (const key in SELECTORS)
-      elements[key] = document.querySelector(SELECTORS[key]) || null;
+    for (const key in SELECTORS) elements[key] = document.querySelector(SELECTORS[key]) || null;
   }
   function cacheInputs() {
-    inputsCache = elements.numberGrid
-      ? Array.from(elements.numberGrid.querySelectorAll("input[type='text']"))
-      : [];
+    inputsCache = elements.numberGrid ? Array.from(elements.numberGrid.querySelectorAll("input[type='text']")) : [];
   }
   const getInputs = () => inputsCache.slice();
-  const getSelectedInputs = () =>
-    inputsCache.filter((i) => i.classList.contains("selected"));
+  const getSelectedInputs = () => inputsCache.filter((i) => i.classList.contains("selected"));
 
   function setSelectsFromSettings(s) {
     const E = elements;
-    s.digitLength = utils.safeNumber(
-      utils.safeSetSelectValue(E.digitLengthSelect, String(s.digitLength), "2"),
-      2
-    );
-    s.count = utils.safeNumber(
-      utils.safeSetSelectValue(E.countSelect, String(s.count), "40"),
-      40
-    );
-    s.repeat = utils.safeNumber(
-      utils.safeSetSelectValue(E.repeatSelect, String(s.repeat), "1"),
-      1
-    );
-    s.speed = utils.safeNumber(
-      utils.safeSetSelectValue(
-        E.speedSelect,
-        Number(s.speed).toFixed(1),
-        "1.0"
-      ),
-      1.0
-    );
-    s.delay = utils.safeNumber(
-      utils.safeSetSelectValue(E.delaySelect, String(s.delay), "1000"),
-      1000
-    );
-    s.fullscreen = utils.safeSetSelectValue(
-      E.fullscreenSelect,
-      String(s.fullscreen),
-      "0"
-    );
+    s.digitLength = utils.safeNumber(utils.safeSetSelectValue(E.digitLengthSelect, String(s.digitLength), "2"), 2);
+    s.count = utils.safeNumber(utils.safeSetSelectValue(E.countSelect, String(s.count), "40"), 40);
+    s.repeat = utils.safeNumber(utils.safeSetSelectValue(E.repeatSelect, String(s.repeat), "1"), 1);
+    s.speed = utils.safeNumber(utils.safeSetSelectValue(E.speedSelect, Number(s.speed).toFixed(1), "1.0"), 1.0);
+    s.delay = utils.safeNumber(utils.safeSetSelectValue(E.delaySelect, String(s.delay), "1000"), 1000);
+    s.fullscreen = utils.safeSetSelectValue(E.fullscreenSelect, String(s.fullscreen), "0");
     if (s.uiLang && E.uiLangSelect) E.uiLangSelect.value = s.uiLang;
     if (E.languageCodeSelect) {
       const langPart = (s.languageCode || "ALL").split(/[-_]/)[0].toUpperCase();
       E.languageCodeSelect.value = langPart;
     }
+  }
+
+  function openHelpModal() {
+    elements.helpAppModal?.classList.remove("hidden");
+  }
+
+  function closeHelpModal() {
+    elements.helpAppModal?.classList.add("hidden");
   }
 
   function populateLanguageSelect() {
@@ -663,35 +597,22 @@ function createUI({ bus, utils, config, langLoader }) {
       frag.appendChild(opt);
     });
     el.replaceChildren(frag);
-    const configLang = (
-      (currentSettings.languageCode || "ALL").split(/[-_]/)[0] || "ALL"
-    ).toUpperCase();
-    el.value = availableLanguages.includes(configLang)
-      ? configLang
-      : utils.isMobileDevice()
-      ? "ALL"
-      : el.value;
+    const configLang = ((currentSettings.languageCode || "ALL").split(/[-_]/)[0] || "ALL").toUpperCase();
+    el.value = availableLanguages.includes(configLang) ? configLang : utils.isMobileDevice() ? "ALL" : el.value;
   }
 
   function populateVoiceSelect() {
     const el = elements.voiceSelect;
     if (!el) return;
     const isMobile = utils.isMobileDevice();
-    const selectedLang = (
-      elements.languageCodeSelect?.value || "ALL"
-    ).toUpperCase();
+    const selectedLang = (elements.languageCodeSelect?.value || "ALL").toUpperCase();
 
     if (!voicesList || !voicesList.length) {
       el.replaceChildren();
       return;
     }
 
-    const voicesToShow =
-      isMobile || selectedLang === "ALL"
-        ? voicesList
-        : voicesList.filter((v) =>
-            (v.lang || "").toUpperCase().startsWith(selectedLang)
-          );
+    const voicesToShow = isMobile || selectedLang === "ALL" ? voicesList : voicesList.filter((v) => (v.lang || "").toUpperCase().startsWith(selectedLang));
 
     const frag = document.createDocumentFragment();
     voicesToShow.forEach((v) => {
@@ -702,11 +623,7 @@ function createUI({ bus, utils, config, langLoader }) {
     });
     el.replaceChildren(frag);
 
-    let match = voicesToShow.find(
-      (v) =>
-        utils.normalizeString(v.name) ===
-        utils.normalizeString(currentSettings.voiceName)
-    );
+    let match = voicesToShow.find((v) => utils.normalizeString(v.name) === utils.normalizeString(currentSettings.voiceName));
     if (!match && voicesToShow.length) match = voicesToShow[0];
 
     if (match && el.value !== match.name) {
@@ -717,9 +634,7 @@ function createUI({ bus, utils, config, langLoader }) {
 
   function setLanguageCodeFromSettings() {
     const E = elements;
-    const langPart = (
-      (currentSettings.languageCode || "ALL").split(/[-_]/)[0] || "ALL"
-    ).toUpperCase();
+    const langPart = ((currentSettings.languageCode || "ALL").split(/[-_]/)[0] || "ALL").toUpperCase();
     if (E.languageCodeSelect && E.languageCodeSelect.value !== langPart) {
       E.languageCodeSelect.value = langPart;
     }
@@ -755,10 +670,8 @@ function createUI({ bus, utils, config, langLoader }) {
     setText(E.resetBtn, texts.reset);
     setText(E.labelFullscreen, texts.labelFullscreen);
     if (E.fullscreenSelect) {
-      if (E.fullscreenSelect.options[0].textContent !== texts.fullscreenNo)
-        E.fullscreenSelect.options[0].textContent = texts.fullscreenNo;
-      if (E.fullscreenSelect.options[1].textContent !== texts.fullscreenYes)
-        E.fullscreenSelect.options[1].textContent = texts.fullscreenYes;
+      if (E.fullscreenSelect.options[0].textContent !== texts.fullscreenNo) E.fullscreenSelect.options[0].textContent = texts.fullscreenNo;
+      if (E.fullscreenSelect.options[1].textContent !== texts.fullscreenYes) E.fullscreenSelect.options[1].textContent = texts.fullscreenYes;
     }
     updateStartPauseButton();
     updateControlsState();
@@ -820,10 +733,7 @@ function createUI({ bus, utils, config, langLoader }) {
     if (!overlay) return;
     if (overlay.textContent !== value) overlay.textContent = value || "";
     overlay.classList.add("show");
-    setTimeout(
-      () => overlay.classList.remove("show"),
-      1000 + Number(delayMs || 0)
-    );
+    setTimeout(() => overlay.classList.remove("show"), 1000 + Number(delayMs || 0));
   }
   function hideActiveNumberOverlay() {
     elements.activeNumberOverlay?.classList.remove("show");
@@ -893,26 +803,27 @@ function createUI({ bus, utils, config, langLoader }) {
       highlightSelection();
     });
 
-    E.fullscreenSelect?.addEventListener("change", () =>
-      updateSettingsFromUI()
-    );
+    E.fullscreenSelect?.addEventListener("change", () => updateSettingsFromUI());
 
-    E.resetSettingsBtn?.addEventListener("click", () =>
-      bus.emit(EventTypes.APP_SETTINGS_RESET)
-    );
-    E.startPauseBtn?.addEventListener("click", () =>
-      bus.emit(EventTypes.PLAYBACK_TOGGLE)
-    );
-    E.resetBtn?.addEventListener("click", () =>
-      bus.emit(EventTypes.APP_FULL_RESET)
-    );
+    E.resetSettingsBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_SETTINGS_RESET));
+    E.startPauseBtn?.addEventListener("click", () => bus.emit(EventTypes.PLAYBACK_TOGGLE));
+    E.resetBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_FULL_RESET));
+
+    E.helpAppBtn?.addEventListener("click", () => bus.emit(EventTypes.UI_HELP_MODAL_OPEN));
+
+    E.helpAppCloseBtn?.addEventListener("click", () => bus.emit(EventTypes.UI_HELP_MODAL_CLOSE));
+
+    E.helpAppModal?.addEventListener("click", (e) => {
+      if (e.target === elements.helpAppModal) {
+        bus.emit(EventTypes.UI_HELP_MODAL_CLOSE);
+      }
+    });
   }
 
   function resetRepeatLeft() {
     if (elements.repeatLeft && elements.repeatSelect) {
       const val = elements.repeatSelect.value;
-      if (elements.repeatLeft.textContent !== val)
-        elements.repeatLeft.textContent = val;
+      if (elements.repeatLeft.textContent !== val) elements.repeatLeft.textContent = val;
     }
     updateControlsState();
   }
@@ -930,26 +841,21 @@ function createUI({ bus, utils, config, langLoader }) {
     getInputs().forEach((input, idx) => {
       const sel = idx < count;
       const hi = idx === ci;
-      if (input.classList.contains("selected") !== sel)
-        input.classList.toggle("selected", sel);
-      if (input.classList.contains("highlight") !== hi)
-        input.classList.toggle("highlight", hi);
+      if (input.classList.contains("selected") !== sel) input.classList.toggle("selected", sel);
+      if (input.classList.contains("highlight") !== hi) input.classList.toggle("highlight", hi);
     });
   }
 
   function bindEventSubscriptions() {
+    bus.on(EventTypes.UI_HELP_MODAL_OPEN, openHelpModal);
+    bus.on(EventTypes.UI_HELP_MODAL_CLOSE, closeHelpModal);
     bus.on(EventTypes.UI_BACKGROUND_SHOW, showBackgroundOverlay);
     bus.on(EventTypes.UI_BACKGROUND_HIDE, hideBackgroundOverlay);
-    bus.on(EventTypes.UI_ACTIVE_NUMBER_SHOW, ({ value, delayMs }) =>
-      showActiveNumberOverlay(value, delayMs)
-    );
+    bus.on(EventTypes.UI_ACTIVE_NUMBER_SHOW, ({ value, delayMs }) => showActiveNumberOverlay(value, delayMs));
     bus.on(EventTypes.UI_ACTIVE_NUMBER_HIDE, hideActiveNumberOverlay);
     bus.on(EventTypes.UI_HIGHLIGHT, highlightSelection);
     bus.on(EventTypes.UI_REPEAT_LEFT_SET, (val) => {
-      if (
-        elements.repeatLeft &&
-        String(elements.repeatLeft.textContent) !== String(val)
-      ) {
+      if (elements.repeatLeft && String(elements.repeatLeft.textContent) !== String(val)) {
         elements.repeatLeft.textContent = String(val);
       }
       updateControlsState();
@@ -961,33 +867,27 @@ function createUI({ bus, utils, config, langLoader }) {
     });
     bus.on(EventTypes.UI_TEXTS_UPDATE, updateUILabels);
 
-    bus.on(
-      EventTypes.VOICES_CHANGED,
-      ({ voices, availableLanguages: langs }) => {
-        voicesList = (voices || []).map((v) => ({
-          name: v.name,
-          lang: v.lang,
-        }));
-        availableLanguages = (langs || []).slice();
-        if (!availableLanguages.includes("ALL")) availableLanguages.push("ALL");
-        populateLanguageSelect();
-        populateVoiceSelect();
-      }
-    );
+    bus.on(EventTypes.VOICES_CHANGED, ({ voices, availableLanguages: langs }) => {
+      voicesList = (voices || []).map((v) => ({
+        name: v.name,
+        lang: v.lang,
+      }));
+      availableLanguages = (langs || []).slice();
+      if (!availableLanguages.includes("ALL")) availableLanguages.push("ALL");
+      populateLanguageSelect();
+      populateVoiceSelect();
+    });
 
-    bus.on(
-      EventTypes.VOICES_LOADED,
-      ({ voices, availableLanguages: langs }) => {
-        voicesList = (voices || []).map((v) => ({
-          name: v.name,
-          lang: v.lang,
-        }));
-        availableLanguages = (langs || []).slice();
-        if (!availableLanguages.includes("ALL")) availableLanguages.push("ALL");
-        populateLanguageSelect();
-        populateVoiceSelect();
-      }
-    );
+    bus.on(EventTypes.VOICES_LOADED, ({ voices, availableLanguages: langs }) => {
+      voicesList = (voices || []).map((v) => ({
+        name: v.name,
+        lang: v.lang,
+      }));
+      availableLanguages = (langs || []).slice();
+      if (!availableLanguages.includes("ALL")) availableLanguages.push("ALL");
+      populateLanguageSelect();
+      populateVoiceSelect();
+    });
 
     bus.on(EventTypes.SETTINGS_CHANGED, (newSettings) => {
       currentSettings = { ...newSettings };
@@ -1037,13 +937,7 @@ function createVoices({ bus }) {
   const emitter = bus || bus;
 
   function computeAvailableLanguages() {
-    availableLanguages = Array.from(
-      new Set(
-        voices
-          .map((v) => (v.lang || "").split(/[-_]/)[0].toUpperCase())
-          .filter(Boolean)
-      )
-    ).sort();
+    availableLanguages = Array.from(new Set(voices.map((v) => (v.lang || "").split(/[-_]/)[0].toUpperCase()).filter(Boolean))).sort();
     if (!availableLanguages.includes("ALL")) availableLanguages.push("ALL");
   }
 
@@ -1075,8 +969,7 @@ function createVoices({ bus }) {
     publish("voices:loaded");
   }
 
-  if ("onvoiceschanged" in speechSynthesis)
-    speechSynthesis.onvoiceschanged = () => collect();
+  if ("onvoiceschanged" in speechSynthesis) speechSynthesis.onvoiceschanged = () => collect();
 
   return {
     collect,
@@ -1092,9 +985,7 @@ function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, config }) {
   let currentIndex = 0;
 
   function buildPlayQueue() {
-    return uiProvider
-      .getSelectedInputs()
-      .map((i) => ({ value: i.value, el: i }));
+    return uiProvider.getSelectedInputs().map((i) => ({ value: i.value, el: i }));
   }
 
   function resetRuntime(runtime) {
@@ -1183,19 +1074,14 @@ function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, config }) {
     bus.emit(EventTypes.UI_BACKGROUND_HIDE);
     bus.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
     resetRuntime(runtime);
-    bus.emit(
-      EventTypes.UI_REPEAT_LEFT_SET,
-      utils.safeNumber(currentSettings.repeat, 1)
-    );
+    bus.emit(EventTypes.UI_REPEAT_LEFT_SET, utils.safeNumber(currentSettings.repeat, 1));
     bus.emit(EventTypes.UI_HIGHLIGHT);
     wakeLock.release();
   });
 
   bus.on(EventTypes.PLAYBACK_TOGGLE, () => {
-    if (currentAppState === "playing")
-      return bus.emit(EventTypes.PLAYBACK_PAUSE);
-    if (currentAppState === "paused")
-      return bus.emit(EventTypes.PLAYBACK_RESUME);
+    if (currentAppState === "playing") return bus.emit(EventTypes.PLAYBACK_PAUSE);
+    if (currentAppState === "paused") return bus.emit(EventTypes.PLAYBACK_RESUME);
     bus.emit(EventTypes.PLAYBACK_START);
   });
 
@@ -1206,17 +1092,7 @@ function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, config }) {
   return { buildPlayQueue };
 }
 
-function createApp({
-  bus,
-  config,
-  langLoader,
-  store,
-  ui,
-  voices,
-  speaker,
-  wakeLock,
-  utils,
-}) {
+function createApp({ bus, config, langLoader, store, ui, voices, speaker, wakeLock, utils }) {
   function defaultSettings() {
     const shared = config.DEFAULT_CONFIG.DEFAULT_SETTINGS.shared;
     const type = utils.isMobileDevice() ? "mobile" : "desktop";
@@ -1256,24 +1132,13 @@ function createApp({
     }
 
     const settings = store.getSettings();
-    const defaultVoiceName =
-      settings.voiceName || Config.DEFAULT_CONFIG.DEFAULT_VOICE;
-    const defaultLangCode = (
-      settings.languageCode ||
-      Config.DEFAULT_CONFIG.DEFAULT_SETTINGS.shared.languageCode ||
-      ""
-    )
-      .replace("_", "-")
-      .toLowerCase();
+    const defaultVoiceName = settings.voiceName || Config.DEFAULT_CONFIG.DEFAULT_VOICE;
+    const defaultLangCode = (settings.languageCode || Config.DEFAULT_CONFIG.DEFAULT_SETTINGS.shared.languageCode || "").replace("_", "-").toLowerCase();
 
     const voices = Voices.getVoices();
     const match = voices.find((v) => {
       const voiceLang = (v.lang || "").replace("_", "-").toLowerCase();
-      return (
-        utils.normalizeString(v.name) ===
-          utils.normalizeString(defaultVoiceName) ||
-        voiceLang === defaultLangCode
-      );
+      return utils.normalizeString(v.name) === utils.normalizeString(defaultVoiceName) || voiceLang === defaultLangCode;
     });
 
     if (match) {
@@ -1291,18 +1156,11 @@ function createApp({
   function handleKeyControls(event) {
     const tag = document.activeElement?.tagName || "";
     const isTyping = ["INPUT", "TEXTAREA"].includes(tag);
-    if (
-      event.key === "Escape" ||
-      event.code === "Escape" ||
-      event.keyCode === 27
-    ) {
+    if (event.key === "Escape" || event.code === "Escape" || event.keyCode === 27) {
       event.preventDefault();
       bus.emit(EventTypes.APP_FULL_RESET);
     }
-    if (
-      (event.key === " " || event.code === "Space" || event.keyCode === 32) &&
-      !isTyping
-    ) {
+    if ((event.key === " " || event.code === "Space" || event.keyCode === 32) && !isTyping) {
       event.preventDefault();
       bus.emit(EventTypes.PLAYBACK_TOGGLE);
     }
@@ -1318,9 +1176,7 @@ function createApp({
     const defaults = config.CONFIG
       ? {
           ...config.CONFIG.DEFAULT_SETTINGS.shared,
-          ...(config.CONFIG.DEFAULT_SETTINGS[
-            utils.isMobileDevice() ? "mobile" : "desktop"
-          ] || {}),
+          ...(config.CONFIG.DEFAULT_SETTINGS[utils.isMobileDevice() ? "mobile" : "desktop"] || {}),
         }
       : defaultSettings();
 
@@ -1337,9 +1193,7 @@ function createApp({
     bus.emit(EventTypes.UI_TEXTS_UPDATE);
 
     if (utils.isMobileDevice()) {
-      [ui.elements.languageCodeSelect, ui.elements.labelLanguageCode].forEach(
-        (el) => el && (el.style.display = "none")
-      );
+      [ui.elements.languageCodeSelect, ui.elements.labelLanguageCode].forEach((el) => el && (el.style.display = "none"));
     }
 
     ui.cacheInputs();
@@ -1347,17 +1201,13 @@ function createApp({
     ui.highlightSelection();
     ui.attachEventHandlers();
 
-    ui.elements.resetBtn?.addEventListener("click", () =>
-      bus.emit(EventTypes.APP_FULL_RESET)
-    );
+    ui.elements.resetBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_FULL_RESET));
     if (ui.elements.startPauseBtn) ui.elements.startPauseBtn.disabled = false;
     ui.resetRepeatLeft();
     document.addEventListener("keydown", handleKeyControls);
 
     if (ui.elements.developerPanel) {
-      ui.elements.developerPanel.style.display = config.CONFIG.DEVELOPER_MODE
-        ? "flex"
-        : "none";
+      ui.elements.developerPanel.style.display = config.CONFIG.DEVELOPER_MODE ? "flex" : "none";
     }
 
     speaker.init(
@@ -1385,18 +1235,10 @@ function createApp({
       }
 
       // if saved voiceName exists - ensure it actually exists in runtime
-      let match = allVoices.find(
-        (v) =>
-          Utils.normalizeString(v.name) ===
-          Utils.normalizeString(settings.voiceName)
-      );
+      let match = allVoices.find((v) => Utils.normalizeString(v.name) === Utils.normalizeString(settings.voiceName));
       if (!match) {
         // try partial name match
-        match = allVoices.find((v) =>
-          Utils.normalizeString(v.name).includes(
-            Utils.normalizeString(settings.voiceName)
-          )
-        );
+        match = allVoices.find((v) => Utils.normalizeString(v.name).includes(Utils.normalizeString(settings.voiceName)));
       }
       if (!match && settings.languageCode) {
         const wanted = (settings.languageCode || "").toLowerCase();
@@ -1404,9 +1246,7 @@ function createApp({
         match = allVoices.find((v) => (v.lang || "").toLowerCase() === wanted);
         // startsWith full code or base
         if (!match) {
-          match = allVoices.find((v) =>
-            (v.lang || "").toLowerCase().startsWith(wanted.split(/[-_]/)[0])
-          );
+          match = allVoices.find((v) => (v.lang || "").toLowerCase().startsWith(wanted.split(/[-_]/)[0]));
         }
       }
       if (match) {

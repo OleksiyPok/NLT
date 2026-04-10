@@ -17,14 +17,16 @@
           <img class="title-icon" id="titleIcon" src="./assets/icons/icon_NLT_64x64.png" alt="Icon" />
           <div class="title-text" id="titleText">
             <h2>Number Listening Trainer<br /></h2>
-            <h6 id="version" class="version">version 1.4.17</h6>
+            <h6 id="version" class="version">version 1.4.18</h6>
           </div>
         </div>
         <h5>
           <a href="mailto:Oleksii.Pokormiakho.job@gmail.com" style="text-decoration: none; color: inherit"> Oleksii Pokormiakho </a>
         </h5>
         <div class="setting-row" id="settingRow">
-          <button class="reset-settings-btn" id="resetSettingsBtn" title="Reset to default settings">🔄</button>
+          <button class="help-app-btn" id="helpAppBtn" title="Open application description" aria-label="Open application description">
+            <span class="i-icon">ℹ️</span>
+          </button>
           <div class="ui-language-wrapper" id="uiLanguageWrapper">
             <label for="uiLangSelect" id="uiLangLabel" class="ui-lang-label">Interface:</label>
             <select class="ui-lang-select" id="uiLangSelect" title="Select interface language">
@@ -108,6 +110,7 @@
             </div>
 
             <div class="section-block section-block-settings">
+              <button class="reset-settings-btn" id="resetSettingsBtn" title="Reset to default settings">🔄</button>
               <div class="speed-delay-wrapper">
                 <div class="speed-group">
                   <label for="speedSelect" id="labelSpeed">Speed</label>
@@ -207,8 +210,17 @@
           <button onclick="localStorage.clear(); alert('localStorage cleared');" title="Clear local storage">Clear LS</button>
         </div>
       </div>
+
       <div class="scroll-bottom-space"></div>
     </div>
+
+    <div id="helpAppModal" class="help-app-modal hidden">
+      <div class="help-app-modal-content">
+        <button id="helpAppCloseBtn" class="help-app-close-btn">✕</button>
+        <div id="helpAppContent"></div>
+      </div>
+    </div>
+
     <script type="module" src="app/main_NLT.js"></script>
   </body>
 </html>
