@@ -17,5 +17,6 @@
   "fullscreenNo": "Ні",
   "fullscreenYes": "Так",
   "default": "Типові",
-  "repeatsLeft": "Залишилось:"
+  "repeatsLeft": "Залишилось:",
+  "defaultSettings": "Скинути за замовчуванням"
 }

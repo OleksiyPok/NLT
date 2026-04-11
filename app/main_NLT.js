@@ -208,6 +208,7 @@ function createLangLoader({ config }) {
     fullscreenYes: "Yes",
     default: "Default",
     repeatsLeft: "Repeats left:",
+    resetSettingsText: "Reset defaults",
   };
   async function loadLang(code) {
     try {
@@ -532,6 +533,7 @@ function createUI({ bus, utils, config, langLoader }) {
     labelRepeatsText: "#labelRepeatsText",
     fillRandomBtn: "#fillRandomBtn",
     resetSettingsBtn: "#resetSettingsBtn",
+    resetSettingsText: "#resetSettingsText",
     startPauseBtn: "#startPauseBtn",
     resetBtn: "#resetBtn",
     uiLangLabel: "#uiLangLabel",
@@ -712,6 +714,7 @@ function createUI({ bus, utils, config, langLoader }) {
     setText(E.labelSpeed, texts.labelSpeed);
     setText(E.labelDelay, texts.labelDelay);
     setText(E.labelRepeatsText, texts.repeatsLeft);
+    setText(E.resetSettingsText, texts.defaultSettings);
     setText(E.fillRandomBtn, texts.fillRandom);
     setText(E.resetBtn, texts.reset);
     setText(E.labelFullscreen, texts.labelFullscreen);
@@ -1215,6 +1218,12 @@ function createApp({ bus, config, langLoader, store, ui, voices, speaker, wakeLo
   function handleKeyControls(event) {
     const tag = document.activeElement?.tagName || "";
     const isTyping = ["INPUT", "TEXTAREA"].includes(tag);
+
+    if (event.key === "F1" || event.code === "F1" || event.keyCode === 112) {
+      event.preventDefault();
+      bus.emit(EventTypes.UI_HELP_MODAL_OPEN);
+      return;
+    }
 
     if (event.key === "Escape" || event.code === "Escape" || event.keyCode === 27) {
       event.preventDefault();

@@ -17,7 +17,7 @@
           <img class="title-icon" id="titleIcon" src="./assets/icons/icon_NLT_64x64.png" alt="Icon" />
           <div class="title-text" id="titleText">
             <h2>Number Listening Trainer<br /></h2>
-            <h6 id="version" class="version">version 1.4.18</h6>
+            <h6 id="version" class="version">version 1.5.1</h6>
           </div>
         </div>
         <h5>
@@ -108,9 +108,7 @@
               <button disabled id="startPauseBtn" class="start-pause-btn">Start</button>
               <button disabled id="resetBtn" class="reset-btn">Reset</button>
             </div>
-
             <div class="section-block section-block-settings">
-              <button class="reset-settings-btn" id="resetSettingsBtn" title="Reset to default settings">🔄</button>
               <div class="speed-delay-wrapper">
                 <div class="speed-group">
                   <label for="speedSelect" id="labelSpeed">Speed</label>
@@ -197,6 +195,12 @@
                   <label for="voiceSelect" id="labelVoice" class="label-voice">Voice</label>
                   <select id="voiceSelect" title="Voice" class="voice-select"></select>
                 </div>
+              </div>
+              <div class="reset-settings-group" id="resetSettingsGroup">
+                <button class="reset-settings-btn" id="resetSettingsBtn" title="Reset to default settings">
+                  <span class="reset-icon">🔄</span>
+                </button>
+                <span class="reset-settings-text" id="resetSettingsText">Reset defaults</span>
               </div>
             </div>
           </div>

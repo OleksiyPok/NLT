@@ -152,6 +152,7 @@ select:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
+/* span, */
 label {
   font-weight: 600;
   font-size: 0.95em;
@@ -238,6 +239,19 @@ button:disabled {
   gap: 12px;
   border-top: 1px solid var(--border-color);
 }
+.reset-settings-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  width: 100%;
+  margin-left: 0;
+  margin-bottom: 4px;
+  gap: 12px;
+  padding-top: 8px;
+  opacity: 0.75;
+  /* border-top: 1px solid var(--border-color); */
+}
 .help-app-btn,
 .reset-settings-btn {
   display: flex;
@@ -246,18 +260,34 @@ button:disabled {
   flex-shrink: 0;
   width: 36px;
   height: 36px;
-  font-size: 26px;
-  background: var(--background-color);
   border: none;
   border-radius: 6px;
   cursor: pointer;
   outline: none;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+.help-app-btn {
+  font-size: 26px;
+  background: var(--background-color);
+}
+.reset-settings-btn {
+  font-size: 18px;
+  background: var(--surface-color);
+}
 .help-app-btn .i-icon {
   display: inline-block;
   transform: scaleY(0.98);
   line-height: 1;
+}
+.reset-settings-btn .reset-icon {
+  opacity: 0.8;
+}
+.reset-settings-text {
+  font-weight: 600;
+  font-size: 0.85em;
+  color: var(--text-muted);
+  white-space: nowrap;
+  user-select: none;
 }
 .section-block {
   display: flex;

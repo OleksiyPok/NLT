@@ -17,5 +17,6 @@
   "fullscreenNo": "Hayır",
   "fullscreenYes": "Evet",
   "default": "Varsayılan",
-  "repeatsLeft": "Kaldı:"
+  "repeatsLeft": "Kaldı:",
+  "defaultSettings": "Varsayılan sıfırla"
 }

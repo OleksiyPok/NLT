@@ -17,5 +17,6 @@
   "fullscreenNo": "Nein",
   "fullscreenYes": "Ja",
   "default": "Standard",
-  "repeatsLeft": "Wiederholungen übrig:"
+  "repeatsLeft": "Wiederholungen übrig:",
+  "defaultSettings": "Standard zurücksetzen"
 }

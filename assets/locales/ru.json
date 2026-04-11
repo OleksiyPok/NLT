@@ -17,5 +17,6 @@
   "fullscreenNo": "Нет",
   "fullscreenYes": "Да",
   "default": "По умолчанию",
-  "repeatsLeft": "Осталось:"
+  "repeatsLeft": "Осталось:",
+  "defaultSettings": "Сброс по умолчанию"
 }
