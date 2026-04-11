@@ -355,8 +355,10 @@ function createWakeLock({ bus }) {
     },
     init() {
       document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "visible") {
-          bus.emit(EventTypes.APP_STATE, "resume-visibility");
+        if (document.visibilityState !== "visible") {
+          if (speechSynthesis.speaking && !speechSynthesis.paused) {
+            bus.emit(EventTypes.PLAYBACK_PAUSE);
+          }
         } else {
           this.release();
         }
@@ -1119,6 +1121,7 @@ function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, config }) {
   });
 
   bus.on(EventTypes.PLAYBACK_RESUME, () => {
+    if (currentAppState === "playing") return;
     bus.emit(EventTypes.APP_STATE_SET, "playing");
     playSequence(runtime).catch((e) => console.warn("playSequence failed", e));
   });
