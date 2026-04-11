@@ -17,5 +17,6 @@
   "fullscreenNo": "Não",
   "fullscreenYes": "Sim",
   "default": "Padrão",
-  "repeatsLeft": "Restantes:"
+  "repeatsLeft": "Restantes:",
+  "defaultSettings": "Redefinir padrão"
 }

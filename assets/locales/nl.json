@@ -17,5 +17,6 @@
   "fullscreenNo": "Nee",
   "fullscreenYes": "Ja",
   "default": "Standaard",
-  "repeatsLeft": "Herhalingen over:"
+  "repeatsLeft": "Herhalingen over:",
+  "defaultSettings": "Standaard herstellen"
 }

@@ -17,5 +17,6 @@
   "fullscreenNo": "Nie",
   "fullscreenYes": "Tak",
   "default": "Domyślne",
-  "repeatsLeft": "Pozostało:"
+  "repeatsLeft": "Pozostało:",
+  "defaultSettings": "Przywróć domyślne"
 }

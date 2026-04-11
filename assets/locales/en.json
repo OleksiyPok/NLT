@@ -17,5 +17,6 @@
   "fullscreenNo": "No",
   "fullscreenYes": "Yes",
   "default": "Default",
-  "repeatsLeft": "Repeats left:"
+  "repeatsLeft": "Repeats left:",
+  "defaultSettings": "Reset defaults"
 }
