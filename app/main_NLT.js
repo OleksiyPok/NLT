@@ -356,7 +356,9 @@ function createWakeLock({ bus }) {
     init() {
       document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "visible") {
-          bus.emit(EventTypes.APP_STATE, "resume-visibility");
+          if (speechSynthesis.speaking && !speechSynthesis.paused) {
+            bus.emit(EventTypes.PLAYBACK_RESUME);
+          }
         } else {
           this.release();
         }
