@@ -17,7 +17,7 @@
           <img class="title-icon" id="titleIcon" src="./assets/icons/icon_NLT_64x64.png" alt="Icon" />
           <div class="title-text" id="titleText">
             <h2>Number Listening Trainer<br /></h2>
-            <h6 id="version" class="version">version 1.5.2</h6>
+            <h6 id="version" class="version">version 2.0.1</h6>
           </div>
         </div>
         <h5>
@@ -178,11 +178,29 @@
                 </div>
               </div>
               <div class="fullscreen-wrapper">
-                <div class="fullscreen-group">
+                <div class="fullscreen-switcher-group">
                   <label for="fullscreenSelect" id="labelFullscreen" class="label-fullscreen">Fullscreen</label>
                   <select id="fullscreenSelect" class="fullscreen-select">
                     <option value="0">No</option>
                     <option value="1" selected>Yes</option>
+                  </select>
+                </div>
+                <div class="fullscreen-mode-group">
+                  <label for="fullscreenMode" id="labelFullscreenMode" class="label-fullscreen-mode">Delay mode:</label>
+                  <select id="fullscreenMode" class="fullscreen-mode">
+                    <option value="No delay" selected>No</option>
+                    <option value="Visual delay">Visual</option>
+                    <option value="Audio delay">Audio</option>
+                  </select>
+                </div>
+                <div class="fullscreen-delay-group">
+                  <label for="fullscreenDelay" id="labelFullscreenDelay" class="label-fullscreen-delay">Delay (sec):</label>
+                  <select id="fullscreenDelay" class="fullscreen-delay">
+                    <option value="1">1</option>
+                    <option value="2" selected>2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
                   </select>
                 </div>
               </div>
@@ -196,6 +214,23 @@
                   <select id="voiceSelect" title="Voice" class="voice-select"></select>
                 </div>
               </div>
+
+              <!-- <div class="thema-wrapper">
+                <div class="thema-group">
+                  <label for="themaSelect" id="labelThema" class="label-thema">Thema</label>
+                  <select id="themaSelect" class="thema-select">
+                    <option value="1">1</option>
+                    <option value="2" selected>2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                  </select>
+                </div>
+              </div> -->
+
               <div class="reset-settings-group" id="resetSettingsGroup">
                 <button class="reset-settings-btn" id="resetSettingsBtn" title="Reset to default settings">
                   <span class="reset-icon">🔄</span>

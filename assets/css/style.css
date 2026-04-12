@@ -324,7 +324,8 @@ button:disabled {
 .speed-delay-wrapper,
 .digit-length-count-repeat-wrapper,
 .fullscreen-wrapper,
-.language-voice-wrapper {
+.language-voice-wrapper,
+.thema-wrapper {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -334,14 +335,24 @@ button:disabled {
   border: 1px solid var(--border-color);
   border-radius: 10px;
 }
+.fullscreen-mode-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 6px;
+}
 .speed-group,
 .delay-group,
 .digit-length-group,
 .count-group,
 .repeat-group,
-.fullscreen-group,
+.fullscreen-switcher-group,
+.fullscreen-mode-group,
+.fullscreen-delay-group,
 .language-group,
-.voice-group {
+.voice-group,
+.thema-group {
   align-items: baseline;
   justify-content: space-between;
 }
@@ -350,13 +361,15 @@ button:disabled {
 .digit-length-group,
 .count-group,
 .repeat-group,
-.fullscreen-group {
+.fullscreen-switcher-group,
+.fullscreen-delay-group {
   display: flex;
   flex-direction: row;
   gap: 12px;
 }
 .language-group,
-.voice-group {
+.voice-group,
+.thema-group {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -415,11 +428,14 @@ button:disabled {
 .digit-length-group select,
 .count-group select,
 .repeat-group select,
-.fullscreen-group select {
+.fullscreen-switcher-group select,
+.fullscreen-mode-group select,
+.fullscreen-delay-group select {
   width: 90px;
 }
 .language-group select,
-.voice-group select {
+.voice-group select,
+.thema-group select {
   width: 100%;
   text-align: left;
 }
@@ -540,6 +556,9 @@ button:disabled {
   }
   .section-block-exercises {
     flex: 1 1 0%;
+  }
+  .number-area .column {
+    gap: 18px;
   }
   .setting-button-wrapper {
     flex: 1;
