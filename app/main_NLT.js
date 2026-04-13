@@ -115,6 +115,8 @@ function createConfig({ paths = null } = {}) {
         fullscreen: true,
         languageCode: "nl-NL",
         voiceName: "Google Nederlands",
+        fullscreenMode: "No delay",
+        fullscreenDelay: "2",
       },
       mobile: { fullscreen: true },
       desktop: { fullscreen: false },
@@ -546,6 +548,8 @@ function createUI({ bus, utils, config, langLoader }) {
     labelSpeed: "#labelSpeed",
     labelDelay: "#labelDelay",
     labelFullscreen: "#labelFullscreen",
+    fullscreenMode: "#fullscreenMode",
+    fullscreenDelay: "#fullscreenDelay",
     developerPanel: "#developer",
     backgroundOverlay: "#backgroundOverlay",
     activeNumberOverlay: "#activeNumberOverlay",
@@ -576,6 +580,9 @@ function createUI({ bus, utils, config, langLoader }) {
     s.speed = utils.safeNumber(utils.safeSetSelectValue(E.speedSelect, Number(s.speed).toFixed(1), "1.0"), 1.0);
     s.delay = utils.safeNumber(utils.safeSetSelectValue(E.delaySelect, String(s.delay), "1000"), 1000);
     s.fullscreen = utils.safeSetSelectValue(E.fullscreenSelect, String(s.fullscreen), "0");
+    s.fullscreenMode = utils.safeSetSelectValue(elements.fullscreenMode, s.fullscreenMode, "No delay");
+    s.fullscreenDelay = utils.safeSetSelectValue(elements.fullscreenDelay, String(s.fullscreenDelay), "2");
+
     if (s.uiLang && E.uiLangSelect) E.uiLangSelect.value = s.uiLang;
     if (E.languageCodeSelect) {
       const langPart = (s.languageCode || "ALL").split(/[-_]/)[0].toUpperCase();
@@ -805,6 +812,8 @@ function createUI({ bus, utils, config, langLoader }) {
     upd("speed", E.speedSelect, currentSettings.speed);
     upd("delay", E.delaySelect, currentSettings.delay);
     upd("fullscreen", E.fullscreenSelect, currentSettings.fullscreen);
+    upd("fullscreenMode", E.fullscreenMode, currentSettings.fullscreenMode);
+    upd("fullscreenDelay", E.fullscreenDelay, currentSettings.fullscreenDelay);
     bus.emit(EventTypes.SETTINGS_UPDATE, s);
   }
 
@@ -855,15 +864,13 @@ function createUI({ bus, utils, config, langLoader }) {
     });
 
     E.fullscreenSelect?.addEventListener("change", () => updateSettingsFromUI());
-
+    E.fullscreenMode?.addEventListener("change", () => updateSettingsFromUI());
+    E.fullscreenDelay?.addEventListener("change", () => updateSettingsFromUI());
     E.resetSettingsBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_SETTINGS_RESET));
     E.startPauseBtn?.addEventListener("click", () => bus.emit(EventTypes.PLAYBACK_TOGGLE));
     E.resetBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_FULL_RESET));
-
     E.helpAppBtn?.addEventListener("click", () => bus.emit(EventTypes.UI_HELP_MODAL_OPEN));
-
     E.helpAppCloseBtn?.addEventListener("click", () => bus.emit(EventTypes.UI_HELP_MODAL_CLOSE));
-
     E.helpAppModal?.addEventListener("click", (e) => {
       if (e.target === elements.helpAppModal) {
         bus.emit(EventTypes.UI_HELP_MODAL_CLOSE);
