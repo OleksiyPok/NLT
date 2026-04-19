@@ -587,6 +587,8 @@ function createUI({ bus, utils, config, langLoader }) {
     labelSpeed: "#labelSpeed",
     labelDelay: "#labelDelay",
     labelFullscreen: "#labelFullscreen",
+    labelFullscreenMode: "#labelFullscreenMode",
+    labelFullscreenDelay: "#labelFullscreenDelay",
     fullscreenMode: "#fullscreenMode",
     fullscreenDelay: "#fullscreenDelay",
     developerPanel: "#developer",
@@ -815,6 +817,16 @@ function createUI({ bus, utils, config, langLoader }) {
     toggleClass(elements.labelVoice, "disabled", isPlaying);
     setDisabled(elements.fillRandomBtn, !isReady);
     setDisabled(elements.resetBtn, !isPaused);
+
+    const isFullscreen = (elements.fullscreenSelect?.value || "0") === "1";
+    const isDelayModeOn = (elements.fullscreenMode?.value || "No delay") !== "No delay";
+
+    setDisabled(elements.fullscreenMode, !isFullscreen);
+    toggleClass(elements.labelFullscreenMode, "disabled", !isFullscreen);
+
+    const disableFsDelay = !isFullscreen || !isDelayModeOn;
+    setDisabled(elements.fullscreenDelay, disableFsDelay);
+    toggleClass(elements.labelFullscreenDelay, "disabled", disableFsDelay);
   }
 
   function showBackgroundOverlay() {
