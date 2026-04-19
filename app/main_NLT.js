@@ -107,7 +107,7 @@ function createConfig({ paths = null } = {}) {
     DEFAULT_SETTINGS: {
       shared: {
         uiLang: "en",
-        delay: "1000",
+        intervalMs: "1000",
         speed: "1.0",
         digitLength: "2",
         count: "40",
@@ -199,7 +199,7 @@ function createLangLoader({ config }) {
     labelCount: "Count",
     labelRepeat: "Repeat",
     labelSpeed: "Speed",
-    labelDelay: "Delay (ms)",
+    labelInterval: "Interval (ms)",
     labelFullscreen: "Fullscreen",
     start: "Start",
     continue: "Continue",
@@ -308,7 +308,12 @@ function createStore({ config, bus }) {
   const loadSettings = () => {
     const loaded = Storage.load();
     if (loaded) {
-      state.settings = { ...state.settings, ...loaded };
+      const migrated = { ...loaded };
+      if (!("intervalMs" in migrated) && "delay" in migrated) {
+        migrated.intervalMs = migrated.delay;
+        delete migrated.delay;
+      }
+      state.settings = { ...state.settings, ...migrated };
       bus.emit(EventTypes.SETTINGS_CHANGED, { ...state.settings });
     }
     return getSettings();
@@ -564,7 +569,7 @@ function createUI({ bus, utils, config, langLoader }) {
     uiLangSelect: "#uiLangSelect",
     repeatLeft: "#repeatLeft",
     speedSelect: "#speedSelect",
-    delaySelect: "#delaySelect",
+    intervalSelect: "#intervalSelect",
     digitLengthSelect: "#digitLengthSelect",
     countSelect: "#countSelect",
     repeatSelect: "#repeatSelect",
@@ -585,7 +590,7 @@ function createUI({ bus, utils, config, langLoader }) {
     labelCount: "#labelCount",
     labelRepeat: "#labelRepeat",
     labelSpeed: "#labelSpeed",
-    labelDelay: "#labelDelay",
+    labelInterval: "#labelInterval",
     labelFullscreen: "#labelFullscreen",
     labelFullscreenMode: "#labelFullscreenMode",
     labelFullscreenDelay: "#labelFullscreenDelay",
@@ -619,7 +624,7 @@ function createUI({ bus, utils, config, langLoader }) {
     s.count = utils.safeNumber(utils.safeSetSelectValue(E.countSelect, String(s.count), "40"), 40);
     s.repeat = utils.safeNumber(utils.safeSetSelectValue(E.repeatSelect, String(s.repeat), "1"), 1);
     s.speed = utils.safeNumber(utils.safeSetSelectValue(E.speedSelect, Number(s.speed).toFixed(1), "1.0"), 1.0);
-    s.delay = utils.safeNumber(utils.safeSetSelectValue(E.delaySelect, String(s.delay), "1000"), 1000);
+    s.intervalMs = utils.safeNumber(utils.safeSetSelectValue(E.intervalSelect, String(s.intervalMs), "1000"), 1000);
     s.fullscreen = utils.safeSetSelectValue(E.fullscreenSelect, String(s.fullscreen), "0");
     s.fullscreenMode = utils.safeSetSelectValue(elements.fullscreenMode, s.fullscreenMode, "No delay");
     s.fullscreenDelay = utils.safeSetSelectValue(elements.fullscreenDelay, String(s.fullscreenDelay), "2");
@@ -762,7 +767,7 @@ function createUI({ bus, utils, config, langLoader }) {
     setText(E.labelCount, texts.labelCount);
     setText(E.labelRepeat, texts.labelRepeat);
     setText(E.labelSpeed, texts.labelSpeed);
-    setText(E.labelDelay, texts.labelDelay);
+    setText(E.labelInterval, texts.labelInterval);
     setText(E.labelRepeatsText, texts.repeatsLeft);
     setText(E.resetSettingsText, texts.defaultSettings);
     setText(E.fillRandomBtn, texts.fillRandom);
@@ -860,7 +865,7 @@ function createUI({ bus, utils, config, langLoader }) {
     upd("languageCode", E.languageCodeSelect, currentSettings.languageCode);
     upd("voiceName", E.voiceSelect, currentSettings.voiceName);
     upd("speed", E.speedSelect, currentSettings.speed);
-    upd("delay", E.delaySelect, currentSettings.delay);
+    upd("intervalMs", E.intervalSelect, currentSettings.intervalMs);
     upd("fullscreen", E.fullscreenSelect, currentSettings.fullscreen);
     upd("fullscreenMode", E.fullscreenMode, currentSettings.fullscreenMode);
     upd("fullscreenDelay", E.fullscreenDelay, currentSettings.fullscreenDelay);
@@ -906,7 +911,7 @@ function createUI({ bus, utils, config, langLoader }) {
     });
 
     E.speedSelect?.addEventListener("change", () => updateSettingsFromUI());
-    E.delaySelect?.addEventListener("change", () => updateSettingsFromUI());
+    E.intervalSelect?.addEventListener("change", () => updateSettingsFromUI());
 
     E.fillRandomBtn?.addEventListener("click", () => {
       fillRandom();
@@ -1138,7 +1143,7 @@ function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, config }) {
     };
 
     while (currentAppState === "playing") {
-      const delayMs = utils.safeNumber(currentSettings.delay, 500);
+      const intervalMs = utils.safeNumber(currentSettings.intervalMs, 500);
       const isFullscreen = String(currentSettings.fullscreen ?? "0") === "1";
       const fsMode = String(currentSettings.fullscreenMode || "No delay");
       const fsDelayMs = isFullscreen ? utils.safeNumber(currentSettings.fullscreenDelay, 0) * 1000 : 0;
@@ -1162,7 +1167,7 @@ function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, config }) {
       const idx = currentIndex;
       const item = runtime.playQueue[idx];
       if (!item || !item.value) {
-        await utils.delay(delayMs);
+        await utils.delay(intervalMs);
         if (currentAppState !== "playing") break;
         bus.emit(EventTypes.PLAYBACK_INDEX_SET, idx + 1);
         continue;
@@ -1221,7 +1226,7 @@ function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, config }) {
       }
 
       if (currentAppState !== "playing") break;
-      await utils.delay(delayMs);
+      await utils.delay(intervalMs);
       if (currentAppState !== "playing") break;
       bus.emit(EventTypes.PLAYBACK_INDEX_SET, idx + 1);
     }

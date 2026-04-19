@@ -7,7 +7,7 @@
   "labelCount": "Aantal",
   "labelRepeat": "Herhalen",
   "labelSpeed": "Snelheid",
-  "labelDelay": "Pauze (ms)",
+  "labelInterval": "Interval (ms)",
   "labelFullscreen": "Volledig scherm",
   "start": "Start",
   "continue": "Doorgaan",

@@ -7,7 +7,7 @@
   "labelCount": "العدد",
   "labelRepeat": "التكرار",
   "labelSpeed": "السرعة",
-  "labelDelay": "التأخير (مللي ثانية)",
+  "labelInterval": "الفاصل (مللي ثانية)",
   "labelFullscreen": "ملء الشاشة",
   "start": "ابدأ",
   "continue": "متابعة",

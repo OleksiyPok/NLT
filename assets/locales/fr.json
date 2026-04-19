@@ -7,7 +7,7 @@
   "labelCount": "Nombre",
   "labelRepeat": "Répéter",
   "labelSpeed": "Vitesse",
-  "labelDelay": "Pause (ms)",
+  "labelInterval": "Intervalle (ms)",
   "labelFullscreen": "Plein écran",
   "start": "Démarrer",
   "continue": "Continuer",

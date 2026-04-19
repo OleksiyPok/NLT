@@ -7,7 +7,7 @@
   "labelCount": "Sayı",
   "labelRepeat": "Tekrar",
   "labelSpeed": "Hız",
-  "labelDelay": "Ara (ms)",
+  "labelInterval": "Aralık (ms)",
   "labelFullscreen": "Tam ekran",
   "start": "Başlat",
   "continue": "Devam et",

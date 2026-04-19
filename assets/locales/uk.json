@@ -7,7 +7,7 @@
   "labelCount": "Кількість",
   "labelRepeat": "Повтор",
   "labelSpeed": "Темп",
-  "labelDelay": "Пауза (мс)",
+  "labelInterval": "Інтервал (мс)",
   "labelFullscreen": "Повний екран",
   "start": "Почати",
   "continue": "Продовжити",
