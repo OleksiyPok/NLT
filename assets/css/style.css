@@ -384,7 +384,7 @@ button:disabled {
   border-radius: 10px;
 }
 
-.fullscreen-mode-group {
+.fullscreen-delay-mode-group {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -398,7 +398,7 @@ button:disabled {
 .count-group,
 .repeat-group,
 .fullscreen-switcher-group,
-.fullscreen-mode-group,
+.fullscreen-delay-mode-group,
 .fullscreen-delay-group,
 .language-group,
 .voice-group,
@@ -489,7 +489,7 @@ button:disabled {
 .count-group select,
 .repeat-group select,
 .fullscreen-switcher-group select,
-.fullscreen-mode-group select,
+.fullscreen-delay-mode-group select,
 .fullscreen-delay-group select {
   width: 90px;
 }

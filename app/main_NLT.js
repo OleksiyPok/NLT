@@ -99,7 +99,7 @@ function createConfig({ paths = null } = {}) {
     CONFIG: "./assets/configs/config.json",
     UI_TEXTS_DIR: "./assets/locales",
   };
-  const UI_LANGS = Object.freeze(["ar", "de", "en", "fr", "nl", "pl", "pt", "ru", "tr", "uk"]);
+  const UI_LANGS = Object.freeze(["ar", "cs", "de", "en", "es", "fr", "it", "nl", "pl", "pt", "ru", "tr", "uk"]);
   const DEFAULT_CONFIG = Object.freeze({
     DEVELOPER_MODE: true,
     USE_LOCAL_STORAGE: 0,
@@ -115,7 +115,7 @@ function createConfig({ paths = null } = {}) {
         fullscreen: true,
         languageCode: "nl-NL",
         voiceName: "Google Nederlands",
-        fullscreenMode: "No delay",
+        fullscreenDelayMode: "No delay",
         fullscreenDelay: "2",
       },
       mobile: { fullscreen: true },
@@ -601,8 +601,7 @@ function createUI({ bus, utils, config, langLoader }) {
     labelFullscreenDelay: "#labelFullscreenDelay",
     labelFullscreenDelayMode: "#labelFullscreenDelayMode",
     labelDelayTime: "#labelDelayTime",
-    delayModeSelect: "#delayModeSelect",
-    fullscreenMode: "#fullscreenMode",
+    fullscreenDelayMode: "#fullscreenDelayMode",
     fullscreenDelay: "#fullscreenDelay",
     developerPanel: "#developer",
     backgroundOverlay: "#backgroundOverlay",
@@ -634,7 +633,7 @@ function createUI({ bus, utils, config, langLoader }) {
     s.speed = utils.safeNumber(utils.safeSetSelectValue(E.speedSelect, Number(s.speed).toFixed(1), "1.0"), 1.0);
     s.intervalMs = utils.safeNumber(utils.safeSetSelectValue(E.intervalSelect, String(s.intervalMs), "1000"), 1000);
     s.fullscreen = utils.safeSetSelectValue(E.fullscreenSelect, String(s.fullscreen), "0");
-    s.fullscreenMode = utils.safeSetSelectValue(elements.fullscreenMode, s.fullscreenMode, "No delay");
+    s.fullscreenDelayMode = utils.safeSetSelectValue(elements.fullscreenDelayMode, s.fullscreenDelayMode, "No delay");
     s.fullscreenDelay = utils.safeSetSelectValue(elements.fullscreenDelay, String(s.fullscreenDelay), "2");
 
     if (s.uiLang && E.uiLangSelect) E.uiLangSelect.value = s.uiLang;
@@ -788,15 +787,15 @@ function createUI({ bus, utils, config, langLoader }) {
       if (E.fullscreenSelect.options[0].textContent !== texts.fullscreenNo) E.fullscreenSelect.options[0].textContent = texts.fullscreenNo;
       if (E.fullscreenSelect.options[1].textContent !== texts.fullscreenYes) E.fullscreenSelect.options[1].textContent = texts.fullscreenYes;
     }
-    if (E.fullscreenMode) {
-      if (E.fullscreenMode.options[0].textContent !== texts.delayModeNo) {
-        E.fullscreenMode.options[0].textContent = texts.delayModeNo;
+    if (E.fullscreenDelayMode) {
+      if (E.fullscreenDelayMode.options[0].textContent !== texts.delayModeNo) {
+        E.fullscreenDelayMode.options[0].textContent = texts.delayModeNo;
       }
-      if (E.fullscreenMode.options[1].textContent !== texts.delayModeVisual) {
-        E.fullscreenMode.options[1].textContent = texts.delayModeVisual;
+      if (E.fullscreenDelayMode.options[1].textContent !== texts.delayModeVisual) {
+        E.fullscreenDelayMode.options[1].textContent = texts.delayModeVisual;
       }
-      if (E.fullscreenMode.options[2].textContent !== texts.delayModeAudio) {
-        E.fullscreenMode.options[2].textContent = texts.delayModeAudio;
+      if (E.fullscreenDelayMode.options[2].textContent !== texts.delayModeAudio) {
+        E.fullscreenDelayMode.options[2].textContent = texts.delayModeAudio;
       }
     }
 
@@ -847,9 +846,9 @@ function createUI({ bus, utils, config, langLoader }) {
     setDisabled(elements.resetBtn, !isPaused);
 
     const isFullscreen = (elements.fullscreenSelect?.value || "0") === "1";
-    const isDelayModeOn = (elements.fullscreenMode?.value || "No delay") !== "No delay";
+    const isDelayModeOn = (elements.fullscreenDelayMode?.value || "No delay") !== "No delay";
 
-    setDisabled(elements.fullscreenMode, !isFullscreen);
+    setDisabled(elements.fullscreenDelayMode, !isFullscreen);
     toggleClass(elements.labelFullscreenDelayMode, "disabled", !isFullscreen);
 
     const disableFsDelay = !isFullscreen || !isDelayModeOn;
@@ -890,7 +889,7 @@ function createUI({ bus, utils, config, langLoader }) {
     upd("speed", E.speedSelect, currentSettings.speed);
     upd("intervalMs", E.intervalSelect, currentSettings.intervalMs);
     upd("fullscreen", E.fullscreenSelect, currentSettings.fullscreen);
-    upd("fullscreenMode", E.fullscreenMode, currentSettings.fullscreenMode);
+    upd("fullscreenDelayMode", E.fullscreenDelayMode, currentSettings.fullscreenDelayMode);
     upd("fullscreenDelay", E.fullscreenDelay, currentSettings.fullscreenDelay);
     bus.emit(EventTypes.SETTINGS_UPDATE, s);
   }
@@ -942,7 +941,7 @@ function createUI({ bus, utils, config, langLoader }) {
     });
 
     E.fullscreenSelect?.addEventListener("change", () => updateSettingsFromUI());
-    E.fullscreenMode?.addEventListener("change", () => updateSettingsFromUI());
+    E.fullscreenDelayMode?.addEventListener("change", () => updateSettingsFromUI());
     E.fullscreenDelay?.addEventListener("change", () => updateSettingsFromUI());
     E.resetSettingsBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_SETTINGS_RESET));
     E.startPauseBtn?.addEventListener("click", () => bus.emit(EventTypes.PLAYBACK_TOGGLE));
@@ -1168,7 +1167,7 @@ function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, config }) {
     while (currentAppState === "playing") {
       const intervalMs = utils.safeNumber(currentSettings.intervalMs, 500);
       const isFullscreen = String(currentSettings.fullscreen ?? "0") === "1";
-      const fsMode = String(currentSettings.fullscreenMode || "No delay");
+      const fsMode = String(currentSettings.fullscreenDelayMode || "No delay");
       const fsDelayMs = isFullscreen ? utils.safeNumber(currentSettings.fullscreenDelay, 0) * 1000 : 0;
 
       if (currentIndex >= runtime.playQueue.length) {
