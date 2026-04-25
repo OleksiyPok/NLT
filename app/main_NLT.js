@@ -99,7 +99,7 @@ function createConfig({ paths = null } = {}) {
     CONFIG: "./assets/configs/config.json",
     UI_TEXTS_DIR: "./assets/locales",
   };
-  const UI_LANGS = Object.freeze(["ar", "de", "en", "fr", "nl", "pl", "pt", "ru", "tr", "uk"]);
+  const UI_LANGS = Object.freeze(["ar", "cs", "de", "en", "es", "fr", "it", "nl", "pl", "pt", "ru", "tr", "uk"]);
   const DEFAULT_CONFIG = Object.freeze({
     DEVELOPER_MODE: true,
     USE_LOCAL_STORAGE: 0,
@@ -107,7 +107,7 @@ function createConfig({ paths = null } = {}) {
     DEFAULT_SETTINGS: {
       shared: {
         uiLang: "en",
-        delay: "1000",
+        intervalMs: "1000",
         speed: "1.0",
         digitLength: "2",
         count: "40",
@@ -115,6 +115,8 @@ function createConfig({ paths = null } = {}) {
         fullscreen: true,
         languageCode: "nl-NL",
         voiceName: "Google Nederlands",
+        fullscreenDelayMode: "No delay",
+        fullscreenDelay: "2",
       },
       mobile: { fullscreen: true },
       desktop: { fullscreen: false },
@@ -197,8 +199,10 @@ function createLangLoader({ config }) {
     labelCount: "Count",
     labelRepeat: "Repeat",
     labelSpeed: "Speed",
-    labelDelay: "Delay (ms)",
+    labelInterval: "Interval (ms)",
     labelFullscreen: "Fullscreen",
+    labelFullscreenDelay: "Delay mode",
+    labelDelayTime: "Delay (sec)",
     start: "Start",
     continue: "Continue",
     pause: "Pause",
@@ -206,9 +210,12 @@ function createLangLoader({ config }) {
     fillRandom: "🎲 Rnd",
     fullscreenNo: "No",
     fullscreenYes: "Yes",
+    delayModeNo: "No",
+    delayModeVisual: "Visual",
+    delayModeAudio: "Audio",
     default: "Default",
     repeatsLeft: "Repeats left:",
-    resetSettingsText: "Reset defaults",
+    defaultSettings: "Reset defaults",
   };
   async function loadLang(code) {
     try {
@@ -306,7 +313,12 @@ function createStore({ config, bus }) {
   const loadSettings = () => {
     const loaded = Storage.load();
     if (loaded) {
-      state.settings = { ...state.settings, ...loaded };
+      const migrated = { ...loaded };
+      if (!("intervalMs" in migrated) && "delay" in migrated) {
+        migrated.intervalMs = migrated.delay;
+        delete migrated.delay;
+      }
+      state.settings = { ...state.settings, ...migrated };
       bus.emit(EventTypes.SETTINGS_CHANGED, { ...state.settings });
     }
     return getSettings();
@@ -489,6 +501,44 @@ function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
     }
   }
 
+  async function warmUp() {
+    try {
+      try {
+        speechSynthesis.cancel();
+      } catch (_) {}
+      speechSynthesis.resume();
+    } catch (_) {}
+    const settings = (typeof getSettings === "function" ? getSettings() : {}) || {};
+    const utter = new SpeechSynthesisUtterance(".");
+    const chosen = _selectVoice(settings);
+    if (chosen) {
+      try {
+        utter.voice = chosen;
+        utter.lang = chosen.lang || settings.languageCode || utter.lang || "";
+      } catch (_) {
+        if (settings.languageCode) utter.lang = settings.languageCode;
+      }
+    } else if (settings.languageCode) {
+      utter.lang = settings.languageCode;
+    }
+    utter.rate = 1.2;
+    utter.pitch = 1;
+    utter.volume = 0.01;
+    await new Promise((resolve) => {
+      let settled = false;
+      const finish = () => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(t);
+        resolve();
+      };
+      const t = setTimeout(finish, 800);
+      utter.onend = finish;
+      utter.onerror = finish;
+      speechSynthesis.speak(utter);
+    });
+  }
+
   const pause = () => {
     try {
       speechSynthesis.pause();
@@ -506,6 +556,7 @@ function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
     init,
     speak,
     speakAsync,
+    warmUp,
     cancel,
     pause,
     resume,
@@ -523,7 +574,7 @@ function createUI({ bus, utils, config, langLoader }) {
     uiLangSelect: "#uiLangSelect",
     repeatLeft: "#repeatLeft",
     speedSelect: "#speedSelect",
-    delaySelect: "#delaySelect",
+    intervalSelect: "#intervalSelect",
     digitLengthSelect: "#digitLengthSelect",
     countSelect: "#countSelect",
     repeatSelect: "#repeatSelect",
@@ -544,8 +595,14 @@ function createUI({ bus, utils, config, langLoader }) {
     labelCount: "#labelCount",
     labelRepeat: "#labelRepeat",
     labelSpeed: "#labelSpeed",
-    labelDelay: "#labelDelay",
+    labelInterval: "#labelInterval",
     labelFullscreen: "#labelFullscreen",
+    labelFullscreenDelayMode: "#labelFullscreenDelayMode",
+    labelFullscreenDelay: "#labelFullscreenDelay",
+    labelFullscreenDelayMode: "#labelFullscreenDelayMode",
+    labelDelayTime: "#labelDelayTime",
+    fullscreenDelayMode: "#fullscreenDelayMode",
+    fullscreenDelay: "#fullscreenDelay",
     developerPanel: "#developer",
     backgroundOverlay: "#backgroundOverlay",
     activeNumberOverlay: "#activeNumberOverlay",
@@ -574,8 +631,11 @@ function createUI({ bus, utils, config, langLoader }) {
     s.count = utils.safeNumber(utils.safeSetSelectValue(E.countSelect, String(s.count), "40"), 40);
     s.repeat = utils.safeNumber(utils.safeSetSelectValue(E.repeatSelect, String(s.repeat), "1"), 1);
     s.speed = utils.safeNumber(utils.safeSetSelectValue(E.speedSelect, Number(s.speed).toFixed(1), "1.0"), 1.0);
-    s.delay = utils.safeNumber(utils.safeSetSelectValue(E.delaySelect, String(s.delay), "1000"), 1000);
+    s.intervalMs = utils.safeNumber(utils.safeSetSelectValue(E.intervalSelect, String(s.intervalMs), "1000"), 1000);
     s.fullscreen = utils.safeSetSelectValue(E.fullscreenSelect, String(s.fullscreen), "0");
+    s.fullscreenDelayMode = utils.safeSetSelectValue(elements.fullscreenDelayMode, s.fullscreenDelayMode, "No delay");
+    s.fullscreenDelay = utils.safeSetSelectValue(elements.fullscreenDelay, String(s.fullscreenDelay), "2");
+
     if (s.uiLang && E.uiLangSelect) E.uiLangSelect.value = s.uiLang;
     if (E.languageCodeSelect) {
       const langPart = (s.languageCode || "ALL").split(/[-_]/)[0].toUpperCase();
@@ -714,16 +774,31 @@ function createUI({ bus, utils, config, langLoader }) {
     setText(E.labelCount, texts.labelCount);
     setText(E.labelRepeat, texts.labelRepeat);
     setText(E.labelSpeed, texts.labelSpeed);
-    setText(E.labelDelay, texts.labelDelay);
+    setText(E.labelInterval, texts.labelInterval);
     setText(E.labelRepeatsText, texts.repeatsLeft);
     setText(E.resetSettingsText, texts.defaultSettings);
     setText(E.fillRandomBtn, texts.fillRandom);
     setText(E.resetBtn, texts.reset);
     setText(E.labelFullscreen, texts.labelFullscreen);
+    setText(E.labelFullscreenDelayMode, texts.labelFullscreenDelayMode);
+    setText(E.labelDelayTime, texts.labelDelayTime);
+    setText(E.labelFullscreenDelay, texts.labelFullscreenDelay);
     if (E.fullscreenSelect) {
       if (E.fullscreenSelect.options[0].textContent !== texts.fullscreenNo) E.fullscreenSelect.options[0].textContent = texts.fullscreenNo;
       if (E.fullscreenSelect.options[1].textContent !== texts.fullscreenYes) E.fullscreenSelect.options[1].textContent = texts.fullscreenYes;
     }
+    if (E.fullscreenDelayMode) {
+      if (E.fullscreenDelayMode.options[0].textContent !== texts.delayModeNo) {
+        E.fullscreenDelayMode.options[0].textContent = texts.delayModeNo;
+      }
+      if (E.fullscreenDelayMode.options[1].textContent !== texts.delayModeVisual) {
+        E.fullscreenDelayMode.options[1].textContent = texts.delayModeVisual;
+      }
+      if (E.fullscreenDelayMode.options[2].textContent !== texts.delayModeAudio) {
+        E.fullscreenDelayMode.options[2].textContent = texts.delayModeAudio;
+      }
+    }
+
     updateStartPauseButton();
     updateControlsState();
   }
@@ -769,6 +844,16 @@ function createUI({ bus, utils, config, langLoader }) {
     toggleClass(elements.labelVoice, "disabled", isPlaying);
     setDisabled(elements.fillRandomBtn, !isReady);
     setDisabled(elements.resetBtn, !isPaused);
+
+    const isFullscreen = (elements.fullscreenSelect?.value || "0") === "1";
+    const isDelayModeOn = (elements.fullscreenDelayMode?.value || "No delay") !== "No delay";
+
+    setDisabled(elements.fullscreenDelayMode, !isFullscreen);
+    toggleClass(elements.labelFullscreenDelayMode, "disabled", !isFullscreen);
+
+    const disableFsDelay = !isFullscreen || !isDelayModeOn;
+    setDisabled(elements.fullscreenDelay, disableFsDelay);
+    toggleClass(elements.labelFullscreenDelay, "disabled", disableFsDelay);
   }
 
   function showBackgroundOverlay() {
@@ -784,7 +869,6 @@ function createUI({ bus, utils, config, langLoader }) {
     if (!overlay) return;
     if (overlay.textContent !== value) overlay.textContent = value || "";
     overlay.classList.add("show");
-    setTimeout(() => overlay.classList.remove("show"), 1000 + Number(delayMs || 0));
   }
   function hideActiveNumberOverlay() {
     elements.activeNumberOverlay?.classList.remove("show");
@@ -803,8 +887,10 @@ function createUI({ bus, utils, config, langLoader }) {
     upd("languageCode", E.languageCodeSelect, currentSettings.languageCode);
     upd("voiceName", E.voiceSelect, currentSettings.voiceName);
     upd("speed", E.speedSelect, currentSettings.speed);
-    upd("delay", E.delaySelect, currentSettings.delay);
+    upd("intervalMs", E.intervalSelect, currentSettings.intervalMs);
     upd("fullscreen", E.fullscreenSelect, currentSettings.fullscreen);
+    upd("fullscreenDelayMode", E.fullscreenDelayMode, currentSettings.fullscreenDelayMode);
+    upd("fullscreenDelay", E.fullscreenDelay, currentSettings.fullscreenDelay);
     bus.emit(EventTypes.SETTINGS_UPDATE, s);
   }
 
@@ -847,7 +933,7 @@ function createUI({ bus, utils, config, langLoader }) {
     });
 
     E.speedSelect?.addEventListener("change", () => updateSettingsFromUI());
-    E.delaySelect?.addEventListener("change", () => updateSettingsFromUI());
+    E.intervalSelect?.addEventListener("change", () => updateSettingsFromUI());
 
     E.fillRandomBtn?.addEventListener("click", () => {
       fillRandom();
@@ -855,15 +941,13 @@ function createUI({ bus, utils, config, langLoader }) {
     });
 
     E.fullscreenSelect?.addEventListener("change", () => updateSettingsFromUI());
-
+    E.fullscreenDelayMode?.addEventListener("change", () => updateSettingsFromUI());
+    E.fullscreenDelay?.addEventListener("change", () => updateSettingsFromUI());
     E.resetSettingsBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_SETTINGS_RESET));
     E.startPauseBtn?.addEventListener("click", () => bus.emit(EventTypes.PLAYBACK_TOGGLE));
     E.resetBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_FULL_RESET));
-
     E.helpAppBtn?.addEventListener("click", () => bus.emit(EventTypes.UI_HELP_MODAL_OPEN));
-
     E.helpAppCloseBtn?.addEventListener("click", () => bus.emit(EventTypes.UI_HELP_MODAL_CLOSE));
-
     E.helpAppModal?.addEventListener("click", (e) => {
       if (e.target === elements.helpAppModal) {
         bus.emit(EventTypes.UI_HELP_MODAL_CLOSE);
@@ -1047,6 +1131,16 @@ function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, config }) {
   let currentSettings = { pitch: 1.0, volume: 1.0 };
   let currentAppState = "init";
   let currentIndex = 0;
+  const VISUAL_DELAY_HOLD_MS = 2000;
+  const SPEECH_FIRST_UTTERANCE_MS = 200;
+  const SPEECH_AFTER_WARMUP_MS = 150;
+  let warmUpDoneForSession = false;
+
+  async function holdVisualIfSameStep(idx) {
+    if (currentAppState !== "playing") return;
+    if (currentIndex !== idx) return;
+    await utils.delay(VISUAL_DELAY_HOLD_MS);
+  }
 
   function buildPlayQueue() {
     return uiProvider.getSelectedInputs().map((i) => ({ value: i.value, el: i }));
@@ -1060,9 +1154,22 @@ function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, config }) {
 
   async function playSequence(runtime) {
     if (currentAppState !== "playing") return;
-    const delayMs = utils.safeNumber(currentSettings.delay, 500);
+
+    let firstSpeakInRun = true;
+    const speakDigit = async (value, opts) => {
+      if (firstSpeakInRun) {
+        firstSpeakInRun = false;
+        await utils.delay(SPEECH_FIRST_UTTERANCE_MS);
+      }
+      return speaker.speak(value, opts);
+    };
 
     while (currentAppState === "playing") {
+      const intervalMs = utils.safeNumber(currentSettings.intervalMs, 500);
+      const isFullscreen = String(currentSettings.fullscreen ?? "0") === "1";
+      const fsMode = String(currentSettings.fullscreenDelayMode || "No delay");
+      const fsDelayMs = isFullscreen ? utils.safeNumber(currentSettings.fullscreenDelay, 0) * 1000 : 0;
+
       if (currentIndex >= runtime.playQueue.length) {
         if (runtime.repeatsRemaining > 1) {
           runtime.repeatsRemaining -= 1;
@@ -1082,41 +1189,89 @@ function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, config }) {
       const idx = currentIndex;
       const item = runtime.playQueue[idx];
       if (!item || !item.value) {
+        await utils.delay(intervalMs);
+        if (currentAppState !== "playing") break;
         bus.emit(EventTypes.PLAYBACK_INDEX_SET, idx + 1);
-        await utils.delay(delayMs);
         continue;
       }
 
       bus.emit(EventTypes.UI_HIGHLIGHT);
       bus.emit(EventTypes.UI_BACKGROUND_SHOW);
-      bus.emit(EventTypes.UI_ACTIVE_NUMBER_SHOW, {
-        value: item.value,
-        delayMs,
-      });
 
-      await speaker.speak(item.value, {
-        languageCode: currentSettings.languageCode || "nl-NL",
-        speed: currentSettings.speed,
-        pitch: currentSettings.pitch,
-        volume: currentSettings.volume,
-        voiceName: currentSettings.voiceName,
-      });
+      bus.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
+
+      if (isFullscreen && fsDelayMs > 0 && fsMode === "Audio delay") {
+        bus.emit(EventTypes.UI_ACTIVE_NUMBER_SHOW, { value: item.value, delayMs: null });
+        await utils.delay(fsDelayMs);
+        if (currentAppState !== "playing") break;
+
+        await speakDigit(item.value, {
+          languageCode: currentSettings.languageCode || "nl-NL",
+          speed: currentSettings.speed,
+          pitch: currentSettings.pitch,
+          volume: currentSettings.volume,
+          voiceName: currentSettings.voiceName,
+          interrupt: false,
+        });
+        await holdVisualIfSameStep(idx);
+        bus.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
+      } else if (isFullscreen && fsDelayMs > 0 && fsMode === "Visual delay") {
+        const speakPromise = speakDigit(item.value, {
+          languageCode: currentSettings.languageCode || "nl-NL",
+          speed: currentSettings.speed,
+          pitch: currentSettings.pitch,
+          volume: currentSettings.volume,
+          voiceName: currentSettings.voiceName,
+          interrupt: false,
+        });
+
+        await utils.delay(fsDelayMs);
+        if (currentAppState !== "playing") break;
+        if (currentIndex === idx) {
+          bus.emit(EventTypes.UI_ACTIVE_NUMBER_SHOW, { value: item.value, delayMs: null });
+        }
+
+        await speakPromise;
+        await holdVisualIfSameStep(idx);
+        bus.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
+      } else {
+        bus.emit(EventTypes.UI_ACTIVE_NUMBER_SHOW, { value: item.value, delayMs: null });
+        await speakDigit(item.value, {
+          languageCode: currentSettings.languageCode || "nl-NL",
+          speed: currentSettings.speed,
+          pitch: currentSettings.pitch,
+          volume: currentSettings.volume,
+          voiceName: currentSettings.voiceName,
+          interrupt: false,
+        });
+        bus.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
+      }
 
       if (currentAppState !== "playing") break;
+      await utils.delay(intervalMs);
+      if (currentAppState !== "playing") break;
       bus.emit(EventTypes.PLAYBACK_INDEX_SET, idx + 1);
-      await utils.delay(delayMs);
     }
   }
 
   const runtime = { playQueue: [], repeatsRemaining: 1 };
 
-  bus.on(EventTypes.PLAYBACK_START, () => {
+  bus.on(EventTypes.PLAYBACK_START, async () => {
     runtime.repeatsRemaining = utils.safeNumber(currentSettings.repeat, 1);
     bus.emit(EventTypes.UI_REPEAT_LEFT_SET, runtime.repeatsRemaining);
     runtime.playQueue = buildPlayQueue();
     bus.emit(EventTypes.PLAYBACK_INDEX_SET, 0);
     bus.emit(EventTypes.APP_STATE_SET, "playing");
     bus.emit(EventTypes.UI_BACKGROUND_SHOW);
+    if (!warmUpDoneForSession) {
+      warmUpDoneForSession = true;
+      try {
+        await speaker.warmUp();
+        await utils.delay(SPEECH_AFTER_WARMUP_MS);
+      } catch (e) {
+        console.warn("Speech warm-up failed", e);
+      }
+    }
     playSequence(runtime).catch((e) => console.warn("playSequence failed", e));
   });
 
@@ -1142,6 +1297,7 @@ function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, config }) {
     bus.emit(EventTypes.UI_REPEAT_LEFT_SET, utils.safeNumber(currentSettings.repeat, 1));
     bus.emit(EventTypes.UI_HIGHLIGHT);
     wakeLock.release();
+    warmUpDoneForSession = false;
   });
 
   bus.on(EventTypes.PLAYBACK_TOGGLE, () => {
@@ -1313,17 +1469,13 @@ function createApp({ bus, config, langLoader, store, ui, voices, speaker, wakeLo
         return;
       }
 
-      // if saved voiceName exists - ensure it actually exists in runtime
       let match = allVoices.find((v) => Utils.normalizeString(v.name) === Utils.normalizeString(settings.voiceName));
       if (!match) {
-        // try partial name match
         match = allVoices.find((v) => Utils.normalizeString(v.name).includes(Utils.normalizeString(settings.voiceName)));
       }
       if (!match && settings.languageCode) {
         const wanted = (settings.languageCode || "").toLowerCase();
-        // exact lang match
         match = allVoices.find((v) => (v.lang || "").toLowerCase() === wanted);
-        // startsWith full code or base
         if (!match) {
           match = allVoices.find((v) => (v.lang || "").toLowerCase().startsWith(wanted.split(/[-_]/)[0]));
         }
@@ -1340,6 +1492,12 @@ function createApp({ bus, config, langLoader, store, ui, voices, speaker, wakeLo
     });
 
     await voices.load();
+
+    try {
+      await speaker.warmUp();
+    } catch (e) {
+      console.warn("Speech warm-up failed", e);
+    }
 
     const currentSettings = store.getSettings();
     bus.emit(EventTypes.SETTINGS_CHANGED, currentSettings);
