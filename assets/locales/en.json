@@ -9,6 +9,9 @@
   "labelSpeed": "Speed",
   "labelInterval": "Interval (ms)",
   "labelFullscreen": "Fullscreen",
+  "labelFullscreenDelay": "Fullscreen delay",
+  "labelFullscreenDelayMode": "Delay mode",
+  "labelDelayTime": "Delay (sec)",
   "start": "Start",
   "continue": "Continue",
   "pause": "Pause",
@@ -16,7 +19,9 @@
   "fillRandom": "🎲 Rnd",
   "fullscreenNo": "No",
   "fullscreenYes": "Yes",
-  "default": "Default",
+  "delayModeNo": "No",
+  "delayModeVisual": "Visual",
+  "delayModeAudio": "Audio",
   "repeatsLeft": "Repeats left:",
   "defaultSettings": "Reset defaults"
 }

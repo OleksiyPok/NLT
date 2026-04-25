@@ -3,12 +3,15 @@
   "uiLangLabel": "Interface",
   "labelLang": "Langue",
   "labelVoice": "Voix",
-  "labelDigitLength": "Longueur",
+  "labelDigitLength": "Longueur des chiffres",
   "labelCount": "Nombre",
   "labelRepeat": "Répéter",
   "labelSpeed": "Vitesse",
   "labelInterval": "Intervalle (ms)",
   "labelFullscreen": "Plein écran",
+  "labelFullscreenDelay": "Retard plein écran",
+  "labelFullscreenDelayMode": "Mode de retard",
+  "labelDelayTime": "Retard (sec)",
   "start": "Démarrer",
   "continue": "Continuer",
   "pause": "Pause",
@@ -16,7 +19,9 @@
   "fillRandom": "🎲 Rnd",
   "fullscreenNo": "Non",
   "fullscreenYes": "Oui",
-  "default": "Par défaut",
+  "delayModeNo": "Non",
+  "delayModeVisual": "Visuel",
+  "delayModeAudio": "Audio",
   "repeatsLeft": "Répétitions restantes:",
-  "defaultSettings": "Réinitialiser par défaut"
+  "defaultSettings": "Paramètres par défaut"
 }

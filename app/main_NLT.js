@@ -201,6 +201,8 @@ function createLangLoader({ config }) {
     labelSpeed: "Speed",
     labelInterval: "Interval (ms)",
     labelFullscreen: "Fullscreen",
+    labelFullscreenDelay: "Delay mode",
+    labelDelayTime: "Delay (sec)",
     start: "Start",
     continue: "Continue",
     pause: "Pause",
@@ -208,9 +210,12 @@ function createLangLoader({ config }) {
     fillRandom: "🎲 Rnd",
     fullscreenNo: "No",
     fullscreenYes: "Yes",
+    delayModeNo: "No",
+    delayModeVisual: "Visual",
+    delayModeAudio: "Audio",
     default: "Default",
     repeatsLeft: "Repeats left:",
-    resetSettingsText: "Reset defaults",
+    defaultSettings: "Reset defaults",
   };
   async function loadLang(code) {
     try {
@@ -266,7 +271,7 @@ function createStore({ config, bus }) {
     remove() {
       try {
         localStorage.removeItem(this.KEY);
-      } catch (_e) { }
+      } catch (_e) {}
     },
   };
 
@@ -346,7 +351,7 @@ function createWakeLock({ bus }) {
       try {
         if ("wakeLock" in navigator && !this.wakeLock) {
           this.wakeLock = await navigator.wakeLock.request("screen");
-          this.wakeLock?.addEventListener?.("release", () => { });
+          this.wakeLock?.addEventListener?.("release", () => {});
         }
       } catch (e) {
         console.warn("WakeLock request failed", e);
@@ -357,7 +362,7 @@ function createWakeLock({ bus }) {
       if (!this.wakeLock) return;
       try {
         this.wakeLock.release?.();
-      } catch (_e) { }
+      } catch (_e) {}
       this.wakeLock = null;
     },
     init() {
@@ -502,7 +507,7 @@ function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
         speechSynthesis.cancel();
       } catch (_) {}
       speechSynthesis.resume();
-    } catch (_) { }
+    } catch (_) {}
     const settings = (typeof getSettings === "function" ? getSettings() : {}) || {};
     const utter = new SpeechSynthesisUtterance(".");
     const chosen = _selectVoice(settings);
@@ -537,12 +542,12 @@ function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
   const pause = () => {
     try {
       speechSynthesis.pause();
-    } catch (_) { }
+    } catch (_) {}
   };
   const resume = () => {
     try {
       speechSynthesis.resume();
-    } catch (_) { }
+    } catch (_) {}
   };
   const isSpeaking = () => speechSynthesis.speaking;
   const isPaused = () => speechSynthesis.paused;
@@ -592,8 +597,11 @@ function createUI({ bus, utils, config, langLoader }) {
     labelSpeed: "#labelSpeed",
     labelInterval: "#labelInterval",
     labelFullscreen: "#labelFullscreen",
-    labelFullscreenMode: "#labelFullscreenMode",
+    labelFullscreenDelayMode: "#labelFullscreenDelayMode",
     labelFullscreenDelay: "#labelFullscreenDelay",
+    labelFullscreenDelayMode: "#labelFullscreenDelayMode",
+    labelDelayTime: "#labelDelayTime",
+    delayModeSelect: "#delayModeSelect",
     fullscreenMode: "#fullscreenMode",
     fullscreenDelay: "#fullscreenDelay",
     developerPanel: "#developer",
@@ -773,10 +781,25 @@ function createUI({ bus, utils, config, langLoader }) {
     setText(E.fillRandomBtn, texts.fillRandom);
     setText(E.resetBtn, texts.reset);
     setText(E.labelFullscreen, texts.labelFullscreen);
+    setText(E.labelFullscreenDelayMode, texts.labelFullscreenDelayMode);
+    setText(E.labelDelayTime, texts.labelDelayTime);
+    setText(E.labelFullscreenDelay, texts.labelFullscreenDelay);
     if (E.fullscreenSelect) {
       if (E.fullscreenSelect.options[0].textContent !== texts.fullscreenNo) E.fullscreenSelect.options[0].textContent = texts.fullscreenNo;
       if (E.fullscreenSelect.options[1].textContent !== texts.fullscreenYes) E.fullscreenSelect.options[1].textContent = texts.fullscreenYes;
     }
+    if (E.fullscreenMode) {
+      if (E.fullscreenMode.options[0].textContent !== texts.delayModeNo) {
+        E.fullscreenMode.options[0].textContent = texts.delayModeNo;
+      }
+      if (E.fullscreenMode.options[1].textContent !== texts.delayModeVisual) {
+        E.fullscreenMode.options[1].textContent = texts.delayModeVisual;
+      }
+      if (E.fullscreenMode.options[2].textContent !== texts.delayModeAudio) {
+        E.fullscreenMode.options[2].textContent = texts.delayModeAudio;
+      }
+    }
+
     updateStartPauseButton();
     updateControlsState();
   }
@@ -827,7 +850,7 @@ function createUI({ bus, utils, config, langLoader }) {
     const isDelayModeOn = (elements.fullscreenMode?.value || "No delay") !== "No delay";
 
     setDisabled(elements.fullscreenMode, !isFullscreen);
-    toggleClass(elements.labelFullscreenMode, "disabled", !isFullscreen);
+    toggleClass(elements.labelFullscreenDelayMode, "disabled", !isFullscreen);
 
     const disableFsDelay = !isFullscreen || !isDelayModeOn;
     setDisabled(elements.fullscreenDelay, disableFsDelay);
@@ -1388,9 +1411,9 @@ function createApp({ bus, config, langLoader, store, ui, voices, speaker, wakeLo
     let stored = store.loadSettings() || {};
     const defaults = config.CONFIG
       ? {
-        ...config.CONFIG.DEFAULT_SETTINGS.shared,
-        ...(config.CONFIG.DEFAULT_SETTINGS[utils.isMobileDevice() ? "mobile" : "desktop"] || {}),
-      }
+          ...config.CONFIG.DEFAULT_SETTINGS.shared,
+          ...(config.CONFIG.DEFAULT_SETTINGS[utils.isMobileDevice() ? "mobile" : "desktop"] || {}),
+        }
       : defaultSettings();
 
     const mergedSettings = Utils.deepMerge(defaults, stored);
@@ -1538,6 +1561,6 @@ const App = createApp({
   utils: Utils,
 });
 
-bus.on(EventTypes.SETTINGS_CHANGED, () => { });
+bus.on(EventTypes.SETTINGS_CHANGED, () => {});
 
 App.init();

@@ -6,9 +6,12 @@
   "labelDigitLength": "Ziffernlänge",
   "labelCount": "Anzahl",
   "labelRepeat": "Wiederholen",
-  "labelSpeed": "Tempo",
+  "labelSpeed": "Geschwindigkeit",
   "labelInterval": "Intervall (ms)",
   "labelFullscreen": "Vollbild",
+  "labelFullscreenDelay": "Vollbildverzögerung",
+  "labelFullscreenDelayMode": "Verzögerungsmodus",
+  "labelDelayTime": "Verzögerung (Sek.)",
   "start": "Start",
   "continue": "Weiter",
   "pause": "Pause",
@@ -16,7 +19,9 @@
   "fillRandom": "🎲 Rnd",
   "fullscreenNo": "Nein",
   "fullscreenYes": "Ja",
-  "default": "Standard",
+  "delayModeNo": "Nein",
+  "delayModeVisual": "Visuell",
+  "delayModeAudio": "Audio",
   "repeatsLeft": "Wiederholungen übrig:",
-  "defaultSettings": "Standard zurücksetzen"
+  "defaultSettings": "Standardeinstellungen"
 }
