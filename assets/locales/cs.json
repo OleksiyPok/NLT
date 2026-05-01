@@ -23,5 +23,7 @@
   "delayModeVisual": "Vizuální",
   "delayModeAudio": "Audio",
   "repeatsLeft": "Zbývá opakování:",
-  "defaultSettings": "Výchozí nastavení"
+  "defaultSettings": "Výchozí nastavení",
+  "labelThema": "Téma",
+  "labelThemaMode": "Režim"
 }

@@ -23,5 +23,7 @@
   "delayModeVisual": "Visueel",
   "delayModeAudio": "Audio",
   "repeatsLeft": "Herhalingen over:",
-  "defaultSettings": "Standaardinstellingen"
+  "defaultSettings": "Standaardinstellingen",
+  "labelThema": "Thema",
+  "labelThemaMode": "Modus"
 }

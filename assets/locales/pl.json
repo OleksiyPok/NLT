@@ -23,5 +23,7 @@
   "delayModeVisual": "Wizualny",
   "delayModeAudio": "Audio",
   "repeatsLeft": "Pozostało powtórzeń:",
-  "defaultSettings": "Ustawienia domyślne"
+  "defaultSettings": "Ustawienia domyślne",
+  "labelThema": "Motyw",
+  "labelThemaMode": "Tryb"
 }

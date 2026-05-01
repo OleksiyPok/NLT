@@ -23,5 +23,7 @@
   "delayModeVisual": "Визуальный",
   "delayModeAudio": "Аудио",
   "repeatsLeft": "Осталось повторов:",
-  "defaultSettings": "Настройки по умолчанию"
+  "defaultSettings": "Настройки по умолчанию",
+  "labelThema": "Тема",
+  "labelThemaMode": "Режим"
 }

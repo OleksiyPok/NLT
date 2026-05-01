@@ -23,5 +23,7 @@
   "delayModeVisual": "Visivo",
   "delayModeAudio": "Audio",
   "repeatsLeft": "Ripetizioni rimanenti:",
-  "defaultSettings": "Impostazioni predefinite"
+  "defaultSettings": "Impostazioni predefinite",
+  "labelThema": "Tema",
+  "labelThemaMode": "Modalità"
 }

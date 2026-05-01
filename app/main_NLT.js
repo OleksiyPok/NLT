@@ -112,6 +112,7 @@ function createConfig({ paths = null } = {}) {
         digitLength: "2",
         count: "40",
         repeat: "1",
+        thema: "theme-yellowblue-normal",
         fullscreen: true,
         languageCode: "nl-NL",
         voiceName: "Google Nederlands",
@@ -216,6 +217,8 @@ function createLangLoader({ config }) {
     default: "Default",
     repeatsLeft: "Repeats left:",
     defaultSettings: "Reset defaults",
+    labelThema: "Theme",
+    labelThemaMode: "Mode",
   };
   async function loadLang(code) {
     try {
@@ -603,6 +606,9 @@ function createUI({ bus, utils, config, langLoader }) {
     labelDelayTime: "#labelDelayTime",
     fullscreenDelayMode: "#fullscreenDelayMode",
     fullscreenDelay: "#fullscreenDelay",
+      themaSelect: "#themaSelect",
+      labelThema: "#labelThema",
+      labelThemaMode: "#labelThemaMode",
     developerPanel: "#developer",
     backgroundOverlay: "#backgroundOverlay",
     activeNumberOverlay: "#activeNumberOverlay",
@@ -636,10 +642,45 @@ function createUI({ bus, utils, config, langLoader }) {
     s.fullscreenDelayMode = utils.safeSetSelectValue(elements.fullscreenDelayMode, s.fullscreenDelayMode, "No delay");
     s.fullscreenDelay = utils.safeSetSelectValue(elements.fullscreenDelay, String(s.fullscreenDelay), "2");
 
+    s.thema = utils.safeSetSelectValue(E.themaSelect, String(s.thema || ""), "theme-yellowblue-normal");
+
     if (s.uiLang && E.uiLangSelect) E.uiLangSelect.value = s.uiLang;
     if (E.languageCodeSelect) {
       const langPart = (s.languageCode || "ALL").split(/[-_]/)[0].toUpperCase();
       E.languageCodeSelect.value = langPart;
+    }
+  }
+
+  function applyThemeFromSettings(settings) {
+    const html = document.documentElement;
+    if (!html) return;
+
+    const knownThemes = [
+      "theme-oceanamber-contrast",
+      "theme-oceanamber-normal",
+      "theme-oceanamber-evening",
+      "theme-oceanamber-night",
+      "theme-yellowblue-contrast",
+      "theme-yellowblue-normal",
+      "theme-yellowblue-evening",
+      "theme-yellowblue-night",
+      "theme-skycoral-contrast",
+      "theme-skycoral-normal",
+      "theme-skycoral-evening",
+      "theme-skycoral-night",
+    ];
+
+    const fallback = "theme-yellowblue-normal";
+    const wanted = String(settings?.thema || "");
+    const chosen = knownThemes.includes(wanted) ? wanted : fallback;
+
+    for (const t of knownThemes) {
+      if (t !== chosen && html.classList.contains(t)) html.classList.remove(t);
+    }
+    if (!html.classList.contains(chosen)) html.classList.add(chosen);
+
+    if (elements.themaSelect) {
+      utils.safeSetSelectValue(elements.themaSelect, chosen, fallback);
     }
   }
 
@@ -783,6 +824,8 @@ function createUI({ bus, utils, config, langLoader }) {
     setText(E.labelFullscreenDelayMode, texts.labelFullscreenDelayMode);
     setText(E.labelDelayTime, texts.labelDelayTime);
     setText(E.labelFullscreenDelay, texts.labelFullscreenDelay);
+    setText(E.labelThema, texts.labelThema);
+    setText(E.labelThemaMode, texts.labelThemaMode);
     if (E.fullscreenSelect) {
       if (E.fullscreenSelect.options[0].textContent !== texts.fullscreenNo) E.fullscreenSelect.options[0].textContent = texts.fullscreenNo;
       if (E.fullscreenSelect.options[1].textContent !== texts.fullscreenYes) E.fullscreenSelect.options[1].textContent = texts.fullscreenYes;
@@ -891,6 +934,7 @@ function createUI({ bus, utils, config, langLoader }) {
     upd("fullscreen", E.fullscreenSelect, currentSettings.fullscreen);
     upd("fullscreenDelayMode", E.fullscreenDelayMode, currentSettings.fullscreenDelayMode);
     upd("fullscreenDelay", E.fullscreenDelay, currentSettings.fullscreenDelay);
+    upd("thema", E.themaSelect, currentSettings.thema);
     bus.emit(EventTypes.SETTINGS_UPDATE, s);
   }
 
@@ -943,6 +987,7 @@ function createUI({ bus, utils, config, langLoader }) {
     E.fullscreenSelect?.addEventListener("change", () => updateSettingsFromUI());
     E.fullscreenDelayMode?.addEventListener("change", () => updateSettingsFromUI());
     E.fullscreenDelay?.addEventListener("change", () => updateSettingsFromUI());
+    E.themaSelect?.addEventListener("change", () => updateSettingsFromUI());
     E.resetSettingsBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_SETTINGS_RESET));
     E.startPauseBtn?.addEventListener("click", () => bus.emit(EventTypes.PLAYBACK_TOGGLE));
     E.resetBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_FULL_RESET));
@@ -1039,6 +1084,7 @@ function createUI({ bus, utils, config, langLoader }) {
     bus.on(EventTypes.SETTINGS_CHANGED, (newSettings) => {
       currentSettings = { ...newSettings };
       setSelectsFromSettings(newSettings);
+      applyThemeFromSettings(newSettings);
       setLanguageCodeFromSettings();
       setVoiceFromSettings();
       updateUILabels();

@@ -23,5 +23,7 @@
   "delayModeVisual": "Görsel",
   "delayModeAudio": "Ses",
   "repeatsLeft": "Kalan tekrarlar:",
-  "defaultSettings": "Varsayılan ayarlar"
+  "defaultSettings": "Varsayılan ayarlar",
+  "labelThema": "Tema",
+  "labelThemaMode": "Mod"
 }

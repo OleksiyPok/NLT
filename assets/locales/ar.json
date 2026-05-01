@@ -23,5 +23,7 @@
   "delayModeVisual": "مرئي",
   "delayModeAudio": "صوتي",
   "repeatsLeft": "التكرارات المتبقية:",
-  "defaultSettings": "الإعدادات الافتراضية"
+  "defaultSettings": "الإعدادات الافتراضية",
+  "labelThema": "السمة",
+  "labelThemaMode": "الوضع"
 }
