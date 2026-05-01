@@ -569,6 +569,11 @@ function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
 }
 
 function createUI({ bus, utils, config, langLoader }) {
+  const themeRegistry = window.NLTThemeRegistry || null;
+  const themeDefinitions = Array.isArray(themeRegistry?.themes) ? themeRegistry.themes : [];
+  const themeValues = Array.isArray(themeRegistry?.themeValues) ? themeRegistry.themeValues : [];
+  const themeFallback = typeof themeRegistry?.defaultTheme === "string" ? themeRegistry.defaultTheme : "theme-yellowblue-normal";
+
   const SELECTORS = {
     helpAppBtn: "#helpAppBtn",
     helpAppModal: "#helpAppModal",
@@ -624,6 +629,20 @@ function createUI({ bus, utils, config, langLoader }) {
 
   function cache() {
     for (const key in SELECTORS) elements[key] = document.querySelector(SELECTORS[key]) || null;
+    renderThemeSelectOptions();
+  }
+  function renderThemeSelectOptions() {
+    const select = elements.themaSelect;
+    if (!select) return;
+    if (!themeDefinitions.length) return;
+
+    select.innerHTML = "";
+    for (const def of themeDefinitions) {
+      const option = document.createElement("option");
+      option.value = def.value;
+      option.textContent = String(def.label || def.value);
+      select.appendChild(option);
+    }
   }
   function cacheInputs() {
     inputsCache = elements.numberGrid ? Array.from(elements.numberGrid.querySelectorAll("input[type='text']")) : [];
@@ -642,7 +661,7 @@ function createUI({ bus, utils, config, langLoader }) {
     s.fullscreenDelayMode = utils.safeSetSelectValue(elements.fullscreenDelayMode, s.fullscreenDelayMode, "No delay");
     s.fullscreenDelay = utils.safeSetSelectValue(elements.fullscreenDelay, String(s.fullscreenDelay), "2");
 
-    s.thema = utils.safeSetSelectValue(E.themaSelect, String(s.thema || ""), "theme-yellowblue-normal");
+    s.thema = utils.safeSetSelectValue(E.themaSelect, String(s.thema || ""), themeFallback);
 
     if (s.uiLang && E.uiLangSelect) E.uiLangSelect.value = s.uiLang;
     if (E.languageCodeSelect) {
@@ -655,32 +674,16 @@ function createUI({ bus, utils, config, langLoader }) {
     const html = document.documentElement;
     if (!html) return;
 
-    const knownThemes = [
-      "theme-oceanamber-contrast",
-      "theme-oceanamber-normal",
-      "theme-oceanamber-evening",
-      "theme-oceanamber-night",
-      "theme-yellowblue-contrast",
-      "theme-yellowblue-normal",
-      "theme-yellowblue-evening",
-      "theme-yellowblue-night",
-      "theme-skycoral-contrast",
-      "theme-skycoral-normal",
-      "theme-skycoral-evening",
-      "theme-skycoral-night",
-    ];
-
-    const fallback = "theme-yellowblue-normal";
     const wanted = String(settings?.thema || "");
-    const chosen = knownThemes.includes(wanted) ? wanted : fallback;
-
-    for (const t of knownThemes) {
-      if (t !== chosen && html.classList.contains(t)) html.classList.remove(t);
-    }
-    if (!html.classList.contains(chosen)) html.classList.add(chosen);
+    const chosen =
+      typeof themeRegistry?.applyThemeClass === "function"
+        ? themeRegistry.applyThemeClass(html, wanted, themeFallback)
+        : themeValues.includes(wanted)
+          ? wanted
+          : themeFallback;
 
     if (elements.themaSelect) {
-      utils.safeSetSelectValue(elements.themaSelect, chosen, fallback);
+      utils.safeSetSelectValue(elements.themaSelect, chosen, themeFallback);
     }
   }
 
