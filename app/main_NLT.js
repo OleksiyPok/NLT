@@ -692,36 +692,37 @@ function createUI({ bus, utils, config, langLoader }) {
     const el = elements.helpAppContent;
     if (!el) return;
 
-    loadHelpContentLang("en");
+    const currentLang = elements.uiLangSelect?.value || "en";
+    loadHelpContentLang(currentLang);
   }
 
   function loadHelpContentLang(lang) {
     const el = elements.helpAppContent;
     if (!el) return;
 
-    fetch(`./assets/help/help.${lang}.html`)
-      .then((r) => {
-        if (!r.ok) throw new Error("Help file not found");
+    const load = (code) =>
+      fetch(`./assets/help/help.${code}.html`).then((r) => {
+        if (!r.ok) throw new Error(`Help file not found: ${code}`);
         return r.text();
-      })
+      });
+
+    load(lang)
       .then((html) => {
         el.innerHTML = html;
         el.dataset.loaded = "1";
-        bindHelpLangLinks();
       })
-      .catch((e) => console.warn("Help lang load failed", e));
-  }
+      .catch((e) => {
+        console.warn(`Help lang load failed (${lang}), fallback to EN`, e);
 
-  function bindHelpLangLinks() {
-    const el = elements.helpAppContent;
-    if (!el) return;
+        if (lang === "en") return;
 
-    el.querySelectorAll("[data-lang]").forEach((a) => {
-      a.addEventListener("click", (e) => {
-        e.preventDefault();
-        loadHelpContentLang(a.dataset.lang);
+        load("en")
+          .then((html) => {
+            el.innerHTML = html;
+            el.dataset.loaded = "1";
+          })
+          .catch((err) => console.warn("Help fallback EN failed", err));
       });
-    });
   }
 
   function openHelpModal() {
@@ -944,6 +945,10 @@ function createUI({ bus, utils, config, langLoader }) {
     E.uiLangSelect?.addEventListener("change", () => {
       updateUILabels();
       updateSettingsFromUI();
+
+      if (isAppHelpModalOpen()) {
+        loadHelpContent();
+      }
     });
 
     if (!utils.isMobileDevice()) {
@@ -997,15 +1002,6 @@ function createUI({ bus, utils, config, langLoader }) {
       if (e.target === elements.helpAppModal) {
         bus.emit(EventTypes.UI_HELP_MODAL_CLOSE);
       }
-    });
-    E.helpAppContent?.addEventListener("click", (e) => {
-      const link = e.target.closest("[data-lang]");
-      if (!link) return;
-
-      e.preventDefault();
-
-      const lang = link.dataset.lang;
-      loadHelpContentLang(lang);
     });
   }
 
