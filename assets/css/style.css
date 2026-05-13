@@ -373,7 +373,8 @@ button:disabled {
 .digit-length-count-repeat-wrapper,
 .fullscreen-wrapper,
 .language-voice-wrapper,
-.thema-wrapper {
+.thema-wrapper,
+.interface-wrapper {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -402,7 +403,8 @@ button:disabled {
 .fullscreen-delay-group,
 .language-group,
 .voice-group,
-.thema-group {
+.thema-group,
+.interface-group {
   align-items: baseline;
   justify-content: space-between;
 }
@@ -421,7 +423,8 @@ button:disabled {
 
 .language-group,
 .voice-group,
-.thema-group {
+.thema-group,
+.interface-group {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -496,7 +499,8 @@ button:disabled {
 
 .language-group select,
 .voice-group select,
-.thema-group select {
+.thema-group select,
+.interface-group select {
   width: 100%;
   text-align: left;
 }

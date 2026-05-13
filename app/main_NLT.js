@@ -112,6 +112,7 @@ function createConfig({ paths = null } = {}) {
         digitLength: "2",
         count: "40",
         repeat: "1",
+        thema: "theme-yellowblue-normal",
         fullscreen: true,
         languageCode: "nl-NL",
         voiceName: "Google Nederlands",
@@ -216,6 +217,12 @@ function createLangLoader({ config }) {
     default: "Default",
     repeatsLeft: "Repeats left:",
     defaultSettings: "Reset defaults",
+    labelThema: "Theme",
+    labelThemaMode: "Mode",
+    themaModeContrast: "Contrast",
+    themaModeNormal: "Normal",
+    themaModeEvening: "Evening",
+    themaModeNight: "Night",
   };
   async function loadLang(code) {
     try {
@@ -284,6 +291,20 @@ function createStore({ config, bus }) {
     currentIndex: 0,
   };
 
+  function normalizeThemaInSettings(settings) {
+    const reg = typeof window !== "undefined" ? window.NLTThemeRegistry : null;
+    if (!reg || !Array.isArray(reg.themeValues)) return;
+    const tv = reg.themeValues;
+    let raw = String(settings.thema || "");
+    if (typeof reg.resolveThemaKey === "function") raw = reg.resolveThemaKey(raw);
+    settings.thema = raw;
+    if (tv.includes(raw)) return;
+    const parsed = typeof reg.parseThema === "function" ? reg.parseThema(raw) : null;
+    const composed =
+      parsed && typeof reg.composeThema === "function" ? reg.composeThema(parsed.palette, parsed.mode) : null;
+    settings.thema = composed || (typeof reg.defaultTheme === "string" ? reg.defaultTheme : raw);
+  }
+
   const getState = () => structuredClone(state);
   const getSettings = () => ({ ...state.settings });
   const updateSettings = (patch) => {
@@ -319,6 +340,11 @@ function createStore({ config, bus }) {
         delete migrated.delay;
       }
       state.settings = { ...state.settings, ...migrated };
+      const themaBefore = state.settings.thema;
+      normalizeThemaInSettings(state.settings);
+      if (config.CONFIG?.USE_LOCAL_STORAGE && state.settings.thema !== themaBefore) {
+        Storage.save(state.settings);
+      }
       bus.emit(EventTypes.SETTINGS_CHANGED, { ...state.settings });
     }
     return getSettings();
@@ -566,6 +592,13 @@ function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
 }
 
 function createUI({ bus, utils, config, langLoader }) {
+  const themeRegistry = window.NLTThemeRegistry || null;
+  const themeValues = Array.isArray(themeRegistry?.themeValues) ? themeRegistry.themeValues : [];
+  const themeFallback = typeof themeRegistry?.defaultTheme === "string" ? themeRegistry.defaultTheme : "theme-yellowblue-normal";
+  const fbParsed = typeof themeRegistry?.parseThema === "function" ? themeRegistry.parseThema(themeFallback) : null;
+  const themeDefaultPalette = fbParsed?.palette || "yellowblue";
+  const themeDefaultMode = fbParsed?.mode || "normal";
+
   const SELECTORS = {
     helpAppBtn: "#helpAppBtn",
     helpAppModal: "#helpAppModal",
@@ -603,6 +636,10 @@ function createUI({ bus, utils, config, langLoader }) {
     labelDelayTime: "#labelDelayTime",
     fullscreenDelayMode: "#fullscreenDelayMode",
     fullscreenDelay: "#fullscreenDelay",
+    themaModeSelect: "#themaModeSelect",
+      themaSelect: "#themaSelect",
+      labelThema: "#labelThema",
+      labelThemaMode: "#labelThemaMode",
     developerPanel: "#developer",
     backgroundOverlay: "#backgroundOverlay",
     activeNumberOverlay: "#activeNumberOverlay",
@@ -618,6 +655,46 @@ function createUI({ bus, utils, config, langLoader }) {
 
   function cache() {
     for (const key in SELECTORS) elements[key] = document.querySelector(SELECTORS[key]) || null;
+    renderThemeSelectOptions();
+  }
+  function renderThemeSelectOptions() {
+    const select = elements.themaSelect;
+    if (!select) return;
+    const palettes = typeof themeRegistry?.getPaletteOptions === "function" ? themeRegistry.getPaletteOptions() : [];
+    if (!palettes.length) return;
+
+    select.innerHTML = "";
+    for (const row of palettes) {
+      const option = document.createElement("option");
+      option.value = row.palette;
+      option.textContent = String(row.label || row.palette);
+      select.appendChild(option);
+    }
+  }
+
+  function resolveCanonicalThema(raw) {
+    const rawStr =
+      typeof themeRegistry?.resolveThemaKey === "function"
+        ? themeRegistry.resolveThemaKey(String(raw || ""))
+        : String(raw || "");
+    if (themeValues.includes(rawStr)) return rawStr;
+    const parsed = typeof themeRegistry?.parseThema === "function" ? themeRegistry.parseThema(rawStr) : null;
+    if (parsed && typeof themeRegistry?.composeThema === "function") {
+      const composed = themeRegistry.composeThema(parsed.palette, parsed.mode);
+      if (composed) return composed;
+    }
+    return themeFallback;
+  }
+
+  function syncThemeSelectorsFromThema(canonicalFullThema) {
+    const parsed = typeof themeRegistry?.parseThema === "function" ? themeRegistry.parseThema(canonicalFullThema) : null;
+    if (!parsed) return;
+    if (elements.themaSelect) {
+      utils.safeSetSelectValue(elements.themaSelect, parsed.palette, themeDefaultPalette);
+    }
+    if (elements.themaModeSelect) {
+      utils.safeSetSelectValue(elements.themaModeSelect, parsed.mode, themeDefaultMode);
+    }
   }
   function cacheInputs() {
     inputsCache = elements.numberGrid ? Array.from(elements.numberGrid.querySelectorAll("input[type='text']")) : [];
@@ -636,11 +713,29 @@ function createUI({ bus, utils, config, langLoader }) {
     s.fullscreenDelayMode = utils.safeSetSelectValue(elements.fullscreenDelayMode, s.fullscreenDelayMode, "No delay");
     s.fullscreenDelay = utils.safeSetSelectValue(elements.fullscreenDelay, String(s.fullscreenDelay), "2");
 
+    s.thema = resolveCanonicalThema(s.thema);
+    syncThemeSelectorsFromThema(s.thema);
+
     if (s.uiLang && E.uiLangSelect) E.uiLangSelect.value = s.uiLang;
     if (E.languageCodeSelect) {
       const langPart = (s.languageCode || "ALL").split(/[-_]/)[0].toUpperCase();
       E.languageCodeSelect.value = langPart;
     }
+  }
+
+  function applyThemeFromSettings(settings) {
+    const html = document.documentElement;
+    if (!html) return;
+
+    const wanted = String(settings?.thema || "");
+    const chosen =
+      typeof themeRegistry?.applyThemeClass === "function"
+        ? themeRegistry.applyThemeClass(html, wanted, themeFallback)
+        : themeValues.includes(wanted)
+          ? wanted
+          : themeFallback;
+
+    syncThemeSelectorsFromThema(chosen);
   }
 
   function isAppHelpModalOpen() {
@@ -784,6 +879,8 @@ function createUI({ bus, utils, config, langLoader }) {
     setText(E.labelFullscreenDelayMode, texts.labelFullscreenDelayMode);
     setText(E.labelDelayTime, texts.labelDelayTime);
     setText(E.labelFullscreenDelay, texts.labelFullscreenDelay);
+    setText(E.labelThema, texts.labelThema);
+    setText(E.labelThemaMode, texts.labelThemaMode);
     if (E.fullscreenSelect) {
       if (E.fullscreenSelect.options[0].textContent !== texts.fullscreenNo) E.fullscreenSelect.options[0].textContent = texts.fullscreenNo;
       if (E.fullscreenSelect.options[1].textContent !== texts.fullscreenYes) E.fullscreenSelect.options[1].textContent = texts.fullscreenYes;
@@ -797,6 +894,20 @@ function createUI({ bus, utils, config, langLoader }) {
       }
       if (E.fullscreenDelayMode.options[2].textContent !== texts.delayModeAudio) {
         E.fullscreenDelayMode.options[2].textContent = texts.delayModeAudio;
+      }
+    }
+    if (E.themaModeSelect) {
+      if (E.themaModeSelect.options[0].textContent !== texts.themaModeContrast) {
+        E.themaModeSelect.options[0].textContent = texts.themaModeContrast;
+      }
+      if (E.themaModeSelect.options[1].textContent !== texts.themaModeNormal) {
+        E.themaModeSelect.options[1].textContent = texts.themaModeNormal;
+      }
+      if (E.themaModeSelect.options[2].textContent !== texts.themaModeEvening) {
+        E.themaModeSelect.options[2].textContent = texts.themaModeEvening;
+      }
+      if (E.themaModeSelect.options[3].textContent !== texts.themaModeNight) {
+        E.themaModeSelect.options[3].textContent = texts.themaModeNight;
       }
     }
 
@@ -892,6 +1003,11 @@ function createUI({ bus, utils, config, langLoader }) {
     upd("fullscreen", E.fullscreenSelect, currentSettings.fullscreen);
     upd("fullscreenDelayMode", E.fullscreenDelayMode, currentSettings.fullscreenDelayMode);
     upd("fullscreenDelay", E.fullscreenDelay, currentSettings.fullscreenDelay);
+    const palette = E.themaSelect?.value;
+    const mode = E.themaModeSelect?.value;
+    const composed =
+      palette && mode && typeof themeRegistry?.composeThema === "function" ? themeRegistry.composeThema(palette, mode) : null;
+    s.thema = composed || currentSettings.thema;
     bus.emit(EventTypes.SETTINGS_UPDATE, s);
   }
 
@@ -948,6 +1064,8 @@ function createUI({ bus, utils, config, langLoader }) {
     E.fullscreenSelect?.addEventListener("change", () => updateSettingsFromUI());
     E.fullscreenDelayMode?.addEventListener("change", () => updateSettingsFromUI());
     E.fullscreenDelay?.addEventListener("change", () => updateSettingsFromUI());
+    E.themaSelect?.addEventListener("change", () => updateSettingsFromUI());
+    E.themaModeSelect?.addEventListener("change", () => updateSettingsFromUI());
     E.resetSettingsBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_SETTINGS_RESET));
     E.startPauseBtn?.addEventListener("click", () => bus.emit(EventTypes.PLAYBACK_TOGGLE));
     E.resetBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_FULL_RESET));
@@ -1033,8 +1151,9 @@ function createUI({ bus, utils, config, langLoader }) {
     });
 
     bus.on(EventTypes.SETTINGS_CHANGED, (newSettings) => {
-      currentSettings = { ...newSettings };
       setSelectsFromSettings(newSettings);
+      currentSettings = { ...newSettings };
+      applyThemeFromSettings(newSettings);
       setLanguageCodeFromSettings();
       setVoiceFromSettings();
       updateUILabels();
