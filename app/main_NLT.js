@@ -291,6 +291,20 @@ function createStore({ config, bus }) {
     currentIndex: 0,
   };
 
+  function normalizeThemaInSettings(settings) {
+    const reg = typeof window !== "undefined" ? window.NLTThemeRegistry : null;
+    if (!reg || !Array.isArray(reg.themeValues)) return;
+    const tv = reg.themeValues;
+    let raw = String(settings.thema || "");
+    if (typeof reg.resolveThemaKey === "function") raw = reg.resolveThemaKey(raw);
+    settings.thema = raw;
+    if (tv.includes(raw)) return;
+    const parsed = typeof reg.parseThema === "function" ? reg.parseThema(raw) : null;
+    const composed =
+      parsed && typeof reg.composeThema === "function" ? reg.composeThema(parsed.palette, parsed.mode) : null;
+    settings.thema = composed || (typeof reg.defaultTheme === "string" ? reg.defaultTheme : raw);
+  }
+
   const getState = () => structuredClone(state);
   const getSettings = () => ({ ...state.settings });
   const updateSettings = (patch) => {
@@ -326,6 +340,11 @@ function createStore({ config, bus }) {
         delete migrated.delay;
       }
       state.settings = { ...state.settings, ...migrated };
+      const themaBefore = state.settings.thema;
+      normalizeThemaInSettings(state.settings);
+      if (config.CONFIG?.USE_LOCAL_STORAGE && state.settings.thema !== themaBefore) {
+        Storage.save(state.settings);
+      }
       bus.emit(EventTypes.SETTINGS_CHANGED, { ...state.settings });
     }
     return getSettings();
@@ -574,9 +593,11 @@ function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
 
 function createUI({ bus, utils, config, langLoader }) {
   const themeRegistry = window.NLTThemeRegistry || null;
-  const themeDefinitions = Array.isArray(themeRegistry?.themes) ? themeRegistry.themes : [];
   const themeValues = Array.isArray(themeRegistry?.themeValues) ? themeRegistry.themeValues : [];
   const themeFallback = typeof themeRegistry?.defaultTheme === "string" ? themeRegistry.defaultTheme : "theme-yellowblue-normal";
+  const fbParsed = typeof themeRegistry?.parseThema === "function" ? themeRegistry.parseThema(themeFallback) : null;
+  const themeDefaultPalette = fbParsed?.palette || "yellowblue";
+  const themeDefaultMode = fbParsed?.mode || "normal";
 
   const SELECTORS = {
     helpAppBtn: "#helpAppBtn",
@@ -639,14 +660,40 @@ function createUI({ bus, utils, config, langLoader }) {
   function renderThemeSelectOptions() {
     const select = elements.themaSelect;
     if (!select) return;
-    if (!themeDefinitions.length) return;
+    const palettes = typeof themeRegistry?.getPaletteOptions === "function" ? themeRegistry.getPaletteOptions() : [];
+    if (!palettes.length) return;
 
     select.innerHTML = "";
-    for (const def of themeDefinitions) {
+    for (const row of palettes) {
       const option = document.createElement("option");
-      option.value = def.value;
-      option.textContent = String(def.label || def.value);
+      option.value = row.palette;
+      option.textContent = String(row.label || row.palette);
       select.appendChild(option);
+    }
+  }
+
+  function resolveCanonicalThema(raw) {
+    const rawStr =
+      typeof themeRegistry?.resolveThemaKey === "function"
+        ? themeRegistry.resolveThemaKey(String(raw || ""))
+        : String(raw || "");
+    if (themeValues.includes(rawStr)) return rawStr;
+    const parsed = typeof themeRegistry?.parseThema === "function" ? themeRegistry.parseThema(rawStr) : null;
+    if (parsed && typeof themeRegistry?.composeThema === "function") {
+      const composed = themeRegistry.composeThema(parsed.palette, parsed.mode);
+      if (composed) return composed;
+    }
+    return themeFallback;
+  }
+
+  function syncThemeSelectorsFromThema(canonicalFullThema) {
+    const parsed = typeof themeRegistry?.parseThema === "function" ? themeRegistry.parseThema(canonicalFullThema) : null;
+    if (!parsed) return;
+    if (elements.themaSelect) {
+      utils.safeSetSelectValue(elements.themaSelect, parsed.palette, themeDefaultPalette);
+    }
+    if (elements.themaModeSelect) {
+      utils.safeSetSelectValue(elements.themaModeSelect, parsed.mode, themeDefaultMode);
     }
   }
   function cacheInputs() {
@@ -666,7 +713,8 @@ function createUI({ bus, utils, config, langLoader }) {
     s.fullscreenDelayMode = utils.safeSetSelectValue(elements.fullscreenDelayMode, s.fullscreenDelayMode, "No delay");
     s.fullscreenDelay = utils.safeSetSelectValue(elements.fullscreenDelay, String(s.fullscreenDelay), "2");
 
-    s.thema = utils.safeSetSelectValue(E.themaSelect, String(s.thema || ""), themeFallback);
+    s.thema = resolveCanonicalThema(s.thema);
+    syncThemeSelectorsFromThema(s.thema);
 
     if (s.uiLang && E.uiLangSelect) E.uiLangSelect.value = s.uiLang;
     if (E.languageCodeSelect) {
@@ -687,9 +735,7 @@ function createUI({ bus, utils, config, langLoader }) {
           ? wanted
           : themeFallback;
 
-    if (elements.themaSelect) {
-      utils.safeSetSelectValue(elements.themaSelect, chosen, themeFallback);
-    }
+    syncThemeSelectorsFromThema(chosen);
   }
 
   function isAppHelpModalOpen() {
@@ -957,7 +1003,11 @@ function createUI({ bus, utils, config, langLoader }) {
     upd("fullscreen", E.fullscreenSelect, currentSettings.fullscreen);
     upd("fullscreenDelayMode", E.fullscreenDelayMode, currentSettings.fullscreenDelayMode);
     upd("fullscreenDelay", E.fullscreenDelay, currentSettings.fullscreenDelay);
-    upd("thema", E.themaSelect, currentSettings.thema);
+    const palette = E.themaSelect?.value;
+    const mode = E.themaModeSelect?.value;
+    const composed =
+      palette && mode && typeof themeRegistry?.composeThema === "function" ? themeRegistry.composeThema(palette, mode) : null;
+    s.thema = composed || currentSettings.thema;
     bus.emit(EventTypes.SETTINGS_UPDATE, s);
   }
 
@@ -1015,6 +1065,7 @@ function createUI({ bus, utils, config, langLoader }) {
     E.fullscreenDelayMode?.addEventListener("change", () => updateSettingsFromUI());
     E.fullscreenDelay?.addEventListener("change", () => updateSettingsFromUI());
     E.themaSelect?.addEventListener("change", () => updateSettingsFromUI());
+    E.themaModeSelect?.addEventListener("change", () => updateSettingsFromUI());
     E.resetSettingsBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_SETTINGS_RESET));
     E.startPauseBtn?.addEventListener("click", () => bus.emit(EventTypes.PLAYBACK_TOGGLE));
     E.resetBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_FULL_RESET));
@@ -1100,8 +1151,8 @@ function createUI({ bus, utils, config, langLoader }) {
     });
 
     bus.on(EventTypes.SETTINGS_CHANGED, (newSettings) => {
-      currentSettings = { ...newSettings };
       setSelectsFromSettings(newSettings);
+      currentSettings = { ...newSettings };
       applyThemeFromSettings(newSettings);
       setLanguageCodeFromSettings();
       setVoiceFromSettings();
