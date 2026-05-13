@@ -1,0 +1,29 @@
+/* In-app help panel (#helpAppContent); loaded with index.html */
+
+#helpAppContent {
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+  padding: 20px;
+  color: #222;
+}
+
+#helpAppContent .top-space {
+  height: 28px;
+}
+
+#helpAppContent h1 {
+  font-size: 22px;
+  margin: 0;
+}
+
+#helpAppContent img {
+  max-width: 100%;
+  display: block;
+  margin: 15px auto;
+  border-radius: 6px;
+}
+
+#helpAppContent .divider {
+  border-top: 1px solid #ddd;
+  margin: 15px 0;
+}
