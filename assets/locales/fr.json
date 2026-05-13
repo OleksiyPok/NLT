@@ -23,5 +23,11 @@
   "delayModeVisual": "Visuel",
   "delayModeAudio": "Audio",
   "repeatsLeft": "Répétitions restantes:",
-  "defaultSettings": "Paramètres par défaut"
+  "defaultSettings": "Paramètres par défaut",
+  "labelThema": "Thème",
+  "labelThemaMode": "Mode",
+  "themaModeContrast": "Contraste",
+  "themaModeNormal": "Normal",
+  "themaModeEvening": "Soir",
+  "themaModeNight": "Nuit"
 }

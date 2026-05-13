@@ -6,6 +6,8 @@
     <title>Number Listening Trainer</title>
     <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/icon_NLT_16x16.png" />
 
+    <script src="app/themeRegistry.js"></script>
+
     <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="assets/css/themes.css" />
   </head>
@@ -18,7 +20,7 @@
           <img class="title-icon" id="titleIcon" src="./assets/icons/icon_NLT_64x64.png" alt="Icon" />
           <div class="title-text" id="titleText">
             <h2>Number Listening Trainer<br /></h2>
-            <h6 id="version" class="version">version 3.0.1</h6>
+            <h6 id="version" class="version">version 3.1.1</h6>
           </div>
         </div>
         <h5>
@@ -28,22 +30,13 @@
           <button class="help-app-btn" id="helpAppBtn" title="Open application description" aria-label="Open application description">
             <span class="i-icon">ℹ️</span>
           </button>
-          <div class="ui-language-wrapper" id="uiLanguageWrapper">
-            <label for="uiLangSelect" id="uiLangLabel" class="ui-lang-label">Interface:</label>
-            <select class="ui-lang-select" id="uiLangSelect" title="Select interface language">
-              <option value="ar">العربية</option>
-              <option value="cs">Čeština</option>
-              <option value="de">Deutsch</option>
-              <option selected value="en">English</option>
-              <option value="es">Español</option>
-              <option value="fr">Français</option>
-              <option value="it">Italiano</option>
-              <option value="nl">Nederlands</option>
-              <option value="pl">Polski</option>
-              <option value="pt">Português</option>
-              <option value="ru">Русский</option>
-              <option value="tr">Türkçe</option>
-              <option value="uk">Українська</option>
+          <div class="ui-language-wrapper" id="themaModeWrapper">
+            <label for="themaModeSelect" id="labelThemaMode" class="ui-lang-label">Mode</label>
+            <select class="ui-lang-select" id="themaModeSelect" title="Select theme mode">
+              <option value="contrast">Contrast</option>
+              <option value="normal" selected>Normal</option>
+              <option value="evening">Evening</option>
+              <option value="night">Night</option>
             </select>
           </div>
         </div>
@@ -218,22 +211,33 @@
                   <select id="voiceSelect" title="Voice" class="voice-select"></select>
                 </div>
               </div>
-
-              <!-- <div class="thema-wrapper">
-                <div class="thema-group">
+              <div class="thema-wrapper">
+                <div class="thema-group" id="themaGroup">
                   <label for="themaSelect" id="labelThema" class="label-thema">Thema</label>
-                  <select id="themaSelect" class="thema-select">
-                    <option value="1">1</option>
-                    <option value="2" selected>2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
+                  <select id="themaSelect" class="thema-select"></select>
+                </div>
+              </div>
+
+              <div class="interface-wrapper">
+                <div class="interface-group" id="uiLanguageWrapper">
+                  <label for="uiLangSelect" id="uiLangLabel" class="label-interface">Interface</label>
+                  <select id="uiLangSelect" class="interface-select" title="Select interface language">
+                    <option value="ar">العربية</option>
+                    <option value="cs">Čeština</option>
+                    <option value="de">Deutsch</option>
+                    <option selected value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="it">Italiano</option>
+                    <option value="nl">Nederlands</option>
+                    <option value="pl">Polski</option>
+                    <option value="pt">Português</option>
+                    <option value="ru">Русский</option>
+                    <option value="tr">Türkçe</option>
+                    <option value="uk">Українська</option>
                   </select>
                 </div>
-              </div> -->
+              </div>
 
               <div class="reset-settings-group" id="resetSettingsGroup">
                 <button class="reset-settings-btn" id="resetSettingsBtn" title="Reset to default settings">
