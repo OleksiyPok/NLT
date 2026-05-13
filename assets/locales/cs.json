@@ -25,5 +25,9 @@
   "repeatsLeft": "Zbývá opakování:",
   "defaultSettings": "Výchozí nastavení",
   "labelThema": "Téma",
-  "labelThemaMode": "Režim"
+  "labelThemaMode": "Režim",
+  "themaModeContrast": "Kontrast",
+  "themaModeNormal": "Normální",
+  "themaModeEvening": "Večer",
+  "themaModeNight": "Noc"
 }

@@ -219,6 +219,10 @@ function createLangLoader({ config }) {
     defaultSettings: "Reset defaults",
     labelThema: "Theme",
     labelThemaMode: "Mode",
+    themaModeContrast: "Contrast",
+    themaModeNormal: "Normal",
+    themaModeEvening: "Evening",
+    themaModeNight: "Night",
   };
   async function loadLang(code) {
     try {
@@ -611,6 +615,7 @@ function createUI({ bus, utils, config, langLoader }) {
     labelDelayTime: "#labelDelayTime",
     fullscreenDelayMode: "#fullscreenDelayMode",
     fullscreenDelay: "#fullscreenDelay",
+    themaModeSelect: "#themaModeSelect",
       themaSelect: "#themaSelect",
       labelThema: "#labelThema",
       labelThemaMode: "#labelThemaMode",
@@ -843,6 +848,20 @@ function createUI({ bus, utils, config, langLoader }) {
       }
       if (E.fullscreenDelayMode.options[2].textContent !== texts.delayModeAudio) {
         E.fullscreenDelayMode.options[2].textContent = texts.delayModeAudio;
+      }
+    }
+    if (E.themaModeSelect) {
+      if (E.themaModeSelect.options[0].textContent !== texts.themaModeContrast) {
+        E.themaModeSelect.options[0].textContent = texts.themaModeContrast;
+      }
+      if (E.themaModeSelect.options[1].textContent !== texts.themaModeNormal) {
+        E.themaModeSelect.options[1].textContent = texts.themaModeNormal;
+      }
+      if (E.themaModeSelect.options[2].textContent !== texts.themaModeEvening) {
+        E.themaModeSelect.options[2].textContent = texts.themaModeEvening;
+      }
+      if (E.themaModeSelect.options[3].textContent !== texts.themaModeNight) {
+        E.themaModeSelect.options[3].textContent = texts.themaModeNight;
       }
     }
 

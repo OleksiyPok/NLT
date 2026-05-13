@@ -25,5 +25,9 @@
   "repeatsLeft": "Осталось повторов:",
   "defaultSettings": "Настройки по умолчанию",
   "labelThema": "Тема",
-  "labelThemaMode": "Режим"
+  "labelThemaMode": "Режим",
+  "themaModeContrast": "Контраст",
+  "themaModeNormal": "Обычный",
+  "themaModeEvening": "Вечерний",
+  "themaModeNight": "Ночной"
 }

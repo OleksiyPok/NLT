@@ -25,5 +25,9 @@
   "repeatsLeft": "Pozostało powtórzeń:",
   "defaultSettings": "Ustawienia domyślne",
   "labelThema": "Motyw",
-  "labelThemaMode": "Tryb"
+  "labelThemaMode": "Tryb",
+  "themaModeContrast": "Kontrast",
+  "themaModeNormal": "Normalny",
+  "themaModeEvening": "Wieczór",
+  "themaModeNight": "Noc"
 }

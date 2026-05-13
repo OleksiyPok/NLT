@@ -25,5 +25,9 @@
   "repeatsLeft": "Kalan tekrarlar:",
   "defaultSettings": "Varsayılan ayarlar",
   "labelThema": "Tema",
-  "labelThemaMode": "Mod"
+  "labelThemaMode": "Mod",
+  "themaModeContrast": "Kontrast",
+  "themaModeNormal": "Normal",
+  "themaModeEvening": "Akşam",
+  "themaModeNight": "Gece"
 }

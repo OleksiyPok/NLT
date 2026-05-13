@@ -25,5 +25,9 @@
   "repeatsLeft": "التكرارات المتبقية:",
   "defaultSettings": "الإعدادات الافتراضية",
   "labelThema": "السمة",
-  "labelThemaMode": "الوضع"
+  "labelThemaMode": "الوضع",
+  "themaModeContrast": "تباين",
+  "themaModeNormal": "عادي",
+  "themaModeEvening": "مسائي",
+  "themaModeNight": "ليلي"
 }

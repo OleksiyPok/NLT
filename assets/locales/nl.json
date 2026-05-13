@@ -25,5 +25,9 @@
   "repeatsLeft": "Herhalingen over:",
   "defaultSettings": "Standaardinstellingen",
   "labelThema": "Thema",
-  "labelThemaMode": "Modus"
+  "labelThemaMode": "Modus",
+  "themaModeContrast": "Contrast",
+  "themaModeNormal": "Normaal",
+  "themaModeEvening": "Avond",
+  "themaModeNight": "Nacht"
 }

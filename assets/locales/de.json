@@ -25,5 +25,9 @@
   "repeatsLeft": "Wiederholungen übrig:",
   "defaultSettings": "Standardeinstellungen",
   "labelThema": "Thema",
-  "labelThemaMode": "Modus"
+  "labelThemaMode": "Modus",
+  "themaModeContrast": "Kontrast",
+  "themaModeNormal": "Normal",
+  "themaModeEvening": "Abend",
+  "themaModeNight": "Nacht"
 }
