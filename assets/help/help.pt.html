@@ -1,38 +1,126 @@
 <!DOCTYPE html>
 <html lang="pt">
   <head>
-    <meta charset="utf-8" />
-    <title>NLT Number Listening Trainer</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instruções</title>
   </head>
-
   <body>
-    <div class="top-space"></div>
+    <div id="helpAppContent">
+      <h2>Objetivo do programa</h2>
 
-    <h1>NLT Number Listening Trainer</h1>
+      <p>O programa foi projetado para aprender números em vários idiomas e treinar a percepção auditiva.</p>
 
-    <div class="divider"></div>
+      <p>A aplicação gera sequências de números, pronuncia-os usando a voz selecionada e permite configurar parâmetros de exercícios, como número de valores, número de repetições, velocidade da fala e idioma da fala.</p>
 
-    <p>
-      Esta é uma aplicação compacta de uma página projetada para aprender números em idiomas estrangeiros.<br />
-      A aplicação utiliza um método de percepção auditiva e visual simultânea, permitindo uma memorização rápida e eficaz.
-    </p>
+      <p>O programa pode ser usado para desenvolver habilidades de escuta, treinar a memória e aprender numerais em idiomas estrangeiros.</p>
 
-    <h3>Visualização da área de exercício</h3>
+      <p>Além disso, permite configurar um atraso entre a exibição de um número e a sua pronúncia. Dependendo do modo selecionado, você pode ver o número primeiro e pronunciá-lo antes do programa ou ouvir o número primeiro e visualizá-lo antes de aparecer na tela.</p>
 
-    <img src="./assets/images/screenshots/app.png" alt="App screenshot" />
+      <h2>Descrição da interface do programa</h2>
 
-    <h3>Descrição da área de configurações</h3>
+      <p>A interface do programa consiste em:</p>
 
-    <img src="./assets/images/screenshots/settings.png" alt="App screenshot" />
+      <ul>
+        <p><span class="marker">1</span>Área de exercícios</p>
+        <p><span class="marker">2</span>Área de configurações</p>
+        <p><span class="marker">3</span>Área de botões de controle</p>
+      </ul>
 
-    <ol>
-      <li>Velocidade da fala (0.6 – 2.0)</li>
-      <li>Pausa entre dígitos (500 – 5000)</li>
-      <li>Comprimento dos dígitos (unidades, dezenas, centenas)</li>
-      <li>Número de valores a serem falados</li>
-      <li>Número de repetições (ciclos de todos os valores selecionados no item 4)</li>
-      <li>Exibição em tela cheia dos valores ("Não" – apenas tabela)</li>
-      <li>Redefinir todas as configurações para valores padrão</li>
-    </ol>
+      <img src="./assets/images/screenshots/interface-overview.png" alt="Interface principal do aplicativo mostrando área de exercícios, configurações e botões de controle" />
+
+      <div class="divider"></div>
+
+      <h2>Controles gerais</h2>
+
+      <p><span class="marker-circle">4</span>Abrir ajuda (também disponível pela tecla F1)</p>
+      <img src="./assets/images/screenshots/help-access.png" alt="Menu de ajuda e atalho F1" />
+
+      <p><span class="marker-circle">5</span>Selecionar nível de contraste da interface</p>
+      <img src="./assets/images/screenshots/contrast-selection.png" alt="Seleção de contraste da interface" />
+      <img src="./assets/images/screenshots/contrast-selection-example.png" alt="Exemplo de seleção de contraste da interface" />
+
+      <div class="divider"></div>
+
+      <h2>Área de exercícios</h2>
+
+      <p><span class="marker-circle">6</span>Campos de números para exercícios</p>
+      <p><span class="marker-circle">7</span>Número de repetições restantes do exercício com os números selecionados</p>
+      <img src="./assets/images/screenshots/exercise-numbers.png" alt="Área de exercícios com números gerados" />
+
+      <div class="divider"></div>
+
+      <h2>Área de botões de controle</h2>
+
+      <p><span class="marker-circle">8</span>Botão de gerar novos números</p>
+      <p><span class="marker-circle">9</span>Botão iniciar/parar exercício</p>
+      <p><span class="marker-circle">10</span>Botão de redefinir exercício para o estado inicial</p>
+      <img src="./assets/images/screenshots/control-buttons.png" alt="Botões de controle do exercício" />
+
+      <div class="divider"></div>
+
+      <h2>Área de configurações</h2>
+
+      <h3>Parâmetros de reprodução</h3>
+
+      <p><span class="marker-circle">11</span>Velocidade de pronúncia dos números</p>
+      <p><span class="marker-circle">12</span>Intervalo entre o fim de uma pronúncia e o início da próxima</p>
+
+      <img src="./assets/images/screenshots/speech-speed-and-interval.png" alt="Configurações de velocidade e intervalo de fala" />
+
+      <h3>Parâmetros do exercício</h3>
+
+      <p><span class="marker-circle">13</span>Comprimento dos números (unidades, dezenas, centenas)</p>
+      <p><span class="marker-circle">14</span>Número de valores no exercício (destacado na interface)</p>
+      <p><span class="marker-circle">15</span>Número de repetições do exercício com os números selecionados</p>
+
+      <img src="./assets/images/screenshots/number-settings.png" alt="Configurações de comprimento, quantidade e repetição de números" />
+      <img src="./assets/images/screenshots/number-settings-example.png" alt="Exemplo de configuração de quantidade de números" />
+
+      <h3>Exibição e atraso</h3>
+
+      <p>
+        <span class="marker-circle">16</span>Exibição de números em tela cheia
+        <br />
+        <small>Quando o modo tela cheia está desativado, o destaque aparece apenas na área de exercícios.</small>
+      </p>
+
+      <p><span class="marker-circle">17</span>Configurar atraso entre exibição do número e sua pronúncia</p>
+
+      <p><span class="marker-circle">18</span>Duração do atraso em segundos</p>
+
+      <img src="./assets/images/screenshots/fullscreen-and-delay.png" alt="Configurações de tela cheia e atraso" />
+
+      <h3>Fala</h3>
+
+      <p><span class="marker-circle">19</span>Idioma da fala</p>
+      <p><span class="marker-circle">20</span>Voz (disponível apenas na versão desktop)</p>
+
+      <img src="./assets/images/screenshots/language-and-voice.png" alt="Seleção de idioma e voz" />
+
+      <h3>Aparência</h3>
+
+      <p><span class="marker-circle">21</span>Tema da interface</p>
+
+      <img src="./assets/images/screenshots/theme-selection.png" alt="Seleção de tema da interface" />
+      <img src="./assets/images/screenshots/theme-selection-example.png" alt="Exemplo de aparência do tema da interface" />
+
+      <h3>Localização</h3>
+
+      <p><span class="marker-circle">22</span>Idioma da interface</p>
+
+      <img src="./assets/images/screenshots/interface-language.png" alt="Seleção de idioma da interface" />
+      <img src="./assets/images/screenshots/interface-language-example.png" alt="Exemplo de idiomas disponíveis da interface" />
+
+      <h3>Redefinir configurações</h3>
+
+      <p><span class="marker-circle">23</span>Restaurar valores padrão da aplicação</p>
+
+      <img src="./assets/images/screenshots/reset-defaults.png" alt="Redefinir configurações da aplicação para padrões" />
+
+      <div class="divider"></div>
+
+      <p>Todas as alterações de parâmetros são aplicadas automaticamente e usadas nos exercícios seguintes.</p>
+    </div>
   </body>
 </html>

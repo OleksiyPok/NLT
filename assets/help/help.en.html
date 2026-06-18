@@ -1,37 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <title>NLT Number Listening Trainer</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instruction</title>
   </head>
-
   <body>
-    <div class="top-space"></div>
+    <div id="helpAppContent">
+      <h2>Program Purpose</h2>
 
-    <h1>NLT Number Listening Trainer</h1>
+      <p>The program is designed for learning numbers in various languages and training auditory perception.</p>
 
-    <div class="divider"></div>
+      <p>The application generates sequences of numbers, pronounces them using the selected voice, and allows you to configure exercise parameters such as the number of values, the number of repetitions, speech rate, and speech language.</p>
 
-    <p>
-      This is a compact, one-page application designed for learning numbers in foreign languages.<br />
-      The app employs a method of simultaneous auditory and visual perception, enabling rapid and effective memorization.
-    </p>
+      <p>The program can be used to develop listening skills, train memory, and learn numerals in foreign languages.</p>
 
-    <h3>Exercise area view</h3>
+      <p>Additionally, it supports configuring a delay between displaying a number and pronouncing it. Depending on the selected mode, you can either see the number first and pronounce it yourself before the program does, or hear the number first and visualize it before it appears on the screen.</p>
 
-    <img src="./assets/images/screenshots/app.png" alt="App screenshot" />
+      <h2>Program Interface Description</h2>
 
-    <h3>Settings area description</h3>
+      <p>The program interface consists of:</p>
 
-    <img src="./assets/images/screenshots/settings.png" alt="App screenshot" />
-    <ol>
-      <li>Speech rate (0.6 – 2.0)</li>
-      <li>Pause between digits (500 – 5000)</li>
-      <li>Digit length (units, tens, hundreds)</li>
-      <li>Number of values to be spoken</li>
-      <li>Number of repetitions (cycles of all selected values in item 4)</li>
-      <li>Full-screen display of values ("No" – table only)</li>
-      <li>Reset all settings to default values</li>
-    </ol>
+      <ul>
+        <p><span class="marker">1</span>Exercise area</p>
+        <p><span class="marker">2</span>Settings area</p>
+        <p><span class="marker">3</span>Control buttons area</p>
+      </ul>
+
+      <img src="./assets/images/screenshots/interface-overview.png" alt="Main application interface showing exercise area, settings area and control buttons" />
+
+      <div class="divider"></div>
+
+      <h2>General Controls</h2>
+
+      <p><span class="marker-circle">4</span>Open help (also available by pressing F1)</p>
+      <img src="./assets/images/screenshots/help-access.png" alt="Help access menu and F1 keyboard shortcut" />
+
+      <p><span class="marker-circle">5</span>Select the visual interface contrast level</p>
+      <img src="./assets/images/screenshots/contrast-selection.png" alt="Visual interface contrast selection" />
+      <img src="./assets/images/screenshots/contrast-selection-example.png" alt="Visual interface contrast selection example" />
+
+      <div class="divider"></div>
+
+      <h2>Exercise Area</h2>
+
+      <p><span class="marker-circle">6</span> Number fields for exercises</p>
+      <p><span class="marker-circle">7</span> Number of remaining repetitions for the exercise with the selected numbers</p>
+      <img src="./assets/images/screenshots/exercise-numbers.png" alt="Exercise area displaying generated numbers" />
+
+      <div class="divider"></div>
+
+      <h2>Control Buttons Area</h2>
+
+      <p><span class="marker-circle">8</span> Generate new numbers button</p>
+      <p><span class="marker-circle">9</span> Start / stop exercise button</p>
+      <p><span class="marker-circle">10</span> Reset exercise to its initial state button</p>
+      <img src="./assets/images/screenshots/control-buttons.png" alt="Exercise control buttons" />
+
+      <div class="divider"></div>
+
+      <h2>Settings Area</h2>
+
+      <h3>Playback Parameters</h3>
+
+      <p><span class="marker-circle">11</span> Number pronunciation speed</p>
+      <p><span class="marker-circle">12</span> Interval between the end of one number pronunciation and the beginning of the next</p>
+
+      <img src="./assets/images/screenshots/speech-speed-and-interval.png" alt="Speech speed and interval settings" />
+
+      <h3>Exercise Parameters</h3>
+
+      <p><span class="marker-circle">13</span> Number length (units, tens, hundreds)</p>
+      <p><span class="marker-circle">14</span> Number of values in the exercise (highlighted in the interface)</p>
+      <p><span class="marker-circle">15</span> Number of repetitions for the exercise with the selected numbers</p>
+
+      <img src="./assets/images/screenshots/number-settings.png" alt="Number length, quantity and repetition settings" />
+      <img src="./assets/images/screenshots/number-settings-example.png" alt="Number quantity settings example" />
+
+      <h3>Display and Delay</h3>
+
+      <p>
+        <span class="marker-circle">16</span> Display numbers in full-screen mode
+        <br />
+        <small>When full-screen mode is disabled, highlighting is shown only within the exercise area.</small>
+      </p>
+
+      <p><span class="marker-circle">17</span> Configure the delay between displaying a number and pronouncing it</p>
+
+      <p><span class="marker-circle">18</span> Delay duration in seconds</p>
+
+      <img src="./assets/images/screenshots/fullscreen-and-delay.png" alt="Fullscreen display and delay settings" />
+
+      <h3>Speech</h3>
+
+      <p><span class="marker-circle">19</span> Speech language</p>
+      <p><span class="marker-circle">20</span> Speech voice (available only in the desktop version)</p>
+
+      <img src="./assets/images/screenshots/language-and-voice.png" alt="Speech language and voice selection" />
+
+      <h3>Appearance</h3>
+
+      <p><span class="marker-circle">21</span>Interface color theme</p>
+
+      <img src="./assets/images/screenshots/theme-selection.png" alt="Interface theme selection" />
+      <img src="./assets/images/screenshots/theme-selection-example.png" alt="Example of interface theme appearance" />
+
+      <h3>Localization</h3>
+
+      <p><span class="marker-circle">22</span> Interface language</p>
+
+      <img src="./assets/images/screenshots/interface-language.png" alt="Interface language selection" />
+      <img src="./assets/images/screenshots/interface-language-example.png" alt="Example of available interface languages" />
+
+      <h3>Reset Settings</h3>
+
+      <p><span class="marker-circle">23</span> Reset the application to default values</p>
+
+      <img src="./assets/images/screenshots/reset-defaults.png" alt="Reset application settings to default values" />
+
+      <div class="divider"></div>
+
+      <p>All parameter changes are applied automatically and are used in subsequent exercises.</p>
+    </div>
   </body>
 </html>

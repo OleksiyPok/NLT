@@ -1,39 +1,126 @@
 <!DOCTYPE html>
 <html lang="pl">
   <head>
-    <meta charset="utf-8" />
-    <title>NLT Number Listening Trainer</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instrukcja</title>
   </head>
-
   <body>
-    <div class="top-space"></div>
+    <div id="helpAppContent">
+      <h2>Cel programu</h2>
 
-    <h1>NLT Number Listening Trainer</h1>
+      <p>Program został zaprojektowany do nauki liczb w różnych językach oraz treningu percepcji słuchowej.</p>
 
-    <div class="divider"></div>
+      <p>Aplikacja generuje sekwencje liczb, wymawia je przy użyciu wybranego głosu i umożliwia konfigurację parametrów ćwiczeń, takich jak liczba wartości, liczba powtórzeń, tempo mowy oraz język mowy.</p>
 
-    <p>
-      To kompaktowa aplikacja jednostronicowa zaprojektowana do nauki liczb w językach obcych.<br />
-      Aplikacja wykorzystuje metodę jednoczesnej percepcji słuchowej i wzrokowej, umożliwiając szybką i skuteczną zapamiętywanie.
-    </p>
+      <p>Program może być używany do rozwijania umiejętności słuchania, treningu pamięci oraz nauki cyfr w językach obcych.</p>
 
-    <h3>Widok obszaru ćwiczeń</h3>
+      <p>Dodatkowo umożliwia ustawienie opóźnienia między wyświetleniem liczby a jej wypowiedzeniem. W zależności od wybranego trybu możesz najpierw zobaczyć liczbę i samodzielnie ją wypowiedzieć przed programem albo najpierw usłyszeć liczbę i zwizualizować ją przed pojawieniem się na ekranie.</p>
 
-    <img src="./assets/images/screenshots/app.png" alt="App screenshot" />
+      <h2>Opis interfejsu programu</h2>
 
-    <h3>Opis obszaru ustawień</h3>
+      <p>Interfejs programu składa się z:</p>
 
-    <img src="./assets/images/screenshots/settings.png" alt="App screenshot" />
+      <ul>
+        <p><span class="marker">1</span>Obszar ćwiczeń</p>
+        <p><span class="marker">2</span>Obszar ustawień</p>
+        <p><span class="marker">3</span>Obszar przycisków sterujących</p>
+      </ul>
 
-    <ol>
-      <li>Tempo mowy (0.6 – 2.0)</li>
-      <li>Przerwa między cyframi (500 – 5000)</li>
-      <li>Długość cyfr (jedności, dziesiątki, setki)</li>
-      <li>Liczba wypowiadanych wartości</li>
-      <li>Liczba powtórzeń (cykle wszystkich wartości z punktu 4)</li>
-      <li>Wyświetlanie pełnoekranowe ("Nie" – tylko tabela)</li>
-      <li>Reset wszystkich ustawień do wartości domyślnych</li>
-    </ol>
-    s
+      <img src="./assets/images/screenshots/interface-overview.png" alt="Główny interfejs aplikacji pokazujący obszar ćwiczeń, ustawień i przycisków sterujących" />
+
+      <div class="divider"></div>
+
+      <h2>Ogólne sterowanie</h2>
+
+      <p><span class="marker-circle">4</span>Otwórz pomoc (również klawisz F1)</p>
+      <img src="./assets/images/screenshots/help-access.png" alt="Menu pomocy i skrót klawiaturowy F1" />
+
+      <p><span class="marker-circle">5</span>Wybór poziomu kontrastu interfejsu</p>
+      <img src="./assets/images/screenshots/contrast-selection.png" alt="Wybór kontrastu interfejsu" />
+      <img src="./assets/images/screenshots/contrast-selection-example.png" alt="Przykład wyboru kontrastu interfejsu" />
+
+      <div class="divider"></div>
+
+      <h2>Obszar ćwiczeń</h2>
+
+      <p><span class="marker-circle">6</span>Pola liczb dla ćwiczeń</p>
+      <p><span class="marker-circle">7</span>Liczba pozostałych powtórzeń dla ćwiczenia z wybranymi liczbami</p>
+      <img src="./assets/images/screenshots/exercise-numbers.png" alt="Obszar ćwiczeń z wygenerowanymi liczbami" />
+
+      <div class="divider"></div>
+
+      <h2>Obszar przycisków sterujących</h2>
+
+      <p><span class="marker-circle">8</span>Przycisk generowania nowych liczb</p>
+      <p><span class="marker-circle">9</span>Przycisk start/stop ćwiczenia</p>
+      <p><span class="marker-circle">10</span>Przycisk resetowania ćwiczenia do stanu początkowego</p>
+      <img src="./assets/images/screenshots/control-buttons.png" alt="Przyciski sterowania ćwiczeniem" />
+
+      <div class="divider"></div>
+
+      <h2>Obszar ustawień</h2>
+
+      <h3>Parametry odtwarzania</h3>
+
+      <p><span class="marker-circle">11</span>Prędkość wypowiadania liczb</p>
+      <p><span class="marker-circle">12</span>Odstęp między końcem wypowiedzenia jednej liczby a początkiem następnej</p>
+
+      <img src="./assets/images/screenshots/speech-speed-and-interval.png" alt="Ustawienia prędkości i odstępu mowy" />
+
+      <h3>Parametry ćwiczenia</h3>
+
+      <p><span class="marker-circle">13</span>Długość liczb (jedności, dziesiątki, setki)</p>
+      <p><span class="marker-circle">14</span>Liczba wartości w ćwiczeniu (podświetlona w interfejsie)</p>
+      <p><span class="marker-circle">15</span>Liczba powtórzeń ćwiczenia z wybranymi liczbami</p>
+
+      <img src="./assets/images/screenshots/number-settings.png" alt="Ustawienia długości, ilości i powtórzeń liczb" />
+      <img src="./assets/images/screenshots/number-settings-example.png" alt="Przykład ustawień liczby wartości" />
+
+      <h3>Wyświetlanie i opóźnienie</h3>
+
+      <p>
+        <span class="marker-circle">16</span>Wyświetlanie liczb w trybie pełnoekranowym
+        <br />
+        <small>Gdy tryb pełnoekranowy jest wyłączony, podświetlenie jest widoczne tylko w obszarze ćwiczeń.</small>
+      </p>
+
+      <p><span class="marker-circle">17</span>Ustawienie opóźnienia między wyświetleniem liczby a jej wypowiedzeniem</p>
+
+      <p><span class="marker-circle">18</span>Czas opóźnienia w sekundach</p>
+
+      <img src="./assets/images/screenshots/fullscreen-and-delay.png" alt="Ustawienia pełnego ekranu i opóźnienia" />
+
+      <h3>Mowa</h3>
+
+      <p><span class="marker-circle">19</span>Język mowy</p>
+      <p><span class="marker-circle">20</span>Głos (dostępny tylko w wersji desktopowej)</p>
+
+      <img src="./assets/images/screenshots/language-and-voice.png" alt="Wybór języka i głosu" />
+
+      <h3>Wygląd</h3>
+
+      <p><span class="marker-circle">21</span>Motyw interfejsu</p>
+
+      <img src="./assets/images/screenshots/theme-selection.png" alt="Wybór motywu interfejsu" />
+      <img src="./assets/images/screenshots/theme-selection-example.png" alt="Przykład wyglądu motywu interfejsu" />
+
+      <h3>Lokalizacja</h3>
+
+      <p><span class="marker-circle">22</span>Język interfejsu</p>
+
+      <img src="./assets/images/screenshots/interface-language.png" alt="Wybór języka interfejsu" />
+      <img src="./assets/images/screenshots/interface-language-example.png" alt="Przykład dostępnych języków interfejsu" />
+
+      <h3>Reset ustawień</h3>
+
+      <p><span class="marker-circle">23</span>Przywrócenie ustawień domyślnych aplikacji</p>
+
+      <img src="./assets/images/screenshots/reset-defaults.png" alt="Reset ustawień aplikacji do wartości domyślnych" />
+
+      <div class="divider"></div>
+
+      <p>Wszystkie zmiany parametrów są stosowane automatycznie i używane w kolejnych ćwiczeniach.</p>
+    </div>
   </body>
 </html>

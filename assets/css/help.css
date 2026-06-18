@@ -3,8 +3,12 @@
 #helpAppContent {
   font-family: Arial, sans-serif;
   line-height: 1.5;
-  padding: 20px;
+  padding: 5px;
   color: #222;
+}
+
+#helpAppContent p {
+  margin: 6px 0;
 }
 
 #helpAppContent .top-space {
@@ -16,14 +20,64 @@
   margin: 0;
 }
 
+#helpAppContent h2 {
+  margin: 22px 0 10px;
+}
+
+#helpAppContent h3 {
+  margin: 18px 0 8px;
+  font-size: 17px;
+}
+
+#helpAppContent small {
+  color: #666;
+  font-size: 0.9em;
+}
+
 #helpAppContent img {
   max-width: 100%;
   display: block;
-  margin: 15px auto;
-  border-radius: 6px;
+  margin: 10px auto;
+
+  /* frame */
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  /* white inner padding effect */
+  background: #fff;
+  padding: 8px;
+  box-sizing: border-box;
 }
 
 #helpAppContent .divider {
   border-top: 1px solid #ddd;
   margin: 15px 0;
+}
+
+.marker,
+.marker-circle {
+  background: #ddd;
+  color: #222;
+}
+
+.marker {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  margin-right: 6px;
+}
+
+.marker-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 12px;
+  margin-right: 6px;
 }

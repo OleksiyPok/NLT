@@ -1,38 +1,126 @@
 <!DOCTYPE html>
 <html lang="nl">
   <head>
-    <meta charset="utf-8" />
-    <title>NLT Number Listening Trainer</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instructie</title>
   </head>
-
   <body>
-    <div class="top-space"></div>
+    <div id="helpAppContent">
+      <h2>Doel van het programma</h2>
 
-    <h1>NLT Number Listening Trainer</h1>
+      <p>Het programma is bedoeld voor het leren van getallen in verschillende talen en het trainen van de auditieve waarneming ervan.</p>
 
-    <div class="divider"></div>
+      <p>De applicatie genereert reeksen getallen, spreekt deze uit met de geselecteerde stem en maakt het mogelijk om oefenparameters in te stellen, zoals het aantal getallen, het aantal herhalingen, het spreektempo en de taal van de uitspraak.</p>
 
-    <p>
-      Dit is een compacte eenpagina-applicatie ontworpen voor het leren van getallen in vreemde talen.<br />
-      De app gebruikt een methode van gelijktijdige auditieve en visuele waarneming voor snelle en effectieve memorisatie.
-    </p>
+      <p>Het programma kan worden gebruikt om luistervaardigheid te ontwikkelen, het geheugen te trainen en telwoorden in vreemde talen te leren.</p>
 
-    <h3>Weergave van het oefengebied</h3>
+      <p>Daarnaast wordt het instellen van een vertraging tussen het weergeven van een getal en het uitspreken ervan ondersteund. Afhankelijk van de gekozen modus kunt u eerst het getal zien en het zelf uitspreken voordat het programma dit doet, of eerst het getal horen en het zich voorstellen voordat het op het scherm verschijnt.</p>
 
-    <img src="./assets/images/screenshots/app.png" alt="App screenshot" />
+      <h2>Beschrijving van de programma-interface</h2>
 
-    <h3>Beschrijving van het instellingengebied</h3>
+      <p>De programma-interface bestaat uit:</p>
 
-    <img src="./assets/images/screenshots/settings.png" alt="App screenshot" />
+      <ul>
+        <p><span class="marker">1</span>Oefengebied</p>
+        <p><span class="marker">2</span>Instellingengebied</p>
+        <p><span class="marker">3</span>Gebied met bedieningsknoppen</p>
+      </ul>
 
-    <ol>
-      <li>Spreeksnelheid (0.6 – 2.0)</li>
-      <li>Pauze tussen cijfers (500 – 5000)</li>
-      <li>Cijferlengte (enheden, tientallen, honderdtallen)</li>
-      <li>Aantal uit te spreken waarden</li>
-      <li>Aantal herhalingen (cycli van alle geselecteerde waarden in punt 4)</li>
-      <li>Weergave op volledig scherm ("Nee" – alleen tabel)</li>
-      <li>Alle instellingen resetten naar standaardwaarden</li>
-    </ol>
+      <img src="./assets/images/screenshots/interface-overview.png" alt="Hoofdinterface van de applicatie met oefengebied, instellingengebied en bedieningsknoppen" />
+
+      <div class="divider"></div>
+
+      <h2>Algemene bedieningselementen</h2>
+
+      <p><span class="marker-circle">4</span>Help openen (ook met F1)</p>
+      <img src="./assets/images/screenshots/help-access.png" alt="Helpmenu en F1-sneltoets" />
+
+      <p><span class="marker-circle">5</span>Selectie van het contrast van de visuele interface</p>
+      <img src="./assets/images/screenshots/contrast-selection.png" alt="Selectie van het contrast van de visuele interface" />
+      <img src="./assets/images/screenshots/contrast-selection-example.png" alt="Voorbeeld van contrastselectie van de visuele interface" />
+
+      <div class="divider"></div>
+
+      <h2>Oefengebied</h2>
+
+      <p><span class="marker-circle">6</span> Getalvelden voor oefeningen</p>
+      <p><span class="marker-circle">7</span> Aantal resterende herhalingen van de oefening met de geselecteerde getallen</p>
+      <img src="./assets/images/screenshots/exercise-numbers.png" alt="Oefengebied met gegenereerde getallen" />
+
+      <div class="divider"></div>
+
+      <h2>Gebied met bedieningsknoppen</h2>
+
+      <p><span class="marker-circle">8</span> Knop voor het genereren van nieuwe getallen</p>
+      <p><span class="marker-circle">9</span> Knop voor het starten / stoppen van de oefening</p>
+      <p><span class="marker-circle">10</span> Knop voor het terugzetten van de oefening naar de beginstatus</p>
+      <img src="./assets/images/screenshots/control-buttons.png" alt="Bedieningsknoppen van de oefening" />
+
+      <div class="divider"></div>
+
+      <h2>Instellingengebied</h2>
+
+      <h3>Afspeelparameters</h3>
+
+      <p><span class="marker-circle">11</span> Spreektempo van de getallen</p>
+      <p><span class="marker-circle">12</span> Interval tussen het einde van de uitspraak van een getal en het begin van het volgende</p>
+
+      <img src="./assets/images/screenshots/speech-speed-and-interval.png" alt="Instellingen voor spreektempo en interval" />
+
+      <h3>Oefenparameters</h3>
+
+      <p><span class="marker-circle">13</span> Aantal cijfers van het getal (eenheden, tientallen, honderden)</p>
+      <p><span class="marker-circle">14</span> Aantal getallen in de oefening (gemarkeerd in de interface)</p>
+      <p><span class="marker-circle">15</span> Aantal herhalingen van de oefening met de geselecteerde getallen</p>
+
+      <img src="./assets/images/screenshots/number-settings.png" alt="Instellingen voor aantal cijfers, hoeveelheid en herhalingen" />
+      <img src="./assets/images/screenshots/number-settings-example.png" alt="Voorbeeld van instellingen voor het aantal getallen" />
+
+      <h3>Weergave en vertraging</h3>
+
+      <p>
+        <span class="marker-circle">16</span> Getallen op volledig scherm weergeven
+        <br />
+        <small>Wanneer de volledigeschermmodus is uitgeschakeld, wordt de markering alleen in het oefengebied weergegeven.</small>
+      </p>
+
+      <p><span class="marker-circle">17</span> Instellen van de vertraging tussen het weergeven van een getal en het uitspreken ervan</p>
+
+      <p><span class="marker-circle">18</span> Vertraging in seconden</p>
+
+      <img src="./assets/images/screenshots/fullscreen-and-delay.png" alt="Instellingen voor volledig scherm en vertraging" />
+
+      <h3>Spraak</h3>
+
+      <p><span class="marker-circle">19</span> Taal van de uitspraak</p>
+      <p><span class="marker-circle">20</span> Stem voor de uitspraak (alleen beschikbaar in de desktopversie)</p>
+
+      <img src="./assets/images/screenshots/language-and-voice.png" alt="Selectie van taal en stem voor de uitspraak" />
+
+      <h3>Uiterlijk</h3>
+
+      <p><span class="marker-circle">21</span>Kleurthema van de interface</p>
+
+      <img src="./assets/images/screenshots/theme-selection.png" alt="Selectie van het interfacethema" />
+      <img src="./assets/images/screenshots/theme-selection-example.png" alt="Voorbeeld van het uiterlijk van een interfacethema" />
+
+      <h3>Lokalisatie</h3>
+
+      <p><span class="marker-circle">22</span> Interfacetaal</p>
+
+      <img src="./assets/images/screenshots/interface-language.png" alt="Selectie van de interfacetaal" />
+      <img src="./assets/images/screenshots/interface-language-example.png" alt="Voorbeeld van beschikbare interfacetalen" />
+
+      <h3>Instellingen resetten</h3>
+
+      <p><span class="marker-circle">23</span> Applicatie terugzetten naar de standaardwaarden</p>
+
+      <img src="./assets/images/screenshots/reset-defaults.png" alt="Applicatie-instellingen terugzetten naar standaardwaarden" />
+
+      <div class="divider"></div>
+
+      <p>Alle wijzigingen van parameters worden automatisch toegepast en gebruikt bij volgende oefeningen.</p>
+    </div>
   </body>
 </html>

@@ -1,38 +1,126 @@
 <!DOCTYPE html>
 <html lang="uk">
   <head>
-    <meta charset="utf-8" />
-    <title>NLT Number Listening Trainer</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Інструкція</title>
   </head>
-
   <body>
-    <div class="top-space"></div>
+    <div id="helpAppContent">
+      <h2>Призначення програми</h2>
 
-    <h1>NLT Number Listening Trainer</h1>
+      <p>Програма призначена для вивчення чисел різними мовами та тренування слухового сприйняття.</p>
 
-    <div class="divider"></div>
+      <p>Застосунок генерує послідовності чисел, озвучує їх вибраним голосом і дозволяє налаштовувати параметри вправ, такі як кількість значень, кількість повторень, швидкість мовлення та мову озвучення.</p>
 
-    <p>
-      Це компактний односторінковий застосунок, призначений для вивчення чисел іноземними мовами.<br />
-      Застосунок використовує метод одночасного слухового та візуального сприйняття, що забезпечує швидке та ефективне запам’ятовування.
-    </p>
+      <p>Програму можна використовувати для розвитку навичок слухання, тренування пам’яті та вивчення числівників іноземними мовами.</p>
 
-    <h3>Вигляд області вправ</h3>
+      <p>Додатково підтримується налаштування затримки між відображенням числа та його озвученням. Залежно від режиму можна спочатку побачити число і вимовити його самостійно або спочатку почути число і візуалізувати його до появи на екрані.</p>
 
-    <img src="./assets/images/screenshots/app.png" alt="App screenshot" />
+      <h2>Опис інтерфейсу програми</h2>
 
-    <h3>Опис області налаштувань</h3>
+      <p>Інтерфейс програми складається з:</p>
 
-    <img src="./assets/images/screenshots/settings.png" alt="App screenshot" />
+      <ul>
+        <p><span class="marker">1</span>Область вправ</p>
+        <p><span class="marker">2</span>Область налаштувань</p>
+        <p><span class="marker">3</span>Область кнопок керування</p>
+      </ul>
 
-    <ol>
-      <li>Темп мовлення (0.6 – 2.0)</li>
-      <li>Пауза між цифрами (500 – 5000)</li>
-      <li>Довжина цифр (одиниці, десятки, сотні)</li>
-      <li>Кількість значень для озвучення</li>
-      <li>Кількість повторів (цикли всіх значень з пункту 4)</li>
-      <li>Відображення на повний екран ("Ні" – лише таблиця)</li>
-      <li>Скидання всіх налаштувань до значень за замовчуванням</li>
-    </ol>
+      <img src="./assets/images/screenshots/interface-overview.png" alt="Головний інтерфейс застосунку з областю вправ, налаштувань і кнопок керування" />
+
+      <div class="divider"></div>
+
+      <h2>Загальні керування</h2>
+
+      <p><span class="marker-circle">4</span>Відкрити довідку (також доступно клавішею F1)</p>
+      <img src="./assets/images/screenshots/help-access.png" alt="Меню довідки та клавіша F1" />
+
+      <p><span class="marker-circle">5</span>Вибір рівня контрасту інтерфейсу</p>
+      <img src="./assets/images/screenshots/contrast-selection.png" alt="Вибір контрасту інтерфейсу" />
+      <img src="./assets/images/screenshots/contrast-selection-example.png" alt="Приклад вибору контрасту інтерфейсу" />
+
+      <div class="divider"></div>
+
+      <h2>Область вправ</h2>
+
+      <p><span class="marker-circle">6</span>Поля чисел для вправ</p>
+      <p><span class="marker-circle">7</span>Кількість залишкових повторень вправи з обраними числами</p>
+      <img src="./assets/images/screenshots/exercise-numbers.png" alt="Область вправ із згенерованими числами" />
+
+      <div class="divider"></div>
+
+      <h2>Область кнопок керування</h2>
+
+      <p><span class="marker-circle">8</span>Кнопка генерації нових чисел</p>
+      <p><span class="marker-circle">9</span>Кнопка запуску/зупинки вправи</p>
+      <p><span class="marker-circle">10</span>Кнопка скидання вправи до початкового стану</p>
+      <img src="./assets/images/screenshots/control-buttons.png" alt="Кнопки керування вправою" />
+
+      <div class="divider"></div>
+
+      <h2>Область налаштувань</h2>
+
+      <h3>Параметри відтворення</h3>
+
+      <p><span class="marker-circle">11</span>Швидкість озвучення чисел</p>
+      <p><span class="marker-circle">12</span>Інтервал між кінцем озвучення одного числа та початком наступного</p>
+
+      <img src="./assets/images/screenshots/speech-speed-and-interval.png" alt="Налаштування швидкості та інтервалу мовлення" />
+
+      <h3>Параметри вправи</h3>
+
+      <p><span class="marker-circle">13</span>Довжина чисел (одиниці, десятки, сотні)</p>
+      <p><span class="marker-circle">14</span>Кількість значень у вправі (підсвічується в інтерфейсі)</p>
+      <p><span class="marker-circle">15</span>Кількість повторень вправи з обраними числами</p>
+
+      <img src="./assets/images/screenshots/number-settings.png" alt="Налаштування довжини, кількості та повторень чисел" />
+      <img src="./assets/images/screenshots/number-settings-example.png" alt="Приклад налаштування кількості чисел" />
+
+      <h3>Відображення та затримка</h3>
+
+      <p>
+        <span class="marker-circle">16</span>Відображення чисел у повноекранному режимі
+        <br />
+        <small>Коли повноекранний режим вимкнено, підсвічування відображається лише в області вправ.</small>
+      </p>
+
+      <p><span class="marker-circle">17</span>Налаштування затримки між показом числа та його озвученням</p>
+
+      <p><span class="marker-circle">18</span>Тривалість затримки в секундах</p>
+
+      <img src="./assets/images/screenshots/fullscreen-and-delay.png" alt="Налаштування повноекранного режиму та затримки" />
+
+      <h3>Мова</h3>
+
+      <p><span class="marker-circle">19</span>Мова озвучення</p>
+      <p><span class="marker-circle">20</span>Голос (доступний лише у десктопній версії)</p>
+
+      <img src="./assets/images/screenshots/language-and-voice.png" alt="Вибір мови та голосу" />
+
+      <h3>Вигляд</h3>
+
+      <p><span class="marker-circle">21</span>Тема інтерфейсу</p>
+
+      <img src="./assets/images/screenshots/theme-selection.png" alt="Вибір теми інтерфейсу" />
+      <img src="./assets/images/screenshots/theme-selection-example.png" alt="Приклад вигляду теми інтерфейсу" />
+
+      <h3>Локалізація</h3>
+
+      <p><span class="marker-circle">22</span>Мова інтерфейсу</p>
+
+      <img src="./assets/images/screenshots/interface-language.png" alt="Вибір мови інтерфейсу" />
+      <img src="./assets/images/screenshots/interface-language-example.png" alt="Приклад доступних мов інтерфейсу" />
+
+      <h3>Скидання налаштувань</h3>
+
+      <p><span class="marker-circle">23</span>Скинути застосунок до стандартних значень</p>
+
+      <img src="./assets/images/screenshots/reset-defaults.png" alt="Скидання налаштувань застосунку до стандартних" />
+
+      <div class="divider"></div>
+
+      <p>Усі зміни параметрів застосовуються автоматично та використовуються в наступних вправах.</p>
+    </div>
   </body>
 </html>

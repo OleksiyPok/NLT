@@ -1,38 +1,126 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head>
-    <meta charset="utf-8" />
-    <title>NLT Number Listening Trainer</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instruction</title>
   </head>
-
   <body>
-    <div class="top-space"></div>
+    <div id="helpAppContent">
+      <h2>Objectif du programme</h2>
 
-    <h1>NLT Number Listening Trainer</h1>
+      <p>Le programme est destiné à l’apprentissage des nombres dans différentes langues et à l’entraînement de leur perception auditive.</p>
 
-    <div class="divider"></div>
+      <p>L’application génère des séquences de nombres, les prononce avec la voix sélectionnée et permet de configurer les paramètres de l’exercice, tels que le nombre de valeurs, le nombre de répétitions, le rythme de prononciation et la langue de synthèse vocale.</p>
 
-    <p>
-      Il s'agit d'une application compacte à une page conçue pour l'apprentissage des nombres en langues étrangères.<br />
-      L'application utilise une méthode de perception auditive et visuelle simultanée, permettant une mémorisation rapide et efficace.
-    </p>
+      <p>Le programme peut être utilisé pour développer les compétences d’écoute, entraîner la mémoire et apprendre les numéraux dans des langues étrangères.</p>
 
-    <h3>Vue de la zone d’exercice</h3>
+      <p>Il prend également en charge le réglage d’un délai entre l’affichage d’un nombre et sa prononciation. Selon le mode sélectionné, vous pouvez d’abord voir le nombre et le prononcer vous-même avant qu’il ne soit énoncé par le programme, ou bien entendre d’abord le nombre et l’imaginer avant son apparition à l’écran.</p>
 
-    <img src="./assets/images/screenshots/app.png" alt="App screenshot" />
+      <h2>Description de l’interface du programme</h2>
 
-    <h3>Description de la zone des paramètres</h3>
+      <p>L’interface du programme se compose de :</p>
 
-    <img src="./assets/images/screenshots/settings.png" alt="App screenshot" />
+      <ul>
+        <p><span class="marker">1</span>Zone d’exercice</p>
+        <p><span class="marker">2</span>Zone des paramètres</p>
+        <p><span class="marker">3</span>Zone des boutons de commande</p>
+      </ul>
 
-    <ol>
-      <li>Vitesse de parole (0.6 – 2.0)</li>
-      <li>Pause entre les chiffres (500 – 5000)</li>
-      <li>Longueur des chiffres (unités, dizaines, centaines)</li>
-      <li>Nombre de valeurs à énoncer</li>
-      <li>Nombre de répétitions (cycles de toutes les valeurs sélectionnées en point 4)</li>
-      <li>Affichage plein écran des valeurs ("Non" – tableau uniquement)</li>
-      <li>Réinitialiser tous les paramètres par défaut</li>
-    </ol>
+      <img src="./assets/images/screenshots/interface-overview.png" alt="Interface principale de l'application montrant la zone d'exercice, la zone des paramètres et les boutons de commande" />
+
+      <div class="divider"></div>
+
+      <h2>Commandes générales</h2>
+
+      <p><span class="marker-circle">4</span>Ouverture de l’aide (également avec la touche F1)</p>
+      <img src="./assets/images/screenshots/help-access.png" alt="Menu d'accès à l'aide et raccourci clavier F1" />
+
+      <p><span class="marker-circle">5</span>Sélection du contraste de l’interface visuelle</p>
+      <img src="./assets/images/screenshots/contrast-selection.png" alt="Sélection du contraste de l'interface visuelle" />
+      <img src="./assets/images/screenshots/contrast-selection-example.png" alt="Exemple de sélection du contraste de l'interface visuelle" />
+
+      <div class="divider"></div>
+
+      <h2>Zone d’exercice</h2>
+
+      <p><span class="marker-circle">6</span> Champs de nombres pour les exercices</p>
+      <p><span class="marker-circle">7</span> Nombre de répétitions restantes de l’exercice avec les nombres sélectionnés</p>
+      <img src="./assets/images/screenshots/exercise-numbers.png" alt="Zone d'exercice affichant les nombres générés" />
+
+      <div class="divider"></div>
+
+      <h2>Zone des boutons de commande</h2>
+
+      <p><span class="marker-circle">8</span> Bouton de génération de nouveaux nombres</p>
+      <p><span class="marker-circle">9</span> Bouton de démarrage / arrêt de l’exercice</p>
+      <p><span class="marker-circle">10</span> Bouton de réinitialisation de l’exercice à son état initial</p>
+      <img src="./assets/images/screenshots/control-buttons.png" alt="Boutons de commande de l'exercice" />
+
+      <div class="divider"></div>
+
+      <h2>Zone des paramètres</h2>
+
+      <h3>Paramètres de lecture</h3>
+
+      <p><span class="marker-circle">11</span> Vitesse de prononciation des nombres</p>
+      <p><span class="marker-circle">12</span> Intervalle entre la fin de la prononciation d’un nombre et le début du suivant</p>
+
+      <img src="./assets/images/screenshots/speech-speed-and-interval.png" alt="Paramètres de vitesse de parole et d'intervalle" />
+
+      <h3>Paramètres de l’exercice</h3>
+
+      <p><span class="marker-circle">13</span> Nombre de chiffres (unités, dizaines, centaines)</p>
+      <p><span class="marker-circle">14</span> Nombre de valeurs dans l’exercice (mises en évidence dans l’interface)</p>
+      <p><span class="marker-circle">15</span> Nombre de répétitions de l’exercice avec les nombres sélectionnés</p>
+
+      <img src="./assets/images/screenshots/number-settings.png" alt="Paramètres du nombre de chiffres, de la quantité et des répétitions" />
+      <img src="./assets/images/screenshots/number-settings-example.png" alt="Exemple de paramétrage de la quantité de nombres" />
+
+      <h3>Affichage et délai</h3>
+
+      <p>
+        <span class="marker-circle">16</span> Affichage des nombres en plein écran
+        <br />
+        <small>Lorsque le mode plein écran est désactivé, la mise en évidence est affichée uniquement dans la zone d’exercice.</small>
+      </p>
+
+      <p><span class="marker-circle">17</span> Réglage du délai entre l’affichage d’un nombre et sa prononciation</p>
+
+      <p><span class="marker-circle">18</span> Valeur du délai en secondes</p>
+
+      <img src="./assets/images/screenshots/fullscreen-and-delay.png" alt="Paramètres du plein écran et du délai" />
+
+      <h3>Synthèse vocale</h3>
+
+      <p><span class="marker-circle">19</span> Langue de synthèse vocale</p>
+      <p><span class="marker-circle">20</span> Voix de synthèse vocale (disponible uniquement dans la version de bureau)</p>
+
+      <img src="./assets/images/screenshots/language-and-voice.png" alt="Sélection de la langue et de la voix de synthèse vocale" />
+
+      <h3>Apparence</h3>
+
+      <p><span class="marker-circle">21</span>Thème de couleur de l’interface</p>
+
+      <img src="./assets/images/screenshots/theme-selection.png" alt="Sélection du thème de l'interface" />
+      <img src="./assets/images/screenshots/theme-selection-example.png" alt="Exemple d'apparence du thème de l'interface" />
+
+      <h3>Localisation</h3>
+
+      <p><span class="marker-circle">22</span> Langue de l’interface</p>
+
+      <img src="./assets/images/screenshots/interface-language.png" alt="Sélection de la langue de l'interface" />
+      <img src="./assets/images/screenshots/interface-language-example.png" alt="Exemple des langues d'interface disponibles" />
+
+      <h3>Réinitialisation des paramètres</h3>
+
+      <p><span class="marker-circle">23</span> Réinitialisation de l’application aux valeurs par défaut</p>
+
+      <img src="./assets/images/screenshots/reset-defaults.png" alt="Réinitialiser les paramètres de l'application aux valeurs par défaut" />
+
+      <div class="divider"></div>
+
+      <p>Toutes les modifications des paramètres sont appliquées automatiquement et utilisées lors des exercices suivants.</p>
+    </div>
   </body>
 </html>

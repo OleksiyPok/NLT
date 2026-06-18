@@ -1,38 +1,126 @@
 <!DOCTYPE html>
 <html lang="de">
   <head>
-    <meta charset="utf-8" />
-    <title>NLT Number Listening Trainer</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anleitung</title>
   </head>
-
   <body>
-    <div class="top-space"></div>
+    <div id="helpAppContent">
+      <h2>Zweck des Programms</h2>
 
-    <h1>NLT Number Listening Trainer</h1>
+      <p>Das Programm dient zum Erlernen von Zahlen in verschiedenen Sprachen und zum Training ihrer auditiven Wahrnehmung.</p>
 
-    <div class="divider"></div>
+      <p>Die Anwendung generiert Zahlenfolgen, spricht sie mit der ausgewählten Stimme aus und ermöglicht die Konfiguration von Übungsparametern wie der Anzahl der Zahlen, der Anzahl der Wiederholungen, der Sprechgeschwindigkeit und der Ausgabesprache.</p>
 
-    <p>
-      Dies ist eine kompakte Ein-Seiten-Anwendung zum Lernen von Zahlen in Fremdsprachen.<br />
-      Die App verwendet eine Methode der gleichzeitigen auditiven und visuellen Wahrnehmung, die ein schnelles und effektives Einprägen ermöglicht.
-    </p>
+      <p>Das Programm kann zur Entwicklung von Hörverständnis, zum Gedächtnistraining und zum Erlernen von Zahlwörtern in Fremdsprachen verwendet werden.</p>
 
-    <h3>Ansicht des Übungsbereichs</h3>
+      <p>Zusätzlich wird die Einstellung einer Verzögerung zwischen der Anzeige einer Zahl und ihrer Aussprache unterstützt. Je nach gewähltem Modus kann die Zahl zunächst angezeigt werden, damit Sie sie selbst aussprechen, bevor das Programm sie vorliest, oder Sie hören die Zahl zuerst und stellen sie sich vor, bevor sie auf dem Bildschirm erscheint.</p>
 
-    <img src="./assets/images/screenshots/app.png" alt="App screenshot" />
+      <h2>Beschreibung der Programmoberfläche</h2>
 
-    <h3>Beschreibung des Einstellungsbereichs</h3>
+      <p>Die Programmoberfläche besteht aus:</p>
 
-    <img src="./assets/images/screenshots/settings.png" alt="App screenshot" />
+      <ul>
+        <p><span class="marker">1</span>Übungsbereich</p>
+        <p><span class="marker">2</span>Einstellungsbereich</p>
+        <p><span class="marker">3</span>Bereich der Steuerschaltflächen</p>
+      </ul>
 
-    <ol>
-      <li>Sprechgeschwindigkeit (0.6 – 2.0)</li>
-      <li>Pause zwischen Ziffern (500 – 5000)</li>
-      <li>Ziffernlänge (Einer, Zehner, Hunderter)</li>
-      <li>Anzahl der auszusprechenden Werte</li>
-      <li>Anzahl der Wiederholungen (Zyklen aller ausgewählten Werte aus Punkt 4)</li>
-      <li>Vollbildanzeige der Werte ("Nein" – nur Tabelle)</li>
-      <li>Alle Einstellungen auf Standardwerte zurücksetzen</li>
-    </ol>
+      <img src="./assets/images/screenshots/interface-overview.png" alt="Hauptoberfläche der Anwendung mit Übungsbereich, Einstellungsbereich und Steuerschaltflächen" />
+
+      <div class="divider"></div>
+
+      <h2>Allgemeine Bedienelemente</h2>
+
+      <p><span class="marker-circle">4</span>Hilfe aufrufen (auch mit F1)</p>
+      <img src="./assets/images/screenshots/help-access.png" alt="Hilfemenü und Tastenkombination F1" />
+
+      <p><span class="marker-circle">5</span>Auswahl des Kontrasts der Benutzeroberfläche</p>
+      <img src="./assets/images/screenshots/contrast-selection.png" alt="Auswahl des Kontrasts der Benutzeroberfläche" />
+      <img src="./assets/images/screenshots/contrast-selection-example.png" alt="Beispiel für die Auswahl des Kontrasts der Benutzeroberfläche" />
+
+      <div class="divider"></div>
+
+      <h2>Übungsbereich</h2>
+
+      <p><span class="marker-circle">6</span> Zahlenfelder für Übungen</p>
+      <p><span class="marker-circle">7</span> Anzahl der verbleibenden Wiederholungen der Übung mit den ausgewählten Zahlen</p>
+      <img src="./assets/images/screenshots/exercise-numbers.png" alt="Übungsbereich mit generierten Zahlen" />
+
+      <div class="divider"></div>
+
+      <h2>Bereich der Steuerschaltflächen</h2>
+
+      <p><span class="marker-circle">8</span> Schaltfläche zum Generieren neuer Zahlen</p>
+      <p><span class="marker-circle">9</span> Schaltfläche zum Starten / Stoppen der Übung</p>
+      <p><span class="marker-circle">10</span> Schaltfläche zum Zurücksetzen der Übung auf den Ausgangszustand</p>
+      <img src="./assets/images/screenshots/control-buttons.png" alt="Steuerschaltflächen der Übung" />
+
+      <div class="divider"></div>
+
+      <h2>Einstellungsbereich</h2>
+
+      <h3>Wiedergabeparameter</h3>
+
+      <p><span class="marker-circle">11</span> Sprechgeschwindigkeit der Zahlen</p>
+      <p><span class="marker-circle">12</span> Intervall zwischen dem Ende der Aussprache einer Zahl und dem Beginn der nächsten</p>
+
+      <img src="./assets/images/screenshots/speech-speed-and-interval.png" alt="Einstellungen für Sprechgeschwindigkeit und Intervall" />
+
+      <h3>Übungsparameter</h3>
+
+      <p><span class="marker-circle">13</span> Stellenanzahl der Zahl (Einer, Zehner, Hunderter)</p>
+      <p><span class="marker-circle">14</span> Anzahl der Zahlen in der Übung (in der Oberfläche hervorgehoben)</p>
+      <p><span class="marker-circle">15</span> Anzahl der Wiederholungen der Übung mit den ausgewählten Zahlen</p>
+
+      <img src="./assets/images/screenshots/number-settings.png" alt="Einstellungen für Stellenanzahl, Menge und Wiederholungen" />
+      <img src="./assets/images/screenshots/number-settings-example.png" alt="Beispiel für die Einstellung der Anzahl der Zahlen" />
+
+      <h3>Anzeige und Verzögerung</h3>
+
+      <p>
+        <span class="marker-circle">16</span> Zahlen im Vollbildmodus anzeigen
+        <br />
+        <small>Wenn der Vollbildmodus deaktiviert ist, wird die Hervorhebung nur im Übungsbereich angezeigt.</small>
+      </p>
+
+      <p><span class="marker-circle">17</span> Einstellung der Verzögerung zwischen der Anzeige einer Zahl und ihrer Aussprache</p>
+
+      <p><span class="marker-circle">18</span> Verzögerungsdauer in Sekunden</p>
+
+      <img src="./assets/images/screenshots/fullscreen-and-delay.png" alt="Einstellungen für Vollbildanzeige und Verzögerung" />
+
+      <h3>Sprachausgabe</h3>
+
+      <p><span class="marker-circle">19</span> Sprache der Sprachausgabe</p>
+      <p><span class="marker-circle">20</span> Stimme der Sprachausgabe (nur in der Desktop-Version verfügbar)</p>
+
+      <img src="./assets/images/screenshots/language-and-voice.png" alt="Auswahl von Sprache und Stimme der Sprachausgabe" />
+
+      <h3>Erscheinungsbild</h3>
+
+      <p><span class="marker-circle">21</span>Farbschema der Benutzeroberfläche</p>
+
+      <img src="./assets/images/screenshots/theme-selection.png" alt="Auswahl des Designs der Benutzeroberfläche" />
+      <img src="./assets/images/screenshots/theme-selection-example.png" alt="Beispiel für das Erscheinungsbild eines Designs" />
+
+      <h3>Lokalisierung</h3>
+
+      <p><span class="marker-circle">22</span> Sprache der Benutzeroberfläche</p>
+
+      <img src="./assets/images/screenshots/interface-language.png" alt="Auswahl der Sprache der Benutzeroberfläche" />
+      <img src="./assets/images/screenshots/interface-language-example.png" alt="Beispiel für verfügbare Oberflächensprachen" />
+
+      <h3>Einstellungen zurücksetzen</h3>
+
+      <p><span class="marker-circle">23</span> Anwendung auf die Standardwerte zurücksetzen</p>
+
+      <img src="./assets/images/screenshots/reset-defaults.png" alt="Anwendungseinstellungen auf Standardwerte zurücksetzen" />
+
+      <div class="divider"></div>
+
+      <p>Alle Änderungen der Parameter werden automatisch übernommen und bei den nächsten Übungen verwendet.</p>
+    </div>
   </body>
 </html>

@@ -1,38 +1,126 @@
 <!DOCTYPE html>
 <html lang="tr">
   <head>
-    <meta charset="utf-8" />
-    <title>NLT Number Listening Trainer</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Talimat</title>
   </head>
-
   <body>
-    <div class="top-space"></div>
+    <div id="helpAppContent">
+      <h2>Programın amacı</h2>
 
-    <h1>NLT Number Listening Trainer</h1>
+      <p>Program, çeşitli dillerde sayıları öğrenmek ve işitsel algıyı geliştirmek için tasarlanmıştır.</p>
 
-    <div class="divider"></div>
+      <p>Uygulama sayı dizileri oluşturur, seçilen sesle bunları okur ve değer sayısı, tekrar sayısı, konuşma hızı ve konuşma dili gibi egzersiz parametrelerinin yapılandırılmasına olanak tanır.</p>
 
-    <p>
-      Bu, yabancı dillerde sayı öğrenmek için tasarlanmış kompakt tek sayfalık bir uygulamadır.<br />
-      Uygulama, hızlı ve etkili ezberleme sağlayan eşzamanlı işitsel ve görsel algı yöntemini kullanır.
-    </p>
+      <p>Program dinleme becerilerini geliştirmek, hafızayı çalıştırmak ve yabancı dillerde sayıları öğrenmek için kullanılabilir.</p>
 
-    <h3>Egzersiz alanı görünümü</h3>
+      <p>Ayrıca, sayının ekranda gösterilmesi ile seslendirilmesi arasında gecikme ayarlamayı destekler. Seçilen moda bağlı olarak önce sayıyı görüp kendiniz söyleyebilir veya önce sayıyı duyup ekranda görünmeden önce görselleştirebilirsiniz.</p>
 
-    <img src="./assets/images/screenshots/app.png" alt="App screenshot" />
+      <h2>Program arayüzü açıklaması</h2>
 
-    <h3>Ayarlar alanı açıklaması</h3>
+      <p>Program arayüzü şunlardan oluşur:</p>
 
-    <img src="./assets/images/screenshots/settings.png" alt="App screenshot" />
+      <ul>
+        <p><span class="marker">1</span>Egzersiz alanı</p>
+        <p><span class="marker">2</span>Ayarlar alanı</p>
+        <p><span class="marker">3</span>Kontrol düğmeleri alanı</p>
+      </ul>
 
-    <ol>
-      <li>Konuşma hızı (0.6 – 2.0)</li>
-      <li>Rakamlar arası duraklama (500 – 5000)</li>
-      <li>Rakam uzunluğu (birler, onlar, yüzler)</li>
-      <li>Söylenecek değer sayısı</li>
-      <li>Tekrar sayısı (4. maddede seçilen tüm değerlerin döngüleri)</li>
-      <li>Tam ekran değer gösterimi ("Hayır" – yalnızca tablo)</li>
-      <li>Tüm ayarları varsayılana sıfırla</li>
-    </ol>
+      <img src="./assets/images/screenshots/interface-overview.png" alt="Egzersiz alanı, ayarlar ve kontrol düğmelerini gösteren ana uygulama arayüzü" />
+
+      <div class="divider"></div>
+
+      <h2>Genel kontroller</h2>
+
+      <p><span class="marker-circle">4</span>Yardımı aç (F1 tuşu ile de erişilebilir)</p>
+      <img src="./assets/images/screenshots/help-access.png" alt="Yardım menüsü ve F1 kısayolu" />
+
+      <p><span class="marker-circle">5</span>Arayüz kontrast seviyesini seç</p>
+      <img src="./assets/images/screenshots/contrast-selection.png" alt="Arayüz kontrast seçimi" />
+      <img src="./assets/images/screenshots/contrast-selection-example.png" alt="Arayüz kontrast seçimi örneği" />
+
+      <div class="divider"></div>
+
+      <h2>Egzersiz alanı</h2>
+
+      <p><span class="marker-circle">6</span>Egzersiz sayı alanları</p>
+      <p><span class="marker-circle">7</span>Seçilen sayılarla yapılan egzersizde kalan tekrar sayısı</p>
+      <img src="./assets/images/screenshots/exercise-numbers.png" alt="Oluşturulan sayıları gösteren egzersiz alanı" />
+
+      <div class="divider"></div>
+
+      <h2>Kontrol düğmeleri alanı</h2>
+
+      <p><span class="marker-circle">8</span>Yeni sayılar oluşturma düğmesi</p>
+      <p><span class="marker-circle">9</span>Egzersizi başlat/durdur düğmesi</p>
+      <p><span class="marker-circle">10</span>Egzersizi başlangıç durumuna sıfırlama düğmesi</p>
+      <img src="./assets/images/screenshots/control-buttons.png" alt="Egzersiz kontrol düğmeleri" />
+
+      <div class="divider"></div>
+
+      <h2>Ayarlar alanı</h2>
+
+      <h3>Oynatma parametreleri</h3>
+
+      <p><span class="marker-circle">11</span>Sayıları seslendirme hızı</p>
+      <p><span class="marker-circle">12</span>Bir sayının bitişi ile bir sonraki sayının başlangıcı arasındaki süre</p>
+
+      <img src="./assets/images/screenshots/speech-speed-and-interval.png" alt="Konuşma hızı ve aralık ayarları" />
+
+      <h3>Egzersiz parametreleri</h3>
+
+      <p><span class="marker-circle">13</span>Sayı uzunluğu (birler, onlar, yüzler)</p>
+      <p><span class="marker-circle">14</span>Egzersizdeki değer sayısı (arayüzde vurgulanır)</p>
+      <p><span class="marker-circle">15</span>Seçilen sayılarla egzersiz tekrar sayısı</p>
+
+      <img src="./assets/images/screenshots/number-settings.png" alt="Sayı uzunluğu, miktar ve tekrar ayarları" />
+      <img src="./assets/images/screenshots/number-settings-example.png" alt="Sayı miktarı ayarı örneği" />
+
+      <h3>Görüntüleme ve gecikme</h3>
+
+      <p>
+        <span class="marker-circle">16</span>Tam ekran modunda sayıları göster
+        <br />
+        <small>Tam ekran kapalıyken vurgulama yalnızca egzersiz alanında gösterilir.</small>
+      </p>
+
+      <p><span class="marker-circle">17</span>Sayı gösterimi ile seslendirme arasındaki gecikmeyi ayarla</p>
+
+      <p><span class="marker-circle">18</span>Gecikme süresi (saniye)</p>
+
+      <img src="./assets/images/screenshots/fullscreen-and-delay.png" alt="Tam ekran ve gecikme ayarları" />
+
+      <h3>Konuşma</h3>
+
+      <p><span class="marker-circle">19</span>Konuşma dili</p>
+      <p><span class="marker-circle">20</span>Ses (yalnızca masaüstü sürümünde mevcut)</p>
+
+      <img src="./assets/images/screenshots/language-and-voice.png" alt="Dil ve ses seçimi" />
+
+      <h3>Görünüm</h3>
+
+      <p><span class="marker-circle">21</span>Arayüz teması</p>
+
+      <img src="./assets/images/screenshots/theme-selection.png" alt="Arayüz tema seçimi" />
+      <img src="./assets/images/screenshots/theme-selection-example.png" alt="Arayüz tema görünümü örneği" />
+
+      <h3>Yerelleştirme</h3>
+
+      <p><span class="marker-circle">22</span>Arayüz dili</p>
+
+      <img src="./assets/images/screenshots/interface-language.png" alt="Arayüz dili seçimi" />
+      <img src="./assets/images/screenshots/interface-language-example.png" alt="Mevcut arayüz dilleri örneği" />
+
+      <h3>Ayarları sıfırla</h3>
+
+      <p><span class="marker-circle">23</span>Uygulamayı varsayılan değerlere döndür</p>
+
+      <img src="./assets/images/screenshots/reset-defaults.png" alt="Uygulama ayarlarını varsayılana sıfırla" />
+
+      <div class="divider"></div>
+
+      <p>Tüm parametre değişiklikleri otomatik olarak uygulanır ve sonraki egzersizlerde kullanılır.</p>
+    </div>
   </body>
 </html>
