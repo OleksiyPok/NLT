@@ -8,7 +8,7 @@
 Dies ist eine kompakte, einseitige Anwendung, die zum Erlernen von Zahlen in Fremdsprachen entwickelt wurde.  
 Die App nutzt eine Methode der gleichzeitigen auditiven und visuellen Wahrnehmung, die ein schnelles und effektives Einprägen ermöglicht.
 
-![Appearance of the application](/assets/images/screenshots/app.png)
+![Appearance of the application](img/app.png)
 
 ---
 

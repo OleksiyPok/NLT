@@ -1,5 +1,11 @@
 "use strict";
 
+// Shown on the main screen (change it with every change of the app)
+const APP_VERSION = "3.4.1";
+
+// Key of the saved settings in localStorage
+const STORAGE_KEY = "NLT-settings";
+
 const EventTypes = Object.freeze({
   APP_STATE: "app:state",
   APP_STATE_SET: "app:state:set",
@@ -94,99 +100,38 @@ function createEventBus() {
   return { on, off, emit };
 }
 
-function createConfig({ paths = null } = {}) {
-  const PATHS = paths || {
-    CONFIG: "./assets/configs/config.json",
-    UI_TEXTS_DIR: "./assets/locales",
+// Default settings come only from config/config.json (the same idea as in DT).
+// config.json: common values; the "mobile" block overrides them on phones and tablets.
+function createConfig() {
+  const PATHS = {
+    CONFIG: "config/config.json",
+    UI_TEXTS_DIR: "src/i18n",
   };
   const UI_LANGS = Object.freeze(["ar", "cs", "de", "en", "es", "fr", "it", "nl", "pl", "pt", "ru", "tr", "uk"]);
-  const DEFAULT_CONFIG = Object.freeze({
-    DEVELOPER_MODE: true,
-    USE_LOCAL_STORAGE: 0,
-    DEFAULT_VOICE: "Google Nederlands",
-    DEFAULT_SETTINGS: {
-      shared: {
-        uiLang: "en",
-        intervalMs: "1000",
-        speed: "1.0",
-        digitLength: "2",
-        count: "40",
-        repeat: "1",
-        thema: "theme-yellowblue-normal",
-        fullscreen: true,
-        languageCode: "nl-NL",
-        voiceName: "Google Nederlands",
-        fullscreenDelayMode: "No delay",
-        fullscreenDelay: "2",
-      },
-      mobile: { fullscreen: true },
-      desktop: { fullscreen: false },
-    },
-  });
 
-  const instance = {
+  let defaults = null;
+
+  // "true", "1", 1 -> 1; everything else -> 0
+  const toFlag = (v) => (v === true || v === 1 || v === "1" || String(v).toLowerCase() === "true" ? 1 : 0);
+
+  return {
     PATHS,
     UI_LANGS,
-    DEFAULT_CONFIG,
-    CONFIG: null,
-    CONFIG_EXT: null,
 
     async load() {
-      this.CONFIG = structuredClone(this.DEFAULT_CONFIG);
+      const res = await fetch(PATHS.CONFIG, { cache: "no-cache" });
+      if (!res.ok) throw new Error(`${PATHS.CONFIG}: ${res.status}`);
+      const { mobile, ...common } = await res.json();
+      defaults = { ...common, ...(Utils.isMobileDevice() ? mobile : {}) };
+      defaults.fullscreen = toFlag(defaults.fullscreen);
+      defaults.developerMode = Boolean(defaults.developerMode);
+    },
 
-      function parseBinary(val, defaultVal = false) {
-        if (typeof val === "string") {
-          const lower = val.toLowerCase();
-          if (lower === "true" || lower === "1") return true;
-          if (lower === "false" || lower === "0") return false;
-        }
-        if (val === true || val === 1) return true;
-        if (val === false || val === 0) return false;
-        return defaultVal;
-      }
-
-      try {
-        const res = await fetch(this.PATHS.CONFIG);
-        if (res.ok) {
-          const ext = await res.json();
-          if (ext && typeof ext === "object") this.CONFIG_EXT = ext;
-        }
-      } catch (e) {
-        console.warn("Config load failed, using defaults", e);
-      }
-
-      if (this.CONFIG_EXT) {
-        if ("DEVELOPER_MODE" in this.CONFIG_EXT) this.CONFIG.DEVELOPER_MODE = this.CONFIG_EXT.DEVELOPER_MODE;
-        if ("USE_LOCAL_STORAGE" in this.CONFIG_EXT) this.CONFIG.USE_LOCAL_STORAGE = this.CONFIG_EXT.USE_LOCAL_STORAGE;
-        if (typeof this.CONFIG_EXT.DEFAULT_VOICE === "string") this.CONFIG.DEFAULT_VOICE = this.CONFIG_EXT.DEFAULT_VOICE;
-
-        if (this.CONFIG_EXT.DEFAULT_SETTINGS) {
-          const sharedExt = this.CONFIG_EXT.DEFAULT_SETTINGS.shared || {};
-          const mobileExt = this.CONFIG_EXT.DEFAULT_SETTINGS.mobile || {};
-          const desktopExt = this.CONFIG_EXT.DEFAULT_SETTINGS.desktop || {};
-
-          const mergedShared = Utils.deepMerge(structuredClone(this.CONFIG.DEFAULT_SETTINGS.shared), sharedExt);
-          const mergedMobile = Utils.deepMerge(structuredClone(this.CONFIG.DEFAULT_SETTINGS.mobile), mobileExt);
-          const mergedDesktop = Utils.deepMerge(structuredClone(this.CONFIG.DEFAULT_SETTINGS.desktop), desktopExt);
-
-          this.CONFIG.DEFAULT_SETTINGS = {
-            shared: mergedShared,
-            mobile: mergedMobile,
-            desktop: mergedDesktop,
-          };
-        }
-      }
-
-      this.CONFIG.DEVELOPER_MODE = parseBinary(this.CONFIG.DEVELOPER_MODE);
-      this.CONFIG.USE_LOCAL_STORAGE = parseBinary(this.CONFIG.USE_LOCAL_STORAGE);
-
-      ["shared", "mobile", "desktop"].forEach((k) => {
-        const set = this.CONFIG.DEFAULT_SETTINGS[k];
-        if (set && "fullscreen" in set) set.fullscreen = parseBinary(set.fullscreen) ? 1 : 0;
-      });
+    // Copy of the defaults for this device
+    getDefaults() {
+      return { ...defaults };
     },
   };
-  return instance;
 }
 
 function createLangLoader({ config }) {
@@ -254,21 +199,18 @@ function createLangLoader({ config }) {
   return { loadLang, loadAll, getTexts };
 }
 
-function createStore({ config, bus }) {
+function createStore({ bus }) {
   const Storage = {
-    KEY: "NLT-settings",
     save(settings) {
-      if (!config.CONFIG?.USE_LOCAL_STORAGE) return;
       try {
-        localStorage.setItem(this.KEY, JSON.stringify(settings));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
       } catch (e) {
         console.warn("LS save failed", e);
       }
     },
     load() {
-      if (!config.CONFIG?.USE_LOCAL_STORAGE) return null;
       try {
-        const v = localStorage.getItem(this.KEY);
+        const v = localStorage.getItem(STORAGE_KEY);
         return v ? JSON.parse(v) : null;
       } catch (e) {
         console.warn("LS load failed", e);
@@ -277,7 +219,7 @@ function createStore({ config, bus }) {
     },
     remove() {
       try {
-        localStorage.removeItem(this.KEY);
+        localStorage.removeItem(STORAGE_KEY);
       } catch (_e) {}
     },
   };
@@ -342,7 +284,7 @@ function createStore({ config, bus }) {
       state.settings = { ...state.settings, ...migrated };
       const themaBefore = state.settings.thema;
       normalizeThemaInSettings(state.settings);
-      if (config.CONFIG?.USE_LOCAL_STORAGE && state.settings.thema !== themaBefore) {
+      if (state.settings.thema !== themaBefore) {
         Storage.save(state.settings);
       }
       bus.emit(EventTypes.SETTINGS_CHANGED, { ...state.settings });
@@ -755,7 +697,7 @@ function createUI({ bus, utils, config, langLoader }) {
     if (!el) return;
 
     const load = (code) =>
-      fetch(`./assets/help/help.${code}.html`).then((r) => {
+      fetch(`docs/help/help.${code}.html`).then((r) => {
         if (!r.ok) throw new Error(`Help file not found: ${code}`);
         return r.text();
       });
@@ -1197,7 +1139,7 @@ function createUI({ bus, utils, config, langLoader }) {
 function createVoices({ bus }) {
   let voices = [];
   let availableLanguages = [];
-  const emitter = bus || bus;
+  const emitter = bus;
 
   function computeAvailableLanguages() {
     availableLanguages = Array.from(new Set(voices.map((v) => (v.lang || "").split(/[-_]/)[0].toUpperCase()).filter(Boolean))).sort();
@@ -1429,15 +1371,6 @@ function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, config }) {
 }
 
 function createApp({ bus, config, langLoader, store, ui, voices, speaker, wakeLock, utils }) {
-  function defaultSettings() {
-    const shared = config.DEFAULT_CONFIG.DEFAULT_SETTINGS.shared;
-    const type = utils.isMobileDevice() ? "mobile" : "desktop";
-    return {
-      ...shared,
-      ...(config.DEFAULT_CONFIG.DEFAULT_SETTINGS[type] || {}),
-    };
-  }
-
   function setAppStateDirect(s) {
     store.setAppState(s);
     if (s === "playing") wakeLock.request();
@@ -1448,28 +1381,14 @@ function createApp({ bus, config, langLoader, store, ui, voices, speaker, wakeLo
     speaker.cancel();
     bus.emit(EventTypes.PLAYBACK_STOP);
 
-    let defaults = defaultSettings();
-    store.resetSettings(defaults);
+    store.resetSettings(config.getDefaults());
     ui.fillRandom();
     ui.highlightSelection();
     ui.resetRepeatLeft();
 
-    if (config.CONFIG_EXT) {
-      const shared = config.CONFIG_EXT.DEFAULT_SETTINGS?.shared || {};
-      const type = utils.isMobileDevice() ? "mobile" : "desktop";
-      const extDefaults = {
-        ...shared,
-        ...(config.CONFIG_EXT.DEFAULT_SETTINGS?.[type] || {}),
-      };
-      store.resetSettings(extDefaults);
-      ui.fillRandom();
-      ui.highlightSelection();
-      ui.resetRepeatLeft();
-    }
-
     const settings = store.getSettings();
-    const defaultVoiceName = settings.voiceName || Config.DEFAULT_CONFIG.DEFAULT_VOICE;
-    const defaultLangCode = (settings.languageCode || Config.DEFAULT_CONFIG.DEFAULT_SETTINGS.shared.languageCode || "").replace("_", "-").toLowerCase();
+    const defaultVoiceName = settings.voiceName;
+    const defaultLangCode = (settings.languageCode || "").replace("_", "-").toLowerCase();
 
     const voices = Voices.getVoices();
     const match = voices.find((v) => {
@@ -1522,13 +1441,8 @@ function createApp({ bus, config, langLoader, store, ui, voices, speaker, wakeLo
 
     await config.load();
 
-    let stored = store.loadSettings() || {};
-    const defaults = config.CONFIG
-      ? {
-          ...config.CONFIG.DEFAULT_SETTINGS.shared,
-          ...(config.CONFIG.DEFAULT_SETTINGS[utils.isMobileDevice() ? "mobile" : "desktop"] || {}),
-        }
-      : defaultSettings();
+    const stored = store.loadSettings() || {};
+    const defaults = config.getDefaults();
 
     const mergedSettings = Utils.deepMerge(defaults, stored);
     store.resetSettings(mergedSettings);
@@ -1556,8 +1470,17 @@ function createApp({ bus, config, langLoader, store, ui, voices, speaker, wakeLo
     ui.resetRepeatLeft();
     document.addEventListener("keydown", handleKeyControls);
 
+    document.getElementById("version").textContent = `version ${APP_VERSION}`;
+
+    // Removes only the settings of this app, other localStorage keys stay
+    document.getElementById("developerPathBtn")?.addEventListener("click", () => alert(location.href));
+    document.getElementById("developerClearBtn")?.addEventListener("click", () => {
+      localStorage.removeItem(STORAGE_KEY);
+      alert(`${STORAGE_KEY} cleared`);
+    });
+
     if (ui.elements.developerPanel) {
-      ui.elements.developerPanel.style.display = config.CONFIG.DEVELOPER_MODE ? "flex" : "none";
+      ui.elements.developerPanel.style.display = mergedSettings.developerMode ? "flex" : "none";
     }
 
     speaker.init(
@@ -1645,7 +1568,7 @@ function createApp({ bus, config, langLoader, store, ui, voices, speaker, wakeLo
 const bus = createEventBus();
 const Config = createConfig();
 const LangLoader = createLangLoader({ config: Config });
-const Store = createStore({ config: Config, bus: bus });
+const Store = createStore({ bus: bus });
 const WakeLock = createWakeLock({ bus: bus });
 const Speaker = createSpeaker();
 const UI = createUI({

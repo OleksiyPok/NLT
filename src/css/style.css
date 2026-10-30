@@ -291,6 +291,7 @@ button:disabled {
 }
 
 .help-app-btn,
+.settings-app-btn,
 .reset-settings-btn {
   display: flex;
   justify-content: center;
@@ -305,9 +306,30 @@ button:disabled {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.help-app-btn {
+.help-app-btn,
+.settings-app-btn {
   font-size: 26px;
   background: var(--background-color);
+}
+
+.settings-app-btn[hidden] {
+  display: none;
+}
+
+.settings-app-btn .ico {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.setting-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .reset-settings-btn {
@@ -482,7 +504,6 @@ button:disabled {
 .repeat-info-group {
   padding: 8px 8px 0;
   font-weight: 600;
-  color: var(--text-muted) 899;
   border-top: 1px solid var(--border-color);
 }
 

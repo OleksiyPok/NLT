@@ -1,0 +1,18 @@
+{
+  "uiLang": "en",
+  "thema": "theme-yellowblue-normal",
+  "languageCode": "nl-NL",
+  "voiceName": "Google Nederlands",
+  "speed": "1.0",
+  "intervalMs": "1000",
+  "digitLength": "2",
+  "count": "40",
+  "repeat": "1",
+  "fullscreen": false,
+  "fullscreenDelayMode": "No delay",
+  "fullscreenDelay": "2",
+  "developerMode": false,
+  "mobile": {
+    "fullscreen": true
+  }
+}
