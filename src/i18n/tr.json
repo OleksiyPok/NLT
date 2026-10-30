@@ -29,5 +29,7 @@
   "themaModeContrast": "Kontrast",
   "themaModeNormal": "Normal",
   "themaModeEvening": "Akşam",
-  "themaModeNight": "Gece"
+  "themaModeNight": "Gece",
+  "settingsTitle": "Ayarlar",
+  "closeBtn": "Kapat"
 }

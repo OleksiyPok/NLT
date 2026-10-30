@@ -1,0 +1,27 @@
+/* Line icons of the buttons (SVG sprite in index.html) */
+/* Icon in a square frame, the same size as the "i" icon */
+.framed-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--text-color);
+  border: 2px solid var(--info-icon-color);
+  border-radius: 4px;
+}
+
+.framed-icon svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  color: var(--info-icon-color);
+  fill: none;
+  stroke: var(--info-icon-color);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

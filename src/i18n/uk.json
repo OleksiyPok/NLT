@@ -29,5 +29,7 @@
   "themaModeContrast": "Контраст",
   "themaModeNormal": "Нормальний",
   "themaModeEvening": "Вечірній",
-  "themaModeNight": "Нічний"
+  "themaModeNight": "Нічний",
+  "settingsTitle": "Налаштування",
+  "closeBtn": "Закрити"
 }

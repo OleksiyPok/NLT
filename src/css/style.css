@@ -73,6 +73,8 @@
   --shadow-light: rgba(0, 0, 0, 0.1);
   --shadow-medium: rgba(0, 0, 0, 0.2);
   --shadow-strong: rgba(0, 0, 0, 0.4);
+  /* Colour of the "i" and gear icons */
+  --info-icon-color: var(--text-color);
 }
 
 *,
@@ -312,18 +314,17 @@ button:disabled {
   background: var(--background-color);
 }
 
-.settings-app-btn[hidden] {
-  display: none;
+.help-app-btn:active,
+.settings-app-btn:active {
+  background: var(--surface-hover);
 }
 
-.settings-app-btn .ico {
-  width: 24px;
-  height: 24px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+/* Hover highlight only for a real mouse: on touch screens it would stay after a tap */
+@media (hover: hover) {
+  .help-app-btn:hover,
+  .settings-app-btn:hover {
+    background: var(--surface-hover);
+  }
 }
 
 .setting-buttons {
@@ -335,12 +336,6 @@ button:disabled {
 .reset-settings-btn {
   font-size: 18px;
   background: var(--surface-color);
-}
-
-.help-app-btn .i-icon {
-  display: inline-block;
-  transform: scaleY(0.98);
-  line-height: 1;
 }
 
 .reset-settings-btn .reset-icon {

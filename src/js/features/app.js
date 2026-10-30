@@ -58,6 +58,11 @@ export function createApp({ bus, config, langLoader, store, ui, voices, speaker,
         return;
       }
 
+      if (ui.isSettingsModalOpen()) {
+        bus.emit(EventTypes.UI_SETTINGS_MODAL_CLOSE);
+        return;
+      }
+
       bus.emit(EventTypes.APP_FULL_RESET);
     }
 

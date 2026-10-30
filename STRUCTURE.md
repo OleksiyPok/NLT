@@ -15,12 +15,12 @@ src/
   i18n/                    <lang>.json
   css/
     main.css               список подключения файлов (порядок важен)
-    style.css, themes.css, help.css
+    style.css, modals.css, help.css, icons.css, themes.css (общий с DT)
   js/
     theme-boot.js          обычный скрипт: тема до первой отрисовки
     main.js                точка входа: создаёт модули и связывает их
     core/                  основа: config, event-bus, event-types, i18n, store, theme-registry, utils
-    features/              возможности: app, ui (+ ui-elements, ui-theme, ui-help, ui-labels, ui-selects, ui-numbers), speaker, voices, wake-lock, playback
+    features/              возможности: app, ui (+ ui-elements, ui-theme, ui-help, ui-settings-window, ui-labels, ui-selects, ui-numbers), speaker, voices, wake-lock, playback
 ```
 
 ## Правила
@@ -40,4 +40,4 @@ src/
 2. DT: код на модули, тексты в JSON по языкам, CSS на файлы. (готово)
 3. NLT: структура папок, пути, настройки по умолчанию. (готово, версия 3.4.1)
 4. NLT: код на модули по тому же стандарту: 4.1 core/, 4.2 speaker, voices, wake-lock, playback, 4.3 ui, app, тема. (готово)
-5. NLT: дизайн по образцу DT.
+5. NLT: дизайн по образцу DT: 5.1 общие темы, иконки, пустое окно настроек (готово), 5.2 главный экран, 5.3 окна настроек и справки.

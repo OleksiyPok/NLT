@@ -29,5 +29,7 @@
   "themaModeContrast": "Kontrast",
   "themaModeNormal": "Normal",
   "themaModeEvening": "Abend",
-  "themaModeNight": "Nacht"
+  "themaModeNight": "Nacht",
+  "settingsTitle": "Einstellungen",
+  "closeBtn": "Schließen"
 }

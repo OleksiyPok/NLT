@@ -26,6 +26,8 @@ export const EventTypes = Object.freeze({
 
   UI_HELP_MODAL_OPEN: "ui:helpModal:open",
   UI_HELP_MODAL_CLOSE: "ui:helpModal:close",
+  UI_SETTINGS_MODAL_OPEN: "ui:settingsModal:open",
+  UI_SETTINGS_MODAL_CLOSE: "ui:settingsModal:close",
 
   SETTINGS_CHANGED: "settings:changed",
   SETTINGS_UPDATE: "settings:update",

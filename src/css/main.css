@@ -1,4 +1,6 @@
-/* Order matters: later files override earlier ones. */
+/* Order matters: later files override earlier ones. themes.css goes last. */
 @import url("style.css");
-@import url("themes.css");
+@import url("modals.css");
 @import url("help.css");
+@import url("icons.css");
+@import url("themes.css");

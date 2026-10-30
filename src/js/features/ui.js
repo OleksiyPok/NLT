@@ -5,6 +5,7 @@ import { createUiLabels } from "./ui-labels.js";
 import { createUiNumbers } from "./ui-numbers.js";
 import { cacheElements, createUiContext } from "./ui-elements.js";
 import { createUiSelects } from "./ui-selects.js";
+import { createUiSettingsWindow } from "./ui-settings-window.js";
 import { createUiTheme } from "./ui-theme.js";
 
 export function createUI({ bus, utils, langLoader }) {
@@ -16,8 +17,10 @@ export function createUI({ bus, utils, langLoader }) {
   const labels = createUiLabels(ctx);
   const numbers = createUiNumbers(ctx, labels);
   const selects = createUiSelects(ctx, theme);
+  const settingsWindow = createUiSettingsWindow(ctx);
 
   const { isAppHelpModalOpen, loadHelpContent, openHelpModal, closeHelpModal } = help;
+  const { isSettingsModalOpen, openSettingsModal, closeSettingsModal } = settingsWindow;
   const { updateUILabels, updateStartPauseButton, updateControlsState } = labels;
   const { cacheInputs, getInputs, getSelectedInputs, showBackgroundOverlay, hideBackgroundOverlay, showActiveNumberOverlay, hideActiveNumberOverlay, resetRepeatLeft, fillRandom, highlightSelection } = numbers;
   const { setSelectsFromSettings, populateLanguageSelect, populateVoiceSelect, setLanguageCodeFromSettings, setVoiceFromSettings } = selects;
@@ -108,6 +111,11 @@ export function createUI({ bus, utils, langLoader }) {
     E.resetBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_FULL_RESET));
     E.helpAppBtn?.addEventListener("click", () => bus.emit(EventTypes.UI_HELP_MODAL_OPEN));
     E.helpAppCloseBtn?.addEventListener("click", () => bus.emit(EventTypes.UI_HELP_MODAL_CLOSE));
+    E.settingsAppBtn?.addEventListener("click", () => bus.emit(EventTypes.UI_SETTINGS_MODAL_OPEN));
+    E.settingsAppCloseBtn?.addEventListener("click", () => bus.emit(EventTypes.UI_SETTINGS_MODAL_CLOSE));
+    E.settingsAppModal?.addEventListener("click", (e) => {
+      if (e.target === E.settingsAppModal) bus.emit(EventTypes.UI_SETTINGS_MODAL_CLOSE);
+    });
     E.helpAppModal?.addEventListener("click", (e) => {
       if (e.target === elements.helpAppModal) {
         bus.emit(EventTypes.UI_HELP_MODAL_CLOSE);
@@ -121,6 +129,8 @@ export function createUI({ bus, utils, langLoader }) {
       openHelpModal();
     });
     bus.on(EventTypes.UI_HELP_MODAL_CLOSE, closeHelpModal);
+    bus.on(EventTypes.UI_SETTINGS_MODAL_OPEN, openSettingsModal);
+    bus.on(EventTypes.UI_SETTINGS_MODAL_CLOSE, closeSettingsModal);
     bus.on(EventTypes.UI_BACKGROUND_SHOW, showBackgroundOverlay);
     bus.on(EventTypes.UI_BACKGROUND_HIDE, hideBackgroundOverlay);
     bus.on(EventTypes.UI_ACTIVE_NUMBER_SHOW, ({ value, delayMs }) => showActiveNumberOverlay(value));
@@ -189,6 +199,7 @@ export function createUI({ bus, utils, langLoader }) {
     fillRandom,
     highlightSelection,
     isAppHelpModalOpen,
+    isSettingsModalOpen,
     elements,
   };
 }

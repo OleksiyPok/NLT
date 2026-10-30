@@ -29,5 +29,7 @@
   "themaModeContrast": "تباين",
   "themaModeNormal": "عادي",
   "themaModeEvening": "مسائي",
-  "themaModeNight": "ليلي"
+  "themaModeNight": "ليلي",
+  "settingsTitle": "الإعدادات",
+  "closeBtn": "إغلاق"
 }

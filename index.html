@@ -15,6 +15,10 @@
   <body>
     <!-- Line icons. Colour comes from CSS (currentColor). -->
     <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <symbol id="i-info" viewBox="0 0 24 24">
+        <circle cx="12" cy="6.5" r="1.6" fill="currentColor" stroke="none" />
+        <path d="M12 10.5v8" />
+      </symbol>
       <symbol id="i-gear" viewBox="0 0 24 24">
         <path
           d="M10.31 5.21L10.68 2.59L13.32 2.59L13.69 5.21L17.04 7.14L19.49 6.15L20.81 8.44L18.73 10.07L18.73 13.93L20.81 15.56L19.49 17.85L17.04 16.86L13.69 18.79L13.32 21.41L10.68 21.41L10.31 18.79L6.96 16.86L4.51 17.85L3.19 15.56L5.27 13.93L5.27 10.07L3.19 8.44L4.51 6.15L6.96 7.14Z"
@@ -38,11 +42,10 @@
         <div class="setting-row" id="settingRow">
           <div class="setting-buttons">
             <button class="help-app-btn" id="helpAppBtn" title="Open application description" aria-label="Open application description">
-              <span class="i-icon">ℹ️</span>
+              <span class="framed-icon"><svg aria-hidden="true"><use href="#i-info" /></svg></span>
             </button>
-            <!-- Place for the settings window (not used yet, hidden) -->
-            <button type="button" class="settings-app-btn" id="settingsAppBtn" title="Settings" aria-label="Settings" hidden>
-              <svg class="ico" aria-hidden="true"><use href="#i-gear" /></svg>
+            <button type="button" class="settings-app-btn" id="settingsAppBtn" title="Settings" aria-label="Settings">
+              <span class="framed-icon"><svg aria-hidden="true"><use href="#i-gear" /></svg></span>
             </button>
           </div>
           <div class="thema-mode-wrapper" id="themaModeWrapper">
@@ -274,6 +277,18 @@
       </div>
 
       <div class="scroll-bottom-space"></div>
+    </div>
+
+    <div id="settingsAppModal" class="app-modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="app-modal-content">
+        <div class="app-modal-header">
+          <h2 class="app-modal-title" id="settingsTitle">Application settings</h2>
+          <button type="button" id="settingsAppCloseBtn" class="app-modal-close-btn" title="Close" aria-label="Close">✕</button>
+        </div>
+        <div class="app-modal-body-wrap">
+          <div class="app-modal-body" id="settingsBody"></div>
+        </div>
+      </div>
     </div>
 
     <div id="helpAppModal" class="help-app-modal hidden">

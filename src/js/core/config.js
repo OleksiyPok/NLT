@@ -2,7 +2,7 @@
 import { Utils } from "./utils.js";
 
 // Shown on the main screen (change it with every change of the app)
-export const APP_VERSION = "3.4.4";
+export const APP_VERSION = "3.5.0";
 
 // Key of the saved settings in localStorage
 export const STORAGE_KEY = "NLT-settings";

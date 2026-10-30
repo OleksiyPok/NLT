@@ -29,6 +29,12 @@ export function createUiLabels({ langLoader, elements, view }) {
     setText(E.labelFullscreenDelay, texts.labelFullscreenDelay);
     setText(E.labelThema, texts.labelThema);
     setText(E.labelThemaMode, texts.labelThemaMode);
+    setText(E.settingsTitle, texts.settingsTitle);
+    [[E.settingsAppBtn, texts.settingsTitle], [E.settingsAppCloseBtn, texts.closeBtn]].forEach(([el, text]) => {
+      if (!el || !text) return;
+      el.title = text;
+      el.setAttribute("aria-label", text);
+    });
     if (E.fullscreenSelect) {
       if (E.fullscreenSelect.options[0].textContent !== texts.fullscreenNo) E.fullscreenSelect.options[0].textContent = texts.fullscreenNo;
       if (E.fullscreenSelect.options[1].textContent !== texts.fullscreenYes) E.fullscreenSelect.options[1].textContent = texts.fullscreenYes;

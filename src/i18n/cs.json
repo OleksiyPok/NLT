@@ -29,5 +29,7 @@
   "themaModeContrast": "Kontrast",
   "themaModeNormal": "Normální",
   "themaModeEvening": "Večer",
-  "themaModeNight": "Noc"
+  "themaModeNight": "Noc",
+  "settingsTitle": "Nastavení",
+  "closeBtn": "Zavřít"
 }

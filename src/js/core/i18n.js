@@ -33,6 +33,8 @@ export function createLangLoader({ config }) {
     themaModeNormal: "Normal",
     themaModeEvening: "Evening",
     themaModeNight: "Night",
+    settingsTitle: "Settings",
+    closeBtn: "Close",
   };
   async function loadLang(code) {
     try {
