@@ -30,4 +30,24 @@
   });
 
   html.classList.add(theme);
+
+  // The mode icon comes from the SVG sprite in index.html; the app sets its title later.
+  function setInitialModeIcon() {
+    var icon = document.getElementById("themaModeIcon");
+    if (!icon) return;
+
+    var match = theme.match(/-(contrast|normal|evening|night)$/);
+    var mode = match ? match[1] : "normal";
+
+    icon.innerHTML =
+      '<svg aria-hidden="true"><use href="#i-mode-' + mode + '" /></svg>';
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setInitialModeIcon, {
+      once: true,
+    });
+  } else {
+    setInitialModeIcon();
+  }
 })();

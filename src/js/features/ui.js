@@ -10,6 +10,8 @@ import { createUiTheme } from "./ui-theme.js";
 
 export function createUI({ bus, utils, langLoader }) {
   const ctx = createUiContext({ bus, utils, langLoader });
+  // The texts changed: the title of the mode button follows them
+  ctx.onLabelsUpdated = () => theme.updateModeButton();
   const { elements, view } = ctx;
 
   const theme = createUiTheme(ctx);
@@ -106,6 +108,10 @@ export function createUI({ bus, utils, langLoader }) {
     E.fullscreenDelay?.addEventListener("change", () => updateSettingsFromUI());
     E.themaSelect?.addEventListener("change", () => updateSettingsFromUI());
     E.themaModeSelect?.addEventListener("change", () => updateSettingsFromUI());
+    E.themaModeBtn?.addEventListener("click", () => {
+      theme.nextThemaMode();
+      updateSettingsFromUI();
+    });
     E.resetSettingsBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_SETTINGS_RESET));
     E.startPauseBtn?.addEventListener("click", () => bus.emit(EventTypes.PLAYBACK_TOGGLE));
     E.resetBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_FULL_RESET));

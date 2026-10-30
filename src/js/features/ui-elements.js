@@ -40,6 +40,8 @@ export const SELECTORS = {
   fullscreenDelayMode: "#fullscreenDelayMode",
   fullscreenDelay: "#fullscreenDelay",
   themaModeSelect: "#themaModeSelect",
+  themaModeBtn: "#themaModeBtn",
+  themaModeIcon: "#themaModeIcon",
   themaSelect: "#themaSelect",
   labelThema: "#labelThema",
   labelThemaMode: "#labelThemaMode",

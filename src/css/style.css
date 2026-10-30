@@ -276,6 +276,7 @@ button:disabled {
   padding: 8px 0;
   gap: 12px;
   border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .reset-settings-group {
@@ -294,6 +295,7 @@ button:disabled {
 
 .help-app-btn,
 .settings-app-btn,
+.mode-app-btn,
 .reset-settings-btn {
   display: flex;
   justify-content: center;
@@ -309,20 +311,23 @@ button:disabled {
 }
 
 .help-app-btn,
-.settings-app-btn {
+.settings-app-btn,
+.mode-app-btn {
   font-size: 26px;
   background: var(--background-color);
 }
 
 .help-app-btn:active,
-.settings-app-btn:active {
+.settings-app-btn:active,
+.mode-app-btn:active {
   background: var(--surface-hover);
 }
 
 /* Hover highlight only for a real mouse: on touch screens it would stay after a tap */
 @media (hover: hover) {
   .help-app-btn:hover,
-  .settings-app-btn:hover {
+  .settings-app-btn:hover,
+  .mode-app-btn:hover {
     background: var(--surface-hover);
   }
 }
@@ -369,6 +374,8 @@ button:disabled {
   flex-direction: column;
   width: 100%;
   gap: 12px;
+  /* Space under the line below the top row */
+  padding-top: 12px;
 }
 
 .section-block-buttons {
@@ -707,4 +714,16 @@ button:disabled {
   .help-app-modal {
     align-items: stretch;
   }
+}
+
+/* Theme-mode icon: same size as the framed "i" and gear icons next to it */
+.mode-icon svg {
+  display: block;
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }

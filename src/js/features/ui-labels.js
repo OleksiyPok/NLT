@@ -1,6 +1,7 @@
 // Texts of the page (by the selected interface language) and enabled / disabled controls.
 
-export function createUiLabels({ langLoader, elements, view }) {
+export function createUiLabels(ctx) {
+  const { langLoader, elements, view } = ctx;
 
 
   function updateUILabels() {
@@ -67,6 +68,7 @@ export function createUiLabels({ langLoader, elements, view }) {
 
     updateStartPauseButton();
     updateControlsState();
+    ctx.onLabelsUpdated?.();
   }
 
   function updateStartPauseButton() {
