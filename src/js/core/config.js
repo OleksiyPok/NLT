@@ -2,13 +2,13 @@
 import { Utils } from "./utils.js";
 
 // Shown on the main screen (change it with every change of the app)
-export const APP_VERSION = "3.5.2";
+export const APP_VERSION = "3.5.3";
 
 // Folder of the help pages
 export const HELP_DIR = "docs/help/";
 
-// Languages of the help pages (docs/help/help.<lang>.html); for the other languages the English page is shown
-export const HELP_LANGS = ["de", "en", "fr", "nl", "pl", "pt", "ru", "tr", "uk"];
+// Languages of the help pages (docs/help/help.<lang>.html); a missing page is replaced by the English one
+export const HELP_LANGS = ["ar", "cs", "de", "en", "es", "fr", "it", "nl", "pl", "pt", "ru", "tr", "uk"];
 
 // Key of the saved settings in localStorage
 export const STORAGE_KEY = "NLT-settings";
