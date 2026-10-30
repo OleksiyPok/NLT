@@ -1,6 +1,7 @@
 // Settings and state of the app; the settings are saved in localStorage.
 import { STORAGE_KEY } from "./config.js";
 import { EventTypes } from "./event-types.js";
+import { DEFAULT_THEME, THEME_VALUES, composeThema, parseThema, resolveThemaKey } from "./theme-registry.js";
 
 export function createStore({ bus }) {
   const Storage = {
@@ -36,18 +37,15 @@ export function createStore({ bus }) {
     currentIndex: 0,
   };
 
+  // Replaces a removed or unknown theme by a valid one
   function normalizeThemaInSettings(settings) {
-    const reg = typeof window !== "undefined" ? window.NLTThemeRegistry : null;
-    if (!reg || !Array.isArray(reg.themeValues)) return;
-    const tv = reg.themeValues;
-    let raw = String(settings.thema || "");
-    if (typeof reg.resolveThemaKey === "function") raw = reg.resolveThemaKey(raw);
-    settings.thema = raw;
-    if (tv.includes(raw)) return;
-    const parsed = typeof reg.parseThema === "function" ? reg.parseThema(raw) : null;
-    const composed =
-      parsed && typeof reg.composeThema === "function" ? reg.composeThema(parsed.palette, parsed.mode) : null;
-    settings.thema = composed || (typeof reg.defaultTheme === "string" ? reg.defaultTheme : raw);
+    const raw = resolveThemaKey(settings.thema);
+    if (THEME_VALUES.includes(raw)) {
+      settings.thema = raw;
+      return;
+    }
+    const parsed = parseThema(raw);
+    settings.thema = (parsed && composeThema(parsed.palette, parsed.mode)) || DEFAULT_THEME;
   }
 
   const getState = () => structuredClone(state);

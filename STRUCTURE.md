@@ -17,10 +17,10 @@ src/
     main.css               список подключения файлов (порядок важен)
     style.css, themes.css, help.css
   js/
-    theme-registry.js      обычный скрипт: список тем (global NLTThemeRegistry)
-    main.js                точка входа: создаёт модули и связывает их (шаг 4.3: остальной код выносится в features/)
-    core/                  основа: config, event-bus, event-types, i18n, store, utils
-    features/              возможности: speaker, voices, wake-lock, playback
+    theme-boot.js          обычный скрипт: тема до первой отрисовки
+    main.js                точка входа: создаёт модули и связывает их
+    core/                  основа: config, event-bus, event-types, i18n, store, theme-registry, utils
+    features/              возможности: app, ui (+ ui-elements, ui-theme, ui-help, ui-labels, ui-selects, ui-numbers), speaker, voices, wake-lock, playback
 ```
 
 ## Правила
@@ -39,5 +39,5 @@ src/
 1. DT: структура папок, пути, ключ localStorage, иконки. (готово)
 2. DT: код на модули, тексты в JSON по языкам, CSS на файлы. (готово)
 3. NLT: структура папок, пути, настройки по умолчанию. (готово, версия 3.4.1)
-4. NLT: код на модули по тому же стандарту: 4.1 core/ (готово), 4.2 speaker, voices, wake-lock, playback (готово), 4.3 ui, app.
+4. NLT: код на модули по тому же стандарту: 4.1 core/, 4.2 speaker, voices, wake-lock, playback, 4.3 ui, app, тема. (готово)
 5. NLT: дизайн по образцу DT.
