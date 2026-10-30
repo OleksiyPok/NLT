@@ -31,5 +31,8 @@
   "themaModeEvening": "مسائي",
   "themaModeNight": "ليلي",
   "settingsTitle": "الإعدادات",
-  "closeBtn": "إغلاق"
+  "closeBtn": "إغلاق",
+  "helpTitle": "معلومات",
+  "helpLanguageLabel": "اللغة",
+  "helpLanguageApp": "كما في التطبيق"
 }

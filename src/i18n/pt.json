@@ -31,5 +31,8 @@
   "themaModeEvening": "Noite",
   "themaModeNight": "Noturno",
   "settingsTitle": "Configurações",
-  "closeBtn": "Fechar"
+  "closeBtn": "Fechar",
+  "helpTitle": "Informações",
+  "helpLanguageLabel": "Idioma",
+  "helpLanguageApp": "Como no app"
 }

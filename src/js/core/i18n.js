@@ -35,6 +35,9 @@ export function createLangLoader({ config }) {
     themaModeNight: "Night",
     settingsTitle: "Settings",
     closeBtn: "Close",
+    helpTitle: "Information",
+    helpLanguageLabel: "Language",
+    helpLanguageApp: "Use app language",
   };
   async function loadLang(code) {
     try {

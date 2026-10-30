@@ -4,6 +4,7 @@ export const SELECTORS = {
   helpAppModal: "#helpAppModal",
   helpAppCloseBtn: "#helpAppCloseBtn",
   helpAppContent: "#helpAppContent",
+  helpTitle: "#helpTitle",
   settingsAppBtn: "#settingsAppBtn",
   settingsAppModal: "#settingsAppModal",
   settingsAppCloseBtn: "#settingsAppCloseBtn",

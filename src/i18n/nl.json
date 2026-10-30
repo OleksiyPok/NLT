@@ -31,5 +31,8 @@
   "themaModeEvening": "Avond",
   "themaModeNight": "Nacht",
   "settingsTitle": "Instellingen",
-  "closeBtn": "Sluiten"
+  "closeBtn": "Sluiten",
+  "helpTitle": "Informatie",
+  "helpLanguageLabel": "Taal",
+  "helpLanguageApp": "Als app-taal"
 }

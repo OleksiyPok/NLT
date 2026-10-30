@@ -605,67 +605,6 @@ button:disabled {
   z-index: 99999;
 }
 
-.help-app-modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99999;
-}
-
-.help-app-modal.hidden {
-  display: none;
-}
-
-.help-app-modal-content {
-  width: min(900px, 92vw);
-  height: min(90vh, 900px);
-  background: var(--background-color);
-  color: var(--text-color);
-  border-radius: 10px;
-  padding: 16px;
-  overflow-y: auto;
-  position: relative;
-  font-size: 16px;
-  line-height: 1.6;
-  box-shadow: 0 8px 24px var(--shadow-medium);
-}
-
-.help-app-close-btn {
-  position: sticky;
-  top: 0;
-  margin-left: auto;
-  display: flex;
-  z-index: 10;
-
-  background: var(--text-color); /* uses theme black/white text color */
-  color: var(--text-inverted);
-
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-
-  font-size: 18px;
-  cursor: pointer;
-
-  align-items: center;
-  justify-content: center;
-
-  opacity: 0.9;
-  box-shadow: 0 2px 6px var(--shadow-medium);
-}
-
-.help-app-close-btn:hover {
-  opacity: 1;
-}
-
-.help-app-close-btn:hover {
-  opacity: 1;
-}
-
 @media (min-width: 640px) {
   .layout {
     max-width: var(--content-max-md);
@@ -702,18 +641,6 @@ button:disabled {
     padding: 0;
   }
 
-  .help-app-modal-content {
-    width: 100vw;
-    height: 100vh;
-    max-width: 100vw;
-    max-height: 100vh;
-    border-radius: 0;
-    padding: 12px;
-  }
-
-  .help-app-modal {
-    align-items: stretch;
-  }
 }
 
 /* Theme-mode icon: same size as the framed "i" and gear icons next to it */

@@ -31,5 +31,8 @@
   "themaModeEvening": "Вечерний",
   "themaModeNight": "Ночной",
   "settingsTitle": "Настройки",
-  "closeBtn": "Закрыть"
+  "closeBtn": "Закрыть",
+  "helpTitle": "Информация",
+  "helpLanguageLabel": "Язык",
+  "helpLanguageApp": "Как в приложении"
 }

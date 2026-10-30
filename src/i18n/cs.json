@@ -31,5 +31,8 @@
   "themaModeEvening": "Večer",
   "themaModeNight": "Noc",
   "settingsTitle": "Nastavení",
-  "closeBtn": "Zavřít"
+  "closeBtn": "Zavřít",
+  "helpTitle": "Informace",
+  "helpLanguageLabel": "Jazyk",
+  "helpLanguageApp": "Jako v aplikaci"
 }

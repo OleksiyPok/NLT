@@ -311,10 +311,15 @@
       </div>
     </div>
 
-    <div id="helpAppModal" class="help-app-modal hidden">
-      <div class="help-app-modal-content">
-        <button id="helpAppCloseBtn" class="help-app-close-btn">✕</button>
-        <div id="helpAppContent"></div>
+    <div id="helpAppModal" class="app-modal hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <div class="app-modal-content">
+        <div class="app-modal-header">
+          <h2 class="app-modal-title" id="helpTitle">Information</h2>
+          <button type="button" id="helpAppCloseBtn" class="app-modal-close-btn" title="Close" aria-label="Close">✕</button>
+        </div>
+        <div class="app-modal-body" id="helpBody">
+          <div id="helpAppContent"></div>
+        </div>
       </div>
     </div>
 

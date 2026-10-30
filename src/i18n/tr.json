@@ -31,5 +31,8 @@
   "themaModeEvening": "Akşam",
   "themaModeNight": "Gece",
   "settingsTitle": "Ayarlar",
-  "closeBtn": "Kapat"
+  "closeBtn": "Kapat",
+  "helpTitle": "Bilgi",
+  "helpLanguageLabel": "Dil",
+  "helpLanguageApp": "Uygulama dili"
 }

@@ -31,7 +31,8 @@ export function createUiLabels(ctx) {
     setText(E.labelThema, texts.labelThema);
     setText(E.labelThemaMode, texts.labelThemaMode);
     setText(E.settingsTitle, texts.settingsTitle);
-    [[E.settingsAppBtn, texts.settingsTitle], [E.settingsAppCloseBtn, texts.closeBtn]].forEach(([el, text]) => {
+    setText(E.helpTitle, texts.helpTitle);
+    [[E.settingsAppBtn, texts.settingsTitle], [E.settingsAppCloseBtn, texts.closeBtn], [E.helpAppCloseBtn, texts.closeBtn]].forEach(([el, text]) => {
       if (!el || !text) return;
       el.title = text;
       el.setAttribute("aria-label", text);
