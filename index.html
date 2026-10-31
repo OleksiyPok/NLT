@@ -167,126 +167,6 @@
                   </select>
                 </div>
               </div>
-              <div class="digit-length-count-repeat-wrapper">
-                <div class="digit-length-group">
-                  <label for="digitLengthSelect" id="labelDigitLength" class="label-digit-length"> Digit length</label>
-                  <select id="digitLengthSelect" class="digit-length-select">
-                    <option value="1">1</option>
-                    <option value="2" selected>2</option>
-                    <option value="3">3</option>
-                  </select>
-                </div>
-                <div class="count-group">
-                  <label for="countSelect" id="labelCount">Count</label>
-                  <select id="countSelect" class="count-select">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20" selected>20</option>
-                    <option value="30">30</option>
-                    <option value="40">40</option>
-                  </select>
-                </div>
-                <div class="repeat-group">
-                  <label for="repeatSelect" id="labelRepeat" class="label-repeat">Repeat</label>
-                  <select id="repeatSelect" class="repeat-select">
-                    <option value="1" selected>1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                  </select>
-                </div>
-              </div>
-              <div class="fullscreen-wrapper">
-                <div class="fullscreen-switcher-group">
-                  <label for="fullscreenSelect" id="labelFullscreen" class="label-fullscreen">Fullscreen</label>
-                  <select id="fullscreenSelect" class="fullscreen-select">
-                    <option value="0">No</option>
-                    <option value="1" selected>Yes</option>
-                  </select>
-                </div>
-                <div class="fullscreen-delay-mode-group">
-                  <label for="fullscreenDelayMode" id="labelFullscreenDelayMode" class="label-fullscreen-delay-mode">Delay mode:</label>
-                  <select id="fullscreenDelayMode" class="fullscreen-delay-mode">
-                    <option value="No delay" selected>No</option>
-                    <option value="Visual delay">Visual</option>
-                    <option value="Audio delay">Audio</option>
-                  </select>
-                </div>
-                <div class="fullscreen-delay-group">
-                  <label for="fullscreenDelay" id="labelFullscreenDelay" class="label-fullscreen-delay">Delay (sec):</label>
-                  <select id="fullscreenDelay" class="fullscreen-delay">
-                    <option value="1">1</option>
-                    <option value="2" selected>2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
-                </div>
-              </div>
-              <div class="language-voice-wrapper">
-                <div class="language-group">
-                  <label for="languageCodeSelect" id="labelLanguageCode" class="label-language-code">Language</label>
-                  <select id="languageCodeSelect" title="Language" class="language-code-select"></select>
-                </div>
-                <div class="voice-group">
-                  <label for="voiceSelect" id="labelVoice" class="label-voice">Voice</label>
-                  <select id="voiceSelect" title="Voice" class="voice-select"></select>
-                </div>
-              </div>
-              <div class="thema-wrapper">
-                <div class="thema-group" id="themaGroup">
-                  <label for="themaSelect" id="labelThema" class="label-thema">Thema</label>
-                  <select id="themaSelect" class="thema-select"></select>
-                </div>
-                <div class="thema-group" id="themaModeGroup">
-                  <label for="themaModeSelect" id="labelThemaMode" class="label-thema">Mode</label>
-                  <select id="themaModeSelect" class="thema-select" title="Select theme mode">
-                    <option value="contrast">Contrast</option>
-                    <option value="normal" selected>Normal</option>
-                    <option value="evening">Evening</option>
-                    <option value="night">Night</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="interface-wrapper">
-                <div class="interface-group" id="uiLanguageWrapper">
-                  <label for="uiLangSelect" id="uiLangLabel" class="label-interface">Interface</label>
-                  <select id="uiLangSelect" class="interface-select" title="Select interface language">
-                    <option value="ar">العربية</option>
-                    <option value="cs">Čeština</option>
-                    <option value="de">Deutsch</option>
-                    <option selected value="en">English</option>
-                    <option value="es">Español</option>
-                    <option value="fr">Français</option>
-                    <option value="it">Italiano</option>
-                    <option value="nl">Nederlands</option>
-                    <option value="pl">Polski</option>
-                    <option value="pt">Português</option>
-                    <option value="ru">Русский</option>
-                    <option value="tr">Türkçe</option>
-                    <option value="uk">Українська</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="reset-settings-group" id="resetSettingsGroup">
-                <button class="reset-settings-btn" id="resetSettingsBtn" title="Reset to default settings">
-                  <svg class="ico" aria-hidden="true"><use href="#i-reset" /></svg>
-                </button>
-                <span class="reset-settings-text" id="resetSettingsText">Reset defaults</span>
-              </div>
             </div>
           </div>
 
@@ -310,7 +190,128 @@
           <button type="button" id="settingsAppCloseBtn" class="app-modal-close-btn" title="Close" aria-label="Close">✕</button>
         </div>
         <div class="app-modal-body-wrap">
-          <div class="app-modal-body" id="settingsBody"></div>
+          <div class="app-modal-body" id="settingsBody">
+          <div class="digit-length-count-repeat-wrapper">
+            <div class="digit-length-group">
+              <label for="digitLengthSelect" id="labelDigitLength" class="label-digit-length"> Digit length</label>
+              <select id="digitLengthSelect" class="digit-length-select">
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+              </select>
+            </div>
+            <div class="count-group">
+              <label for="countSelect" id="labelCount">Count</label>
+              <select id="countSelect" class="count-select">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20" selected>20</option>
+                <option value="30">30</option>
+                <option value="40">40</option>
+              </select>
+            </div>
+            <div class="repeat-group">
+              <label for="repeatSelect" id="labelRepeat" class="label-repeat">Repeat</label>
+              <select id="repeatSelect" class="repeat-select">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+              </select>
+            </div>
+          </div>
+          <div class="fullscreen-wrapper">
+            <div class="fullscreen-switcher-group">
+              <label for="fullscreenSelect" id="labelFullscreen" class="label-fullscreen">Fullscreen</label>
+              <select id="fullscreenSelect" class="fullscreen-select">
+                <option value="0">No</option>
+                <option value="1" selected>Yes</option>
+              </select>
+            </div>
+            <div class="fullscreen-delay-mode-group">
+              <label for="fullscreenDelayMode" id="labelFullscreenDelayMode" class="label-fullscreen-delay-mode">Delay mode:</label>
+              <select id="fullscreenDelayMode" class="fullscreen-delay-mode">
+                <option value="No delay" selected>No</option>
+                <option value="Visual delay">Visual</option>
+                <option value="Audio delay">Audio</option>
+              </select>
+            </div>
+            <div class="fullscreen-delay-group">
+              <label for="fullscreenDelay" id="labelFullscreenDelay" class="label-fullscreen-delay">Delay (sec):</label>
+              <select id="fullscreenDelay" class="fullscreen-delay">
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+          </div>
+          <div class="language-voice-wrapper">
+            <div class="language-group">
+              <label for="languageCodeSelect" id="labelLanguageCode" class="label-language-code">Language</label>
+              <select id="languageCodeSelect" title="Language" class="language-code-select"></select>
+            </div>
+            <div class="voice-group">
+              <label for="voiceSelect" id="labelVoice" class="label-voice">Voice</label>
+              <select id="voiceSelect" title="Voice" class="voice-select"></select>
+            </div>
+          </div>
+          <div class="thema-wrapper">
+            <div class="thema-group" id="themaGroup">
+              <label for="themaSelect" id="labelThema" class="label-thema">Thema</label>
+              <select id="themaSelect" class="thema-select"></select>
+            </div>
+            <div class="thema-group" id="themaModeGroup">
+              <label for="themaModeSelect" id="labelThemaMode" class="label-thema">Mode</label>
+              <select id="themaModeSelect" class="thema-select" title="Select theme mode">
+                <option value="contrast">Contrast</option>
+                <option value="normal" selected>Normal</option>
+                <option value="evening">Evening</option>
+                <option value="night">Night</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="interface-wrapper">
+            <div class="interface-group" id="uiLanguageWrapper">
+              <label for="uiLangSelect" id="uiLangLabel" class="label-interface">Interface</label>
+              <select id="uiLangSelect" class="interface-select" title="Select interface language">
+                <option value="ar">العربية</option>
+                <option value="cs">Čeština</option>
+                <option value="de">Deutsch</option>
+                <option selected value="en">English</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="it">Italiano</option>
+                <option value="nl">Nederlands</option>
+                <option value="pl">Polski</option>
+                <option value="pt">Português</option>
+                <option value="ru">Русский</option>
+                <option value="tr">Türkçe</option>
+                <option value="uk">Українська</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="reset-settings-group" id="resetSettingsGroup">
+            <button class="reset-settings-btn" id="resetSettingsBtn" title="Reset to default settings">
+              <svg class="ico" aria-hidden="true"><use href="#i-reset" /></svg>
+            </button>
+            <span class="reset-settings-text" id="resetSettingsText">Reset defaults</span>
+          </div>
+          </div>
         </div>
       </div>
     </div>

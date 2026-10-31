@@ -628,13 +628,27 @@ button:disabled {
     flex: 1 1 0%;
   }
 
+  /* Settings moved to the modal: the grid is lower, both columns have one height */
+  .section-row {
+    align-items: stretch;
+  }
+
   .number-area .column {
-    gap: 18px;
+    gap: 6px;
+  }
+
+  .number-input {
+    height: 30px;
   }
 
   .setting-button-wrapper {
     flex: 1;
     flex-direction: column;
+  }
+
+  .setting-button-wrapper .section-block {
+    flex: 1 1 0;
+    justify-content: center;
   }
 
   .setting-button-wrapper .section-block-settings {
@@ -643,7 +657,7 @@ button:disabled {
 
   .setting-button-wrapper .section-block-buttons {
     order: 2;
-    margin-top: auto;
+    align-items: center;
   }
   body {
     padding: 0;
@@ -661,4 +675,11 @@ button:disabled {
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+/* Settings window: groups one under another */
+#settingsBody {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
