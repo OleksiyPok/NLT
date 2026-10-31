@@ -1,7 +1,8 @@
 // Selects of the settings: values from the settings, languages and voices.
 import { EventTypes } from "../core/event-types.js";
 
-export function createUiSelects({ bus, utils, elements, view }, theme) {
+export function createUiSelects(ctx, theme) {
+  const { bus, utils, elements, view } = ctx;
 
 
   function setSelectsFromSettings(s) {
@@ -23,6 +24,7 @@ export function createUiSelects({ bus, utils, elements, view }, theme) {
       const langPart = (s.languageCode || "ALL").split(/[-_]/)[0].toUpperCase();
       E.languageCodeSelect.value = langPart;
     }
+    ctx.onRefresh?.();
   }
 
   function populateLanguageSelect() {

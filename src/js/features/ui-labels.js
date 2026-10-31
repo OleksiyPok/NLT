@@ -123,6 +123,7 @@ export function createUiLabels(ctx) {
     const disableFsDelay = !isFullscreen || !isDelayModeOn;
     setDisabled(elements.fullscreenDelay, disableFsDelay);
     toggleClass(elements.labelFullscreenDelay, "disabled", disableFsDelay);
+    ctx.onRefresh?.();
   }
 
   return {

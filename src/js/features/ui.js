@@ -1,6 +1,7 @@
 // The page: connects the ui-*.js modules, the controls of the settings and the events of the bus.
 import { EventTypes } from "../core/event-types.js";
 import { createUiHelp } from "./ui-help.js";
+import { createUiMirrors } from "./ui-mirrors.js";
 import { createUiLabels } from "./ui-labels.js";
 import { createUiNumbers } from "./ui-numbers.js";
 import { cacheElements, createUiContext } from "./ui-elements.js";
@@ -12,8 +13,11 @@ export function createUI({ bus, utils, langLoader }) {
   const ctx = createUiContext({ bus, utils, langLoader });
   // The texts changed: the title of the mode button follows them
   ctx.onLabelsUpdated = () => theme.updateModeButton();
+  // A control changed: its copies follow
+  ctx.onRefresh = () => mirrors.sync();
   const { elements, view } = ctx;
 
+  const mirrors = createUiMirrors();
   const theme = createUiTheme(ctx);
   const help = createUiHelp(ctx);
   const labels = createUiLabels(ctx);
@@ -55,6 +59,7 @@ export function createUI({ bus, utils, langLoader }) {
 
   function attachEventHandlers() {
     const E = elements;
+    mirrors.attach();
 
     E.uiLangSelect?.addEventListener("change", () => {
       updateUILabels();

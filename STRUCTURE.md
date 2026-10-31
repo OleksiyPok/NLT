@@ -20,7 +20,7 @@ src/
     theme-boot.js          обычный скрипт: тема до первой отрисовки
     main.js                точка входа: создаёт модули и связывает их
     core/                  основа: config, event-bus, event-types, i18n, store, theme-registry, utils
-    features/              возможности: app, ui (+ ui-elements, ui-theme, ui-help, ui-settings-window, ui-labels, ui-selects, ui-numbers), speaker, voices, wake-lock, playback
+    features/              возможности: app, ui (+ ui-elements, ui-theme, ui-help, ui-settings-window, ui-mirrors (копии блоков на главной и в окне настроек), ui-labels, ui-selects, ui-numbers), speaker, voices, wake-lock, playback
 ```
 
 ## Правила

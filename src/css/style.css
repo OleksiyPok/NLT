@@ -646,9 +646,15 @@ button:disabled {
     flex-direction: column;
   }
 
-  .setting-button-wrapper .section-block {
-    flex: 1 1 0;
-    justify-content: center;
+  /* Settings fill all the free space up to the top, their blocks are pressed to the top;
+     the buttons keep their own height and end at the bottom of the number field */
+  .setting-button-wrapper .section-block-settings {
+    flex: 1 1 auto;
+    justify-content: flex-start;
+  }
+
+  .setting-button-wrapper .section-block-buttons {
+    flex: 0 0 auto;
   }
 
   .setting-button-wrapper .section-block-settings {
@@ -657,7 +663,6 @@ button:disabled {
 
   .setting-button-wrapper .section-block-buttons {
     order: 2;
-    align-items: center;
   }
   body {
     padding: 0;
