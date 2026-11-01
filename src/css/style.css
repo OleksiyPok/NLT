@@ -26,55 +26,7 @@
   --bp-2xl: 1280px;
   /* desktops */
 
-  /*:root.theme-yellowblue-normal */
-  --text-color: #1a1a1a;
-  --text-muted: #555555;
-  --text-placeholder: #888888;
-  --text-inverted: #ffffff;
-  --background-color: #fffdf5;
-  --surface-color: #fff9e6;
-  --surface-alt-color: #fff2cc;
-  --surface-hover: #ffe699;
-  --surface-selected: #ffd966;
-  --border-color: #e6c200;
-  --border-strong: #b39700;
-  --border-focus: #2f80ff;
-  --primary: #006bb3;
-  --primary-hover: #005fa3;
-  --primary-active: #004b87;
-  --primary-bg: #cce0ff;
-  --primary-bg-hover: #b3d1ff;
-  --primary-border: #99c2ff;
-  --primary-text: #ffffff;
-  --success: #007a42;
-  --success-hover: #006837;
-  --success-active: #005c31;
-  --success-bg: #e0fff0;
-  --success-border: #99e6c0;
-  --success-text: #ffffff;
-  --warning: #cc7a00;
-  --warning-hover: #b36b00;
-  --warning-active: #995c00;
-  --warning-bg: #fff2e0;
-  --warning-border: #ffd1a3;
-  --warning-text: #000000;
-  --danger: #b30000;
-  --danger-hover: #990000;
-  --danger-active: #800000;
-  --danger-bg: #ffd9d9;
-  --danger-border: #ffb3b3;
-  --danger-text: #ffffff;
-  --selection-bg: #b3daff;
-  --selection-text: #000000;
-  --overlay-clear: rgba(0, 0, 0, 0);
-  --overlay-bg: rgba(0, 0, 0, 1);
-  --tooltip-bg: var(--text-color);
-  --tooltip-text: var(--text-inverted);
-  --shadow-light: rgba(0, 0, 0, 0.1);
-  --shadow-medium: rgba(0, 0, 0, 0.2);
-  --shadow-strong: rgba(0, 0, 0, 0.4);
-  /* Colour of the "i" and gear icons */
-  --info-icon-color: var(--text-color);
+  /* Colours are NOT defined here: all of them (and the default palette) are in themes.css */
 }
 
 *,
@@ -262,7 +214,48 @@ button:disabled {
   width: 64px;
   height: 64px;
   margin-right: 8px;
-  filter: drop-shadow(1px 1px 2px var(--shadow-light));
+  /* --logo-filter comes from the theme (unchanged / muted / grey) */
+  filter: drop-shadow(1px 1px 2px var(--shadow-light)) var(--logo-filter, brightness(1));
+}
+
+/* Own checkbox in every theme: the native one is always bright white and ignores the theme.
+   Empty: theme background, strong border. Checked: accent fill with a light tick. */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-grid;
+  place-content: center;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  background: var(--background-color);
+  border: 2px solid var(--border-strong);
+  border-radius: 4px;
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  transform: scale(0);
+  background: var(--primary-text);
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transition: transform 0.1s ease-in-out;
+}
+
+input[type="checkbox"]:checked {
+  background: var(--primary);
+  border-color: var(--primary-active);
+}
+
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
 }
 
 .setting-row {
