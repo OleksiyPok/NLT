@@ -1,0 +1,45 @@
+/* ---------- Settings window: flat panels with an accent bar on the left (as in DT and CLT) ---------- */
+#settingsBody {
+  gap: 16px;
+  width: 100%;
+  max-width: 576px;
+  margin: 0 auto;
+  padding-top: 8px;
+}
+#settingsBody .speed-delay-wrapper,
+#settingsBody .digit-length-count-repeat-wrapper,
+#settingsBody .fullscreen-wrapper,
+#settingsBody .language-voice-wrapper,
+#settingsBody .thema-wrapper,
+#settingsBody .interface-wrapper {
+  gap: 8px;
+  padding: 12px;
+  background: var(--surface-color);
+  border: none;
+  border-left: 5px solid var(--primary-border);
+  border-radius: 0;
+}
+#settingsBody select {
+  border-radius: 0;
+  border-color: var(--border-strong);
+  box-shadow: none;
+}
+
+/* Reset row inside the window: like in DT/CLT */
+#settingsBody .reset-settings-group {
+  margin-bottom: 0;
+  padding-top: 0;
+}
+#settingsBody .reset-settings-btn {
+  margin-left: 10px;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  background: none;
+  border-radius: 0;
+}
+@media (hover: hover) {
+  #settingsBody .reset-settings-btn:hover {
+    background: var(--surface-hover);
+  }
+}
