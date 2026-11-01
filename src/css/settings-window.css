@@ -1,10 +1,11 @@
 /* ---------- Settings window: flat panels with an accent bar on the left (as in DT and CLT) ---------- */
-#settingsBody {
+.settings-app-content {
+  display: flex;
+  flex-direction: column;
   gap: 16px;
   width: 100%;
   max-width: 576px;
   margin: 0 auto;
-  padding-top: 8px;
 }
 #settingsBody .speed-delay-wrapper,
 #settingsBody .digit-length-count-repeat-wrapper,

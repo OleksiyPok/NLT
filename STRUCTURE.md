@@ -15,12 +15,12 @@ src/
   i18n/                    <lang>.json
   css/
     main.css               список подключения файлов (порядок важен)
-    style.css, modals.css, help.css, icons.css, themes.css (общий с DT)
+    style.css, modals.css, settings-window.css (панели окна настроек), scroll-steps.css (ступеньки прокрутки), help.css, icons.css, themes.css (общий с DT)
   js/
     theme-boot.js          обычный скрипт: тема до первой отрисовки
     main.js                точка входа: создаёт модули и связывает их
     core/                  основа: config, event-bus, event-types, i18n, store, theme-registry, utils
-    features/              возможности: app, ui (+ ui-elements, ui-theme, ui-help, ui-settings-window, ui-mirrors (копии блоков на главной и в окне настроек), ui-labels, ui-selects, ui-numbers), speaker, voices, wake-lock, playback
+    features/              возможности: app, ui (+ ui-elements, ui-theme, ui-help, ui-settings-window, ui-mirrors (копии блоков на главной и в окне настроек), ui-labels, ui-selects, ui-numbers), developer (секретный жест на «Сброс настроек»), scroll-steps (ступеньки, стрелки, бейдж), speaker, voices, wake-lock, playback
 ```
 
 ## Правила

@@ -6,6 +6,8 @@ import { createLangLoader } from "./core/i18n.js";
 import { createStore } from "./core/store.js";
 import { Utils } from "./core/utils.js";
 import { createApp } from "./features/app.js";
+import { createDeveloper } from "./features/developer.js";
+import { initSnap } from "./features/scroll-steps.js";
 import { createUI } from "./features/ui.js";
 import { createPlayback } from "./features/playback.js";
 import { createSpeaker } from "./features/speaker.js";
@@ -46,3 +48,5 @@ const App = createApp({
 });
 
 App.init();
+createDeveloper({ bus: bus, ui: UI, store: Store }).init();
+initSnap();
