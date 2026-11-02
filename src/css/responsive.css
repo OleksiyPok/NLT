@@ -1,46 +1,24 @@
-/* ---------- Wide screens ---------- */
-@media (min-width: 640px) {
+/* ---------- Tablet (576px+) ---------- */
+@media (min-width: 576px) {
+  :root {
+    --max-content-width: 576px;
+  }
+
   .layout {
-    max-width: var(--content-max-md);
+    max-width: var(--max-content-width);
     align-items: stretch;
   }
 
   .section-row {
     flex-direction: row;
-    gap: 12px;
   }
 
   .section-block-exercises {
     flex: 1 1 0%;
   }
 
-  /* Settings moved to the modal: the grid is lower, both columns have one height */
-  .section-row {
-    align-items: stretch;
-  }
-
-  .number-area .column {
-    gap: 6px;
-  }
-
-  .number-input {
-    height: 30px;
-  }
-
   .setting-button-wrapper {
     flex: 1;
-    flex-direction: column;
-  }
-
-  /* Settings fill all the free space up to the top, their blocks are pressed to the top;
-     the buttons keep their own height and end at the bottom of the number field */
-  .setting-button-wrapper .section-block-settings {
-    flex: 1 1 auto;
-    justify-content: flex-start;
-  }
-
-  .setting-button-wrapper .section-block-buttons {
-    flex: 0 0 auto;
   }
 
   .setting-button-wrapper .section-block-settings {
@@ -49,9 +27,59 @@
 
   .setting-button-wrapper .section-block-buttons {
     order: 2;
-  }
-  body {
-    padding: 0;
+    margin-top: auto;
   }
 
+  /* NLT only: the number field is narrower here, so the rows are a bit tighter */
+  .number-area .column {
+    gap: 6px;
+  }
+
+  .number-input {
+    height: 30px;
+  }
+
+  /* No extra space under the page on wide screens */
+  .scroll-bottom-space {
+    padding-bottom: 0;
+  }
+}
+
+/* Modals go full screen on wider viewports */
+@media (min-width: 640px) {
+  .app-modal {
+    align-items: stretch;
+  }
+  .app-modal-content {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+    padding: 12px;
+  }
+}
+
+/* ---------- Desktop (992px+) ---------- */
+@media (min-width: 992px) {
+  :root {
+    --max-content-width: 992px;
+  }
+
+  h2 {
+    font-size: 26px;
+  }
+
+  h5 {
+    font-size: 15px;
+  }
+
+  .title-icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .setting-row {
+    gap: 16px;
+  }
 }
