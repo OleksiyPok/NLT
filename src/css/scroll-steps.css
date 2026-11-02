@@ -98,3 +98,6 @@
   right: calc(20px + var(--scrollbar-w, 0px));
 }
 
+#settingsAppModal .settings-app-content {
+  padding-top: 0;
+}

@@ -29,20 +29,6 @@
     order: 2;
     margin-top: auto;
   }
-
-  /* NLT only: the number field is narrower here, so the rows are a bit tighter */
-  .number-area .column {
-    gap: 6px;
-  }
-
-  .number-input {
-    height: 30px;
-  }
-
-  /* No extra space under the page on wide screens */
-  .scroll-bottom-space {
-    padding-bottom: 0;
-  }
 }
 
 /* Modals go full screen on wider viewports */

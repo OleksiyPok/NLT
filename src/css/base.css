@@ -1,6 +1,5 @@
-/* ---------- Base: variables, page, form elements (same as DT and CLT) ---------- */
 :root {
-  /* Maximum width of the page content (raised in responsive.css) */
+  /* Maximum width of the page content (raised in the media queries) */
   --max-content-width: 425px;
   /* One vertical gap: line -> 1/2/3, 1/2/3 -> block, block -> block */
   --block-gap: 12px;

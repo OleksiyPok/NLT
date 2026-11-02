@@ -1,12 +1,12 @@
-/* ---------- Developer block ---------- */
+/* ---------- Developer block (shown by the app only in developer mode) ---------- */
 .developer {
   display: flex;
+  flex-direction: row;
   justify-content: left;
   width: 100%;
   gap: 12px;
   margin-top: 14px;
 }
-
 .developer button {
   width: 80px;
   padding: 6px 6px;
@@ -19,8 +19,7 @@
   transition: background-color 0.2s, border-color 0.2s;
   box-shadow: 0 2px 6px var(--shadow-light);
 }
-
 .developer button:hover {
-  background-color: var(--primary-bg);
+  background-color: var(--primary-bg-hover);
   border-color: var(--primary-hover);
 }

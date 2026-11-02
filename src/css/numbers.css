@@ -195,3 +195,17 @@
   opacity: 1;
   transition: opacity 0.5s ease;
 }
+
+/* NLT only (kept here so that responsive.css stays identical in NLT, CLT and DT):
+   on wide screens the number field gets tighter rows, and the phone spacer under the page is removed */
+@media (min-width: 576px) {
+  .number-area .column {
+    gap: 6px;
+  }
+  .number-input {
+    height: 30px;
+  }
+  .scroll-bottom-space {
+    padding-bottom: 0;
+  }
+}
