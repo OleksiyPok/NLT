@@ -6,7 +6,7 @@ import { createUiLabels } from "./ui-labels.js";
 import { createUiNumbers } from "./ui-numbers.js";
 import { cacheElements, createUiContext } from "./ui-elements.js";
 import { createUiSelects } from "./ui-selects.js";
-import { createModals } from "./modals.js";
+import { createModalHistory, createModals } from "./modals.js";
 import { createTheme } from "./theme.js";
 
 export function createUI({ bus, utils, langLoader }) {
@@ -27,6 +27,13 @@ export function createUI({ bus, utils, langLoader }) {
 
   const { isAppHelpModalOpen, loadHelpContent, openHelpModal, closeHelpModal } = help;
   const { isSettingsModalOpen, openSettingsModal, closeSettingsModal } = settingsWindow;
+  const modalHistory = createModalHistory({
+    isAnyOpen: () => isAppHelpModalOpen() || isSettingsModalOpen(),
+    closeAll: () => {
+      closeHelpModal();
+      closeSettingsModal();
+    },
+  });
   const { updateUILabels, updateStartPauseButton, updateControlsState } = labels;
   const { cacheInputs, getInputs, getSelectedInputs, showBackgroundOverlay, hideBackgroundOverlay, showActiveNumberOverlay, hideActiveNumberOverlay, resetRepeatLeft, fillRandom, highlightSelection } = numbers;
   const { setSelectsFromSettings, populateLanguageSelect, populateVoiceSelect, setLanguageCodeFromSettings, setVoiceFromSettings } = selects;
@@ -138,10 +145,20 @@ export function createUI({ bus, utils, langLoader }) {
     bus.on(EventTypes.UI_HELP_MODAL_OPEN, () => {
       loadHelpContent();
       openHelpModal();
+      modalHistory.opened();
     });
-    bus.on(EventTypes.UI_HELP_MODAL_CLOSE, closeHelpModal);
-    bus.on(EventTypes.UI_SETTINGS_MODAL_OPEN, openSettingsModal);
-    bus.on(EventTypes.UI_SETTINGS_MODAL_CLOSE, closeSettingsModal);
+    bus.on(EventTypes.UI_HELP_MODAL_CLOSE, () => {
+      closeHelpModal();
+      modalHistory.closed();
+    });
+    bus.on(EventTypes.UI_SETTINGS_MODAL_OPEN, () => {
+      openSettingsModal();
+      modalHistory.opened();
+    });
+    bus.on(EventTypes.UI_SETTINGS_MODAL_CLOSE, () => {
+      closeSettingsModal();
+      modalHistory.closed();
+    });
     bus.on(EventTypes.UI_BACKGROUND_SHOW, showBackgroundOverlay);
     bus.on(EventTypes.UI_BACKGROUND_HIDE, hideBackgroundOverlay);
     bus.on(EventTypes.UI_ACTIVE_NUMBER_SHOW, ({ value, delayMs }) => showActiveNumberOverlay(value));
