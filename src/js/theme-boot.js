@@ -4,7 +4,7 @@
 // DEFAULT_THEME must be the same as "thema" in config/config.json.
 (function () {
   var STORAGE_KEY = "NLT-settings";
-  var DEFAULT_THEME = "theme-yellowblue-normal";
+  var DEFAULT_THEME = "theme-warmorange-normal";
   var THEME_PATTERN = /^theme-[a-z]+-(contrast|normal|evening|night)$/;
 
   var theme = DEFAULT_THEME;

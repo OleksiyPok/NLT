@@ -1,4 +1,9 @@
 /* ---------- Main screen: title, top row, blocks and groups of controls ---------- */
+.author-link {
+  text-decoration: none;
+  color: inherit;
+}
+
 .titles-container {
   display: flex;
   align-items: center;

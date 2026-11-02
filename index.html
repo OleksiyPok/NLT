@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" class="theme-yellowblue-normal">
+<html lang="en" class="theme-warmorange-normal">
   <head>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Number Listening Trainer</title>
-    <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/icon_NLT_16x16.png" />
-
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/icon_NLT_16x16.png" />
     <script src="src/js/theme-boot.js"></script>
-
+    <script type="module" src="src/js/main.js"></script>
     <link rel="stylesheet" href="src/css/main.css" />
   </head>
 
@@ -51,10 +50,10 @@
       </symbol>
     </svg>
 
-    <div class="scroll-container" id="scroll-container">
+    <div class="scroll-container" id="scrollContainer">
       <div class="layout">
         <div class="titles-container" id="titlesContainer">
-          <img class="title-icon" id="titleIcon" src="./assets/icons/icon_NLT_64x64.png" alt="Icon" />
+          <img class="title-icon" id="titleIcon" src="assets/icons/icon_NLT_64x64.png" alt="Icon" />
           <div class="title-text" id="titleText">
             <h2>Number Listening Trainer<br /></h2>
             <h6 id="version" class="version"></h6>
@@ -62,10 +61,10 @@
         </div>
 
         <h5>
-          <a href="mailto:Oleksii.Pokormiakho.job@gmail.com" style="text-decoration: none; color: inherit">Oleksii Pokormiakho</a>
+          <a class="author-link" href="mailto:Oleksii.Pokormiakho.job@gmail.com">Oleksii Pokormiakho</a>
         </h5>
 
-        <div class="setting-row" id="settingRow">
+        <div class="setting-row" id="settingsRow">
           <div class="setting-buttons">
             <button class="help-app-btn" id="helpAppBtn" title="Open application description" aria-label="Open application description">
               <span class="framed-icon">
@@ -421,7 +420,5 @@
         </div>
       </div>
     </div>
-
-    <script type="module" src="src/js/main.js"></script>
   </body>
 </html>

@@ -107,7 +107,7 @@ export function createApp({ bus, config, langLoader, store, ui, voices, speaker,
     ui.resetRepeatLeft();
     document.addEventListener("keydown", handleKeyControls);
 
-    document.getElementById("version").textContent = `version ${APP_VERSION}`;
+    document.getElementById("version").textContent = `version: ${APP_VERSION}`;
 
     // Removes only the settings of this app, other localStorage keys stay
     document.getElementById("developerPathBtn")?.addEventListener("click", () => alert(location.href));

@@ -1,7 +1,7 @@
 // Theme list and helpers. Pure functions, no DOM access except applyThemeClass.
 // The class of <html> before the first paint is set by theme-boot.js (keep DEFAULT_THEME equal to "thema" in config/config.json).
 
-export const DEFAULT_THEME = "theme-yellowblue-normal";
+export const DEFAULT_THEME = "theme-warmorange-normal";
 
 // Removed palettes: old saved value -> replacement (same mode)
 const DEPRECATED_THEME_MAP = {
