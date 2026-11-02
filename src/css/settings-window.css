@@ -12,7 +12,6 @@
 .settings-app-content .digit-length-count-repeat-wrapper,
 .settings-app-content .fullscreen-wrapper,
 .settings-app-content .language-voice-wrapper,
-.settings-app-content .thema-wrapper,
 .settings-app-content .interface-wrapper {
   display: flex;
   flex-direction: column;

@@ -69,6 +69,10 @@
   color: var(--text-color);
   overflow-wrap: anywhere;
 }
+/* The name of the app after the title of the window: <h2 data-app="NLT"> */
+.app-modal-title[data-app]::after {
+  content: " \2014  " attr(data-app);
+}
 .app-modal-close-btn:hover {
   background: var(--text-color);
   opacity: 1;

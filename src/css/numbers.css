@@ -102,7 +102,6 @@
 .digit-length-count-repeat-wrapper,
 .fullscreen-wrapper,
 .language-voice-wrapper,
-.thema-wrapper,
 .interface-wrapper {
   display: flex;
   flex-direction: column;
