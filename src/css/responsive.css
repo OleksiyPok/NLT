@@ -1,0 +1,57 @@
+/* ---------- Wide screens ---------- */
+@media (min-width: 640px) {
+  .layout {
+    max-width: var(--content-max-md);
+    align-items: stretch;
+  }
+
+  .section-row {
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .section-block-exercises {
+    flex: 1 1 0%;
+  }
+
+  /* Settings moved to the modal: the grid is lower, both columns have one height */
+  .section-row {
+    align-items: stretch;
+  }
+
+  .number-area .column {
+    gap: 6px;
+  }
+
+  .number-input {
+    height: 30px;
+  }
+
+  .setting-button-wrapper {
+    flex: 1;
+    flex-direction: column;
+  }
+
+  /* Settings fill all the free space up to the top, their blocks are pressed to the top;
+     the buttons keep their own height and end at the bottom of the number field */
+  .setting-button-wrapper .section-block-settings {
+    flex: 1 1 auto;
+    justify-content: flex-start;
+  }
+
+  .setting-button-wrapper .section-block-buttons {
+    flex: 0 0 auto;
+  }
+
+  .setting-button-wrapper .section-block-settings {
+    order: 1;
+  }
+
+  .setting-button-wrapper .section-block-buttons {
+    order: 2;
+  }
+  body {
+    padding: 0;
+  }
+
+}

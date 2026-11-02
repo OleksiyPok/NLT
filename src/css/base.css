@@ -1,0 +1,244 @@
+/* ---------- Base: variables, page, form elements ---------- */
+/* style.css */
+:root {
+  --content-max-xs: 425px;
+  /* small containers */
+  --content-max-sm: 540px;
+  /* small containers */
+  --content-max-md: 720px;
+  /* medium */
+  --content-max-lg: 960px;
+  /* large */
+  --content-max-xl: 1140px;
+  /* extra large */
+  --content-max-2xl: 1320px;
+  /* very large desktops */
+
+  --bp-xs: 480px;
+  /* extra small phones */
+  --bp-sm: 576px;
+  /* phones */
+  --bp-md: 640px;
+  /* phablets / small tablets */
+  --bp-lg: 768px;
+  /* tablets portrait */
+  --bp-xl: 1024px;
+  /* tablets landscape / laptops */
+  --bp-2xl: 1280px;
+  /* desktops */
+
+  /* Colours are NOT defined here: all of them (and the default palette) are in themes.css */
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  padding: 12px;
+  overflow-x: hidden;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--background-color);
+  color: var(--text-color);
+}
+
+.scroll-container {
+  height: calc(var(--vh, 1vh) * 100);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: var(--content-max-xs);
+  margin: 0 auto;
+}
+
+h2,
+h5,
+h6 {
+  width: 100%;
+  margin-bottom: 10px;
+  overflow-wrap: anywhere;
+}
+
+h2 {
+  margin: 0;
+  font-size: 22px;
+  text-shadow: 1px 1px 2px var(--shadow-light);
+}
+
+h5 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-style: italic;
+  text-align: right;
+}
+
+input {
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  width: 120px;
+  box-shadow: none;
+  padding: 4px 8px;
+  font-size: 0.95em;
+  text-align: center;
+  color: var(--text-color);
+  outline: none;
+}
+
+select {
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  width: 120px;
+  box-shadow: none;
+  padding: 4px 8px;
+  font-size: 0.95em;
+  text-align: center;
+  color: var(--text-color);
+  /* outline: none; */
+}
+
+select:hover {
+  border-color: var(--border-color);
+}
+
+select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* span, */
+label {
+  font-weight: 600;
+  font-size: 0.95em;
+  color: var(--text-muted);
+  white-space: nowrap;
+  user-select: none;
+}
+
+label.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
+
+textarea {
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--text-color);
+  min-height: 90px;
+  overflow-y: auto;
+  padding: 8px;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+  width: 100%;
+}
+
+textarea::placeholder {
+  color: var(--text-color);
+}
+
+textarea:focus {
+  border-color: var(--border-color);
+  outline: none;
+}
+
+button {
+  width: 100%;
+  max-width: 120px;
+  padding: 4px 4px;
+  font-size: 0.95em;
+  font-weight: 600;
+  color: var(--text-color);
+  background: var(--primary-bg);
+  border: 2px solid var(--primary-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--primary-bg-hover);
+  border-color: var(--primary-hover);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.version {
+  display: block;
+  margin-top: 0;
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* Own checkbox in every theme: the native one is always bright white and ignores the theme.
+   Empty: theme background, strong border. Checked: accent fill with a light tick. */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-grid;
+  place-content: center;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  background: var(--background-color);
+  border: 2px solid var(--border-strong);
+  border-radius: 4px;
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  transform: scale(0);
+  background: var(--primary-text);
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transition: transform 0.1s ease-in-out;
+}
+
+input[type="checkbox"]:checked {
+  background: var(--primary);
+  border-color: var(--primary-active);
+}
+
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}

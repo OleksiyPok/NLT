@@ -1,3 +1,50 @@
+/* ---------- Reset row of the settings window ---------- */
+.reset-settings-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  width: 100%;
+  margin-left: 0;
+  margin-bottom: 4px;
+  gap: 12px;
+  padding-top: 8px;
+  opacity: 0.75;
+  /* border-top: 1px solid var(--border-color); */
+}
+
+.reset-settings-btn {
+  font-size: 18px;
+  background: var(--surface-color);
+}
+
+/* The reset icon: a line icon from the sprite, like the other buttons */
+.reset-settings-btn .ico {
+  display: block;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.reset-settings-text {
+  font-weight: 600;
+  font-size: 0.85em;
+  color: var(--text-muted);
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Settings window: groups one under another */
+#settingsBody {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 /* ---------- Settings window: flat panels with an accent bar on the left (as in DT and CLT) ---------- */
 .settings-app-content {
   display: flex;

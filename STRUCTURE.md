@@ -15,7 +15,13 @@ src/
   i18n/                    <lang>.json
   css/
     main.css               список подключения файлов (порядок важен)
-    style.css, modals.css, settings-window.css (панели окна настроек), scroll-steps.css (ступеньки прокрутки), help.css, icons.css, themes.css (общий с DT)
+    base.css               переменные, базовые элементы (как у DT и CLT)
+    main-screen.css        заголовок, верхняя строка, блоки и группы настроек главной страницы
+    numbers.css            поле с числами, оверлеи упражнения (у CLT: clock.css)
+    settings-window.css    окно настроек: плоские панели (как у DT), сброс
+    scroll-steps.css       ступеньки прокрутки окна настроек, стрелки, бейдж
+    developer.css, modals.css, responsive.css, help.css, icons.css (как у DT и CLT)
+    themes.css             общий с DT
   js/
     theme-boot.js          обычный скрипт: тема до первой отрисовки
     main.js                точка входа: создаёт модули и связывает их

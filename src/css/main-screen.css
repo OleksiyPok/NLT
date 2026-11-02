@@ -1,0 +1,209 @@
+/* ---------- Main screen: title, top row, blocks and groups of controls ---------- */
+.titles-container {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  width: 100%;
+}
+
+.title-icon {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  margin-right: 8px;
+  /* --logo-filter comes from the theme (unchanged / muted / grey) */
+  filter: drop-shadow(1px 1px 2px var(--shadow-light)) var(--logo-filter, brightness(1));
+}
+
+.setting-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-left: 0;
+  /* margin-bottom: 4px; */
+  padding: 8px 0;
+  gap: 12px;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.help-app-btn,
+.settings-app-btn,
+.mode-app-btn,
+.reset-settings-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.help-app-btn,
+.settings-app-btn,
+.mode-app-btn {
+  font-size: 26px;
+  background: var(--background-color);
+}
+
+.help-app-btn:active,
+.settings-app-btn:active,
+.mode-app-btn:active {
+  background: var(--surface-hover);
+}
+
+/* Hover highlight only for a real mouse: on touch screens it would stay after a tap */
+@media (hover: hover) {
+  .help-app-btn:hover,
+  .settings-app-btn:hover,
+  .mode-app-btn:hover {
+    background: var(--surface-hover);
+  }
+}
+
+.setting-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-block {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-around;
+  gap: 12px;
+  width: 100%;
+  padding: 10px;
+  background: var(--surface-color);
+  border: 2px solid var(--border-color);
+  border-radius: 15px;
+  box-shadow: 0 4px 12px var(--shadow-light);
+}
+
+.section-row {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12px;
+  /* Space under the line below the top row */
+  padding-top: 12px;
+}
+
+.section-block-buttons {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.setting-button-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.speed-delay-wrapper,
+.digit-length-count-repeat-wrapper,
+.fullscreen-wrapper,
+.language-voice-wrapper,
+.thema-wrapper,
+.interface-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+}
+
+.fullscreen-delay-mode-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.speed-group,
+.interval-group,
+.digit-length-group,
+.count-group,
+.repeat-group,
+.fullscreen-switcher-group,
+.fullscreen-delay-mode-group,
+.fullscreen-delay-group,
+.language-group,
+.voice-group,
+.thema-group,
+.interface-group {
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.speed-group,
+.interval-group,
+.digit-length-group,
+.count-group,
+.repeat-group,
+.fullscreen-switcher-group,
+.fullscreen-delay-group {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+
+.language-group,
+.voice-group,
+.thema-group,
+.interface-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.speed-group select,
+.interval-group select,
+.digit-length-group select,
+.count-group select,
+.repeat-group select,
+.fullscreen-switcher-group select,
+.fullscreen-delay-mode-group select,
+.fullscreen-delay-group select {
+  width: 90px;
+}
+
+.language-group select,
+.voice-group select,
+.thema-group select,
+.interface-group select {
+  width: 100%;
+  text-align: left;
+}
+
+.scroll-bottom-space {
+  padding-bottom: 250px;
+}
+
+/* Theme-mode icon: same size as the framed "i" and gear icons next to it */
+.mode-icon svg {
+  display: block;
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
