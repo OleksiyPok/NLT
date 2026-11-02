@@ -1,13 +1,13 @@
 // The page: connects the ui-*.js modules, the controls of the settings and the events of the bus.
 import { EventTypes } from "../core/event-types.js";
-import { createUiHelp } from "./ui-help.js";
+import { createHelp } from "./help.js";
 import { createUiMirrors } from "./ui-mirrors.js";
 import { createUiLabels } from "./ui-labels.js";
 import { createUiNumbers } from "./ui-numbers.js";
 import { cacheElements, createUiContext } from "./ui-elements.js";
 import { createUiSelects } from "./ui-selects.js";
-import { createUiSettingsWindow } from "./ui-settings-window.js";
-import { createUiTheme } from "./ui-theme.js";
+import { createModals } from "./modals.js";
+import { createTheme } from "./theme.js";
 
 export function createUI({ bus, utils, langLoader }) {
   const ctx = createUiContext({ bus, utils, langLoader });
@@ -18,12 +18,12 @@ export function createUI({ bus, utils, langLoader }) {
   const { elements, view } = ctx;
 
   const mirrors = createUiMirrors();
-  const theme = createUiTheme(ctx);
-  const help = createUiHelp(ctx);
+  const theme = createTheme(ctx);
+  const help = createHelp(ctx);
   const labels = createUiLabels(ctx);
   const numbers = createUiNumbers(ctx, labels);
   const selects = createUiSelects(ctx, theme);
-  const settingsWindow = createUiSettingsWindow(ctx);
+  const settingsWindow = createModals(ctx);
 
   const { isAppHelpModalOpen, loadHelpContent, openHelpModal, closeHelpModal } = help;
   const { isSettingsModalOpen, openSettingsModal, closeSettingsModal } = settingsWindow;

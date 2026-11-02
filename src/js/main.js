@@ -3,7 +3,7 @@
 import { createConfig } from "./core/config.js";
 import { createEventBus } from "./core/event-bus.js";
 import { createLangLoader } from "./core/i18n.js";
-import { createStore } from "./core/store.js";
+import { createState } from "./core/state.js";
 import { Utils } from "./core/utils.js";
 import { createApp } from "./features/app.js";
 import { createDeveloper } from "./features/developer.js";
@@ -17,7 +17,7 @@ import { createWakeLock } from "./features/wake-lock.js";
 const bus = createEventBus();
 const Config = createConfig();
 const LangLoader = createLangLoader({ config: Config });
-const Store = createStore({ bus: bus });
+const State = createState({ bus: bus });
 const WakeLock = createWakeLock({ bus: bus });
 const Speaker = createSpeaker();
 const UI = createUI({
@@ -39,7 +39,7 @@ const App = createApp({
   bus: bus,
   config: Config,
   langLoader: LangLoader,
-  store: Store,
+  store: State,
   ui: UI,
   voices: Voices,
   speaker: Speaker,
@@ -48,5 +48,5 @@ const App = createApp({
 });
 
 App.init();
-createDeveloper({ bus: bus, ui: UI, store: Store }).init();
+createDeveloper({ bus: bus, ui: UI, store: State }).init();
 initSnap();
