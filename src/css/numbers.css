@@ -19,6 +19,11 @@
   border-radius: 15px;
   box-shadow: 0 4px 12px var(--shadow-light);
 }
+/* The groups of the settings are pressed to the top of the block */
+.section-block-settings {
+  justify-content: flex-start;
+}
+
 .setting-button-wrapper {
   display: flex;
   flex-direction: column;
