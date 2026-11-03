@@ -22,8 +22,14 @@ function fitSnapSpacer(container, spacer, lastSnapEl) {
   spacer.style.height = "0px";
   const stepPos =
     contentTop(container, lastSnapEl) - snapOffset(container, lastSnapEl);
-  const maxScroll = container.scrollHeight - container.clientHeight;
-  spacer.style.height = Math.max(0, Math.ceil(stepPos - maxScroll)) + "px";
+  // The real end of the content: scrollHeight is never less than the window height,
+  // so on a tall window it can not be used (the last step would stay out of reach).
+  const contentEnd =
+    contentTop(container, spacer) +
+    (parseFloat(getComputedStyle(container).paddingBottom) || 0);
+  spacer.style.height =
+    Math.max(0, Math.ceil(stepPos + container.clientHeight - contentEnd)) +
+    "px";
 }
 
 export function updateModalSnap() {
