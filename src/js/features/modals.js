@@ -1,4 +1,4 @@
-// Settings window (still empty: the settings block is on the main page for now).
+// Settings window: opens and closes it (the controls live in the window, the main page holds copies, see ui-mirrors.js).
 export function createModals({ elements }) {
   const isSettingsModalOpen = () => !elements.settingsAppModal?.classList.contains("hidden");
   const openSettingsModal = () => elements.settingsAppModal?.classList.remove("hidden");

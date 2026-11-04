@@ -1,22 +1,38 @@
-// Simple publish / subscribe bus: modules talk to each other through events.
+// Simple event bus: modules talk to each other only through it
 export function createEventBus() {
-  const listeners = new Map();
-  const on = (event, fn) => {
-    if (!listeners.has(event)) listeners.set(event, new Set());
-    listeners.get(event).add(fn);
-    return () => listeners.get(event)?.delete(fn);
-  };
-  const off = (event, fn) => listeners.get(event)?.delete(fn);
-  const emit = (event, payload) => {
-    const set = listeners.get(event);
-    if (!set) return;
-    for (const fn of Array.from(set)) {
-      try {
-        fn(payload);
-      } catch (e) {
-        console.warn("Event error", event, e);
+  const map = new Map();
+  return {
+    on(event, handler) {
+      if (!map.has(event)) map.set(event, new Set());
+      map.get(event).add(handler);
+      return () => map.get(event)?.delete(handler);
+    },
+    off(event, handler) {
+      const s = map.get(event);
+      if (!s) return false;
+      if (!handler) {
+        map.delete(event);
+        return true;
       }
-    }
+      return s.delete(handler);
+    },
+    once(event, handler) {
+      let off;
+      off = this.on(event, (payload) => {
+        off();
+        handler(payload);
+      });
+      return off;
+    },
+    emit(event, payload) {
+      const subs = Array.from(map.get(event) || []);
+      for (const fn of subs) {
+        try {
+          fn(payload);
+        } catch (e) {
+          console.warn("EventBus handler error", event, e);
+        }
+      }
+    },
   };
-  return { on, off, emit };
 }

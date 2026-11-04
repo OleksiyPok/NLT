@@ -1,4 +1,6 @@
 // List of the voices of the browser.
+import { EventTypes } from "../core/event-types.js";
+
 export function createVoices({ bus }) {
   let voices = [];
   let availableLanguages = [];
@@ -20,7 +22,7 @@ export function createVoices({ bus }) {
   function collect() {
     voices = speechSynthesis.getVoices() || [];
     computeAvailableLanguages();
-    publish("voices:changed");
+    publish(EventTypes.VOICES_CHANGED);
   }
 
   async function load() {
@@ -34,7 +36,7 @@ export function createVoices({ bus }) {
         console.warn("Voices.load fallback failed", err);
       }
     }
-    publish("voices:loaded");
+    publish(EventTypes.VOICES_LOADED);
   }
 
   if ("onvoiceschanged" in speechSynthesis) speechSynthesis.onvoiceschanged = () => collect();

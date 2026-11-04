@@ -3,7 +3,9 @@
 export function createLangLoader({ config }) {
   const PATH = config.PATHS.UI_TEXTS_DIR;
   let texts = {};
+
   const FALLBACK_EN = { ui: {}, languages: {} };
+
   async function loadLang(code) {
     try {
       const res = await fetch(`${PATH}/${code}.json`, { cache: "no-cache" });
@@ -16,10 +18,13 @@ export function createLangLoader({ config }) {
       return null;
     }
   }
-  async function loadAll() {
+
+  // The languages to load: the given list, by default config.UI_LANGS
+  async function loadAll(allowed = config.UI_LANGS) {
     texts = {};
+    const langs = Array.isArray(allowed) ? allowed : ["en"];
     await Promise.all(
-      config.UI_LANGS.map(async (code) => {
+      langs.map(async (code) => {
         const data = await loadLang(code);
         if (data) texts[code] = data;
       }),
@@ -30,8 +35,10 @@ export function createLangLoader({ config }) {
     }
     return texts;
   }
+
   // Texts of the language; a text missing in it is taken from English.
   const getTexts = (lang) => ({ ...(texts.en || FALLBACK_EN).ui, ...texts[lang]?.ui });
   const getLanguageNames = (lang) => ({ ...(texts.en || FALLBACK_EN).languages, ...texts[lang]?.languages });
+
   return { loadLang, loadAll, getTexts, getLanguageNames };
 }
