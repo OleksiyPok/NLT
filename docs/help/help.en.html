@@ -1,126 +1,154 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Instruction</title>
-  </head>
-  <body>
-    <div id="helpAppContent">
-      <h2>Program Purpose</h2>
+<!--
+  NLT HELP — English version (also the fallback for languages without their own file).
+  The structure is the same in DT, NLT and CLT: help-about, help-main, help-use, help-settings, help-notes.
+  Screenshots: docs/help/img/NAME.png (NAME is in data-shot); a missing file shows a grey placeholder.
+-->
 
-      <p>The program is designed for learning numbers in various languages and training auditory perception.</p>
+<div class="help-content" lang="en" dir="ltr">
 
-      <p>The application generates sequences of numbers, pronounces them using the selected voice, and allows you to configure exercise parameters such as the number of values, the number of repetitions, speech rate, and speech language.</p>
+  <section class="help-section" id="help-about">
+    <h2>Program Purpose</h2>
+    <p>
+      Number Listening Trainer is designed for learning numbers in foreign languages and for training
+      listening comprehension.
+    </p>
+    <p>
+      The program generates a set of random numbers, says them aloud in the selected language with the
+      selected voice, and repeats the exercise as many times as you need. You choose the length of the
+      numbers, how many of them there are, how fast they are spoken and how long the pauses are.
+    </p>
+    <p>
+      An optional delay between showing a number and saying it turns the exercise into a game: you can
+      see the number first and say it yourself before the program does, or hear the number first and
+      picture it before it appears on the screen.
+    </p>
+    <p>
+      The interface is available in 13 languages: العربية, Čeština, Deutsch, English, Español, Français,
+      Italiano, Nederlands, Polski, Português, Русский, Türkçe, Українська.
+    </p>
+  </section>
 
-      <p>The program can be used to develop listening skills, train memory, and learn numerals in foreign languages.</p>
+  <section class="help-section" id="help-main">
+    <h2>Main screen</h2>
 
-      <p>Additionally, it supports configuring a delay between displaying a number and pronouncing it. Depending on the selected mode, you can either see the number first and pronounce it yourself before the program does, or hear the number first and visualize it before it appears on the screen.</p>
+    <figure class="help-shot" data-shot="main-overview">
+      <img src="docs/help/img/main-overview.png" alt="Main screen of the program with numbered elements" loading="lazy" />
+      <figcaption>Main screen</figcaption>
+    </figure>
 
-      <h2>Program Interface Description</h2>
+    <ol class="help-legend">
+      <li value="1"><span class="help-framed"><svg class="help-ico" aria-hidden="true"><use href="#i-info" /></svg></span> <b>Information</b>: opens this window.</li>
+      <li value="2"><span class="help-framed"><svg class="help-ico" aria-hidden="true"><use href="#i-gear" /></svg></span> <b>Settings</b>: opens the settings window (see "Settings").</li>
+      <li value="3"><svg class="help-ico" aria-hidden="true"><use href="#i-mode-normal" /></svg> <b>Mode</b>: colour mode of the interface: Contrast, Normal, Evening or Night. Each press switches to the next mode.</li>
+      <li value="4"><b>Number fields</b>: the numbers of the exercise. Before the start they show asterisks.</li>
+      <li value="5"><b>Repeats left</b>: how many times the exercise is still to be played.</li>
+      <li value="6"><b>Rnd</b>: generates new random numbers.</li>
+      <li value="7"><b>Start / Pause / Continue</b>: starts the exercise, pauses it and continues it.</li>
+      <li value="8"><b>Reset</b>: returns the exercise to the beginning (available when it is paused).</li>
+      <li value="9"><b>Playback and display controls</b>: Speed, Interval, Fullscreen, Delay mode, Delay, Digit length, Count and Repeat. They are the same controls as in the settings window and are described in "Settings".</li>
+    </ol>
+  </section>
 
-      <p>The program interface consists of:</p>
+  <section class="help-section" id="help-use">
+    <h2>How to use</h2>
+    <ol class="help-steps">
+      <li>Choose the language and the voice in the settings.</li>
+      <li>Set the length of the numbers, their count and the number of repeats.</li>
+      <li>Press <b>Rnd</b> to get new numbers, then <b>Start</b>. The number being said is highlighted.</li>
+      <li>Write down what you hear, or say the number yourself, and compare it with the screen.</li>
+      <li>To make it harder, turn on the delay in the settings, or use Fullscreen so that only the current number is seen.</li>
+    </ol>
 
-      <ul>
-        <p><span class="marker">1</span>Exercise area</p>
-        <p><span class="marker">2</span>Settings area</p>
-        <p><span class="marker">3</span>Control buttons area</p>
-      </ul>
+    <figure class="help-shot" data-shot="playing">
+      <img src="docs/help/img/playing.png" alt="The exercise is playing: the current number is highlighted" loading="lazy" />
+      <figcaption>The exercise is playing</figcaption>
+    </figure>
 
-      <img src="docs/help/img/interface-overview.png" alt="Main application interface showing exercise area, settings area and control buttons" />
+    <figure class="help-shot" data-shot="fullscreen">
+      <img src="docs/help/img/fullscreen.png" alt="Fullscreen mode: the current number fills the screen" loading="lazy" />
+      <figcaption>Fullscreen mode</figcaption>
+    </figure>
+  </section>
 
-      <div class="divider"></div>
+  <section class="help-section" id="help-settings">
+    <h2>Settings</h2>
+    <p>
+      The settings window is opened with the <span class="help-framed"><svg class="help-ico" aria-hidden="true"><use href="#i-gear" /></svg></span> button.
+      It consists of blocks; scrolling takes you from block to block, and a fraction in the corner shows the
+      number of the current block over the total number of blocks. The playback and display controls of the
+      main screen are the same controls and always show the same values. A change is applied at once, even
+      during playback.
+    </p>
 
-      <h2>General Controls</h2>
+    <h3>Speed and interval</h3>
+    <figure class="help-shot" data-shot="settings-playback">
+      <img src="docs/help/img/settings-playback.png" alt="Settings: speed and interval" loading="lazy" />
+      <figcaption>Speed and interval</figcaption>
+    </figure>
+    <ol class="help-legend">
+      <li value="1"><b>Speed</b>: the speed of the speech, from 0.6 (slow) to 2.0 (fast).</li>
+      <li value="2"><b>Interval (ms)</b>: the pause between the end of one number and the beginning of the next, in milliseconds.</li>
+    </ol>
 
-      <p><span class="marker-circle">4</span>Open help (also available by pressing F1)</p>
-      <img src="docs/help/img/help-access.png" alt="Help access menu and F1 keyboard shortcut" />
+    <h3>Fullscreen and delay</h3>
+    <figure class="help-shot" data-shot="settings-fullscreen">
+      <img src="docs/help/img/settings-fullscreen.png" alt="Settings: fullscreen, delay mode and delay" loading="lazy" />
+      <figcaption>Fullscreen and delay</figcaption>
+    </figure>
+    <ol class="help-legend">
+      <li value="1"><b>Fullscreen</b>: Yes shows the current number over the whole screen, No highlights it only inside the exercise area.</li>
+      <li value="2"><b>Delay mode</b>: No (the number is shown and said at the same time), Visual (the number is shown first and said after the delay) or Audio (the number is said first and shown after the delay).</li>
+      <li value="3"><b>Delay (sec)</b>: the length of the delay, from 1 to 5 seconds.</li>
+    </ol>
 
-      <p><span class="marker-circle">5</span>Select the visual interface contrast level</p>
-      <img src="docs/help/img/contrast-selection.png" alt="Visual interface contrast selection" />
-      <img src="docs/help/img/contrast-selection-example.png" alt="Visual interface contrast selection example" />
+    <h3>Numbers</h3>
+    <figure class="help-shot" data-shot="settings-numbers">
+      <img src="docs/help/img/settings-numbers.png" alt="Settings: digit length, count and repeat" loading="lazy" />
+      <figcaption>Numbers</figcaption>
+    </figure>
+    <ol class="help-legend">
+      <li value="1"><b>Digit length</b>: the length of the numbers: 1 (units), 2 (up to tens) or 3 (up to hundreds).</li>
+      <li value="2"><b>Count</b>: how many numbers there are in the exercise.</li>
+      <li value="3"><b>Repeat</b>: how many times the exercise with the same numbers is played, from 1 to 10.</li>
+    </ol>
 
-      <div class="divider"></div>
+    <h3>Language and voice</h3>
+    <figure class="help-shot" data-shot="settings-speech">
+      <img src="docs/help/img/settings-speech.png" alt="Settings: language and voice" loading="lazy" />
+      <figcaption>Language and voice</figcaption>
+    </figure>
+    <ol class="help-legend">
+      <li value="1"><b>Language</b>: the language of the speech.</li>
+      <li value="2"><b>Voice</b>: the voice of your device. The list depends on your device and browser.</li>
+    </ol>
 
-      <h2>Exercise Area</h2>
+    <h3>Interface, theme and mode</h3>
+    <figure class="help-shot" data-shot="settings-appearance">
+      <img src="docs/help/img/settings-appearance.png" alt="Settings: interface language, theme and mode" loading="lazy" />
+      <figcaption>Interface, theme and mode</figcaption>
+    </figure>
+    <ol class="help-legend">
+      <li value="1"><b>Interface</b>: the language of the program labels.</li>
+      <li value="2"><b>Theme</b>: the colour palette of the program.</li>
+      <li value="3"><b>Mode</b>: Contrast (brighter and sharper), Normal, Evening or Night. Night mode is dark and dim, so you can look at the screen calmly in the dark. It works in sync with the Mode button on the main screen.</li>
+    </ol>
 
-      <p><span class="marker-circle">6</span> Number fields for exercises</p>
-      <p><span class="marker-circle">7</span> Number of remaining repetitions for the exercise with the selected numbers</p>
-      <img src="docs/help/img/exercise-numbers.png" alt="Exercise area displaying generated numbers" />
+    <h3>Reset defaults</h3>
+    <figure class="help-shot" data-shot="settings-reset">
+      <img src="docs/help/img/settings-reset.png" alt="Settings: reset to default values" loading="lazy" />
+      <figcaption>Reset defaults</figcaption>
+    </figure>
+    <ol class="help-legend">
+      <li value="1"><b>Reset defaults</b> (<svg class="help-ico" aria-hidden="true"><use href="#i-reset" /></svg>): returns all settings to their original values.</li>
+    </ol>
+  </section>
 
-      <div class="divider"></div>
+  <section class="help-section" id="help-notes">
+    <h2>Notes</h2>
+    <p class="help-note">All settings are saved in your browser and are kept after you close the program.</p>
+    <p class="help-note">The help and settings windows are closed with the ✕ button or the <kbd>Esc</kbd> key; on a phone, also with the Back button. The <kbd>F1</kbd> key opens this window.</p>
+    <p class="help-note">If the language has no voices on your device, install a voice in the system settings.</p>
+    <p class="help-note">This help can be shown in any language: select it in the field above.</p>
+  </section>
 
-      <h2>Control Buttons Area</h2>
-
-      <p><span class="marker-circle">8</span> Generate new numbers button</p>
-      <p><span class="marker-circle">9</span> Start / stop exercise button</p>
-      <p><span class="marker-circle">10</span> Reset exercise to its initial state button</p>
-      <img src="docs/help/img/control-buttons.png" alt="Exercise control buttons" />
-
-      <div class="divider"></div>
-
-      <h2>Settings Area</h2>
-
-      <h3>Playback Parameters</h3>
-
-      <p><span class="marker-circle">11</span> Number pronunciation speed</p>
-      <p><span class="marker-circle">12</span> Interval between the end of one number pronunciation and the beginning of the next</p>
-
-      <img src="docs/help/img/speech-speed-and-interval.png" alt="Speech speed and interval settings" />
-
-      <h3>Exercise Parameters</h3>
-
-      <p><span class="marker-circle">13</span> Number length (units, tens, hundreds)</p>
-      <p><span class="marker-circle">14</span> Number of values in the exercise (highlighted in the interface)</p>
-      <p><span class="marker-circle">15</span> Number of repetitions for the exercise with the selected numbers</p>
-
-      <img src="docs/help/img/number-settings.png" alt="Number length, quantity and repetition settings" />
-      <img src="docs/help/img/number-settings-example.png" alt="Number quantity settings example" />
-
-      <h3>Display and Delay</h3>
-
-      <p>
-        <span class="marker-circle">16</span> Display numbers in full-screen mode
-        <br />
-        <small>When full-screen mode is disabled, highlighting is shown only within the exercise area.</small>
-      </p>
-
-      <p><span class="marker-circle">17</span> Configure the delay between displaying a number and pronouncing it</p>
-
-      <p><span class="marker-circle">18</span> Delay duration in seconds</p>
-
-      <img src="docs/help/img/fullscreen-and-delay.png" alt="Fullscreen display and delay settings" />
-
-      <h3>Speech</h3>
-
-      <p><span class="marker-circle">19</span> Speech language</p>
-      <p><span class="marker-circle">20</span> Speech voice (available only in the desktop version)</p>
-
-      <img src="docs/help/img/language-and-voice.png" alt="Speech language and voice selection" />
-
-      <h3>Appearance</h3>
-
-      <p><span class="marker-circle">21</span>Interface color theme</p>
-
-      <img src="docs/help/img/theme-selection.png" alt="Interface theme selection" />
-      <img src="docs/help/img/theme-selection-example.png" alt="Example of interface theme appearance" />
-
-      <h3>Localization</h3>
-
-      <p><span class="marker-circle">22</span> Interface language</p>
-
-      <img src="docs/help/img/interface-language.png" alt="Interface language selection" />
-      <img src="docs/help/img/interface-language-example.png" alt="Example of available interface languages" />
-
-      <h3>Reset Settings</h3>
-
-      <p><span class="marker-circle">23</span> Reset the application to default values</p>
-
-      <img src="docs/help/img/reset-defaults.png" alt="Reset application settings to default values" />
-
-      <div class="divider"></div>
-
-      <p>All parameter changes are applied automatically and are used in subsequent exercises.</p>
-    </div>
-  </body>
-</html>
+</div>

@@ -1,9 +1,17 @@
 // Help window: the help page (docs/help/help.<lang>.html) and the language of the page.
-// The help pages themselves are not changed yet.
 import { HELP_DIR, HELP_LANGS, HELP_LANGUAGE_KEY } from "../core/config.js";
 
 const APP_LANGUAGE = "app"; // "the language of the interface"
 const DEFAULT_LANGUAGE = "en";
+
+// A screenshot that is not added yet: the figure shows a grey placeholder with the file name (see help.css)
+function markMissingImages(page) {
+  page.querySelectorAll(".help-shot img").forEach((img) => {
+    const markMissing = () => img.closest(".help-shot")?.classList.add("missing");
+    img.addEventListener("error", markMissing);
+    if (img.complete && img.naturalWidth === 0) markMissing();
+  });
+}
 
 export function createHelp({ elements, langLoader }) {
   const pageCache = {};
@@ -92,7 +100,10 @@ export function createHelp({ elements, langLoader }) {
       const lang = select.value === APP_LANGUAGE ? interfaceLanguage() : select.value;
       const html = await getPage(lang);
       if (current !== request) return; // a newer choice has been made
-      if (html) page.innerHTML = html;
+      if (html) {
+        page.innerHTML = html;
+        markMissingImages(page);
+      }
       else page.textContent = langLoader.getTexts(elements.uiLangSelect?.value || "en").helpUnavailable || "";
     }
 
