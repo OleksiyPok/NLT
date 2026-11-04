@@ -15,23 +15,17 @@ const DEPRECATED_THEME_MAP = {
   "theme-firbrown-night": "theme-delftware-night",
 };
 
+// Palettes are listed in colour order (red -> brown -> orange -> yellow -> green -> teal -> blue);
+// the selector in the settings shows them in this order. Grayscale (no colour) comes last.
 export const THEME_DEFS = [
-  { value: "theme-oceanamber-contrast", label: "Ocean Amber - Contrast" },
-  { value: "theme-oceanamber-normal", label: "Ocean Amber - Normal" },
-  { value: "theme-oceanamber-evening", label: "Ocean Amber - Evening" },
-  { value: "theme-oceanamber-night", label: "Ocean Amber - Night" },
-  { value: "theme-yellowblue-contrast", label: "Yellow Blue - Contrast" },
-  { value: "theme-yellowblue-normal", label: "Yellow Blue - Normal" },
-  { value: "theme-yellowblue-evening", label: "Yellow Blue - Evening" },
-  { value: "theme-yellowblue-night", label: "Yellow Blue - Night" },
   { value: "theme-skycoral-contrast", label: "Sky Coral - Contrast" },
   { value: "theme-skycoral-normal", label: "Sky Coral - Normal" },
   { value: "theme-skycoral-evening", label: "Sky Coral - Evening" },
   { value: "theme-skycoral-night", label: "Sky Coral - Night" },
-  { value: "theme-malachite-contrast", label: "Malachite - Contrast" },
-  { value: "theme-malachite-normal", label: "Malachite - Normal" },
-  { value: "theme-malachite-evening", label: "Malachite - Evening" },
-  { value: "theme-malachite-night", label: "Malachite - Night" },
+  { value: "theme-autumnforest-contrast", label: "Autumn Forest - Contrast" },
+  { value: "theme-autumnforest-normal", label: "Autumn Forest - Normal" },
+  { value: "theme-autumnforest-evening", label: "Autumn Forest - Evening" },
+  { value: "theme-autumnforest-night", label: "Autumn Forest - Night" },
   { value: "theme-warmorange-contrast", label: "Warm Orange - Contrast" },
   { value: "theme-warmorange-normal", label: "Warm Orange - Normal" },
   { value: "theme-warmorange-evening", label: "Warm Orange - Evening" },
@@ -40,22 +34,30 @@ export const THEME_DEFS = [
   { value: "theme-amberglow-normal", label: "Amber Glow - Normal" },
   { value: "theme-amberglow-evening", label: "Amber Glow - Evening" },
   { value: "theme-amberglow-night", label: "Amber Glow - Night" },
-  { value: "theme-delftware-contrast", label: "Delftware - Contrast" },
-  { value: "theme-delftware-normal", label: "Delftware - Normal" },
-  { value: "theme-delftware-evening", label: "Delftware - Evening" },
-  { value: "theme-delftware-night", label: "Delftware - Night" },
+  { value: "theme-yellowblue-contrast", label: "Yellow Blue - Contrast" },
+  { value: "theme-yellowblue-normal", label: "Yellow Blue - Normal" },
+  { value: "theme-yellowblue-evening", label: "Yellow Blue - Evening" },
+  { value: "theme-yellowblue-night", label: "Yellow Blue - Night" },
+  { value: "theme-malachite-contrast", label: "Malachite - Contrast" },
+  { value: "theme-malachite-normal", label: "Malachite - Normal" },
+  { value: "theme-malachite-evening", label: "Malachite - Evening" },
+  { value: "theme-malachite-night", label: "Malachite - Night" },
   { value: "theme-tropical-contrast", label: "Tropical / Caribbean - Contrast" },
   { value: "theme-tropical-normal", label: "Tropical / Caribbean - Normal" },
   { value: "theme-tropical-evening", label: "Tropical / Caribbean - Evening" },
   { value: "theme-tropical-night", label: "Tropical / Caribbean - Night" },
+  { value: "theme-oceanamber-contrast", label: "Ocean Amber - Contrast" },
+  { value: "theme-oceanamber-normal", label: "Ocean Amber - Normal" },
+  { value: "theme-oceanamber-evening", label: "Ocean Amber - Evening" },
+  { value: "theme-oceanamber-night", label: "Ocean Amber - Night" },
+  { value: "theme-delftware-contrast", label: "Delftware - Contrast" },
+  { value: "theme-delftware-normal", label: "Delftware - Normal" },
+  { value: "theme-delftware-evening", label: "Delftware - Evening" },
+  { value: "theme-delftware-night", label: "Delftware - Night" },
   { value: "theme-grayscale-contrast", label: "Grayscale - Contrast" },
   { value: "theme-grayscale-normal", label: "Grayscale - Normal" },
   { value: "theme-grayscale-evening", label: "Grayscale - Evening" },
   { value: "theme-grayscale-night", label: "Grayscale - Night" },
-  { value: "theme-autumnforest-contrast", label: "Autumn Forest - Contrast" },
-  { value: "theme-autumnforest-normal", label: "Autumn Forest - Normal" },
-  { value: "theme-autumnforest-evening", label: "Autumn Forest - Evening" },
-  { value: "theme-autumnforest-night", label: "Autumn Forest - Night" },
 ];
 
 export const THEME_VALUES = THEME_DEFS.map((x) => x.value);
@@ -90,7 +92,7 @@ export function composeThema(palette, mode) {
   return THEME_VALUES.includes(candidate) ? candidate : null;
 }
 
-// One entry per palette: { palette, label } (the label without the " - Mode" part), sorted by label
+// One entry per palette: { palette, label } (the label without the " - Mode" part), in the order of THEME_DEFS
 export function getPaletteOptions() {
   const seen = new Set();
   const out = [];
@@ -101,7 +103,7 @@ export function getPaletteOptions() {
     const sep = def.label.indexOf(" - ");
     out.push({ palette: parsed.palette, label: sep >= 0 ? def.label.slice(0, sep).trim() : def.label });
   });
-  return out.sort((a, b) => a.label.localeCompare(b.label, "en"));
+  return out;
 }
 
 // Puts the wanted theme class on <html> (unknown value -> fallback) and returns the chosen one
