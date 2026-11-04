@@ -1,5 +1,5 @@
 🌐 Verfügbare Sprachen:  
-[English](README.en.md) | [Deutsch](README.de.md) | [Nederlands](README.nl.md) | [Українська](README.uk.md) | [Русский](README.ru.md)
+[العربية](README.ar.md) | [Čeština](README.cs.md) | [Deutsch](README.de.md) | [English](README.en.md) | [Español](README.es.md) | [Français](README.fr.md) | [Italiano](README.it.md) | [Nederlands](README.nl.md) | [Polski](README.pl.md) | [Português](README.pt.md) | [Русский](README.ru.md) | [Türkçe](README.tr.md) | [Українська](README.uk.md)
 
 ---
 
@@ -8,9 +8,9 @@
 Dies ist eine kompakte, einseitige Anwendung, die zum Erlernen von Zahlen in Fremdsprachen entwickelt wurde.  
 Die App nutzt eine Methode der gleichzeitigen auditiven und visuellen Wahrnehmung, die ein schnelles und effektives Einprägen ermöglicht.
 
-![Appearance of the application](img/app.png)
+![Aussehen der Anwendung](img/app.png)
 
 ---
 
 🌐 Verfügbare Sprachen:  
-[English](README.en.md) | [Deutsch](README.de.md) | [Nederlands](README.nl.md) | [Українська](README.uk.md) | [Русский](README.ru.md)
+[العربية](README.ar.md) | [Čeština](README.cs.md) | [Deutsch](README.de.md) | [English](README.en.md) | [Español](README.es.md) | [Français](README.fr.md) | [Italiano](README.it.md) | [Nederlands](README.nl.md) | [Polski](README.pl.md) | [Português](README.pt.md) | [Русский](README.ru.md) | [Türkçe](README.tr.md) | [Українська](README.uk.md)

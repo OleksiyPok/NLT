@@ -1,5 +1,5 @@
 🌐 Available languages:  
-[English](docs/readme/README.en.md) | [Deutsch](docs/readme/README.de.md) | [Nederlands](docs/readme/README.nl.md) | [Українська](docs/readme/README.uk.md) | [Русский](docs/readme/README.ru.md)
+[العربية](docs/readme/README.ar.md) | [Čeština](docs/readme/README.cs.md) | [Deutsch](docs/readme/README.de.md) | [English](docs/readme/README.en.md) | [Español](docs/readme/README.es.md) | [Français](docs/readme/README.fr.md) | [Italiano](docs/readme/README.it.md) | [Nederlands](docs/readme/README.nl.md) | [Polski](docs/readme/README.pl.md) | [Português](docs/readme/README.pt.md) | [Русский](docs/readme/README.ru.md) | [Türkçe](docs/readme/README.tr.md) | [Українська](docs/readme/README.uk.md)
 
 ---
 
@@ -13,4 +13,4 @@ The app employs a method of simultaneous auditory and visual perception, enablin
 ---
 
 🌐 Available languages:  
-[English](docs/readme/README.en.md) | [Deutsch](docs/readme/README.de.md) | [Nederlands](docs/readme/README.nl.md) | [Українська](docs/readme/README.uk.md) | [Русский](docs/readme/README.ru.md)
+[العربية](docs/readme/README.ar.md) | [Čeština](docs/readme/README.cs.md) | [Deutsch](docs/readme/README.de.md) | [English](docs/readme/README.en.md) | [Español](docs/readme/README.es.md) | [Français](docs/readme/README.fr.md) | [Italiano](docs/readme/README.it.md) | [Nederlands](docs/readme/README.nl.md) | [Polski](docs/readme/README.pl.md) | [Português](docs/readme/README.pt.md) | [Русский](docs/readme/README.ru.md) | [Türkçe](docs/readme/README.tr.md) | [Українська](docs/readme/README.uk.md)
