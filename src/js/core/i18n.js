@@ -1,44 +1,9 @@
-// UI texts: src/i18n/<lang>.json; English is the fallback.
+// UI texts and language names: src/i18n/<lang>.json = { ui: {...}, languages: {...} }.
+// English is always loaded and used as the fallback.
 export function createLangLoader({ config }) {
   const PATH = config.PATHS.UI_TEXTS_DIR;
   let texts = {};
-  const FALLBACK_EN = {
-    uiLangLabel: "Interface",
-    labelLang: "Language",
-    labelVoice: "Voice",
-    labelDigitLength: "Digit length",
-    labelCount: "Count",
-    labelRepeat: "Repeat",
-    labelSpeed: "Speed",
-    labelInterval: "Interval (ms)",
-    labelFullscreen: "Fullscreen",
-    labelFullscreenDelay: "Delay mode",
-    labelDelayTime: "Delay (sec)",
-    start: "Start",
-    continue: "Continue",
-    pause: "Pause",
-    reset: "Reset",
-    fillRandom: "🎲 Rnd",
-    fullscreenNo: "No",
-    fullscreenYes: "Yes",
-    delayModeNo: "No",
-    delayModeVisual: "Visual",
-    delayModeAudio: "Audio",
-    default: "Default",
-    repeatsLeft: "Repeats left:",
-    defaultSettings: "Reset defaults",
-    labelThema: "Theme",
-    labelThemaMode: "Mode",
-    themaModeContrast: "Contrast",
-    themaModeNormal: "Normal",
-    themaModeEvening: "Evening",
-    themaModeNight: "Night",
-    settingsTitle: "Settings",
-    closeBtn: "Close",
-    helpTitle: "Information",
-    helpLanguageLabel: "Language",
-    helpLanguageApp: "Use app language",
-  };
+  const FALLBACK_EN = { ui: {}, languages: {} };
   async function loadLang(code) {
     try {
       const res = await fetch(`${PATH}/${code}.json`, { cache: "no-cache" });
@@ -65,6 +30,8 @@ export function createLangLoader({ config }) {
     }
     return texts;
   }
-  const getTexts = (lang) => texts[lang] || texts.en || FALLBACK_EN;
-  return { loadLang, loadAll, getTexts };
+  // Texts of the language; a text missing in it is taken from English.
+  const getTexts = (lang) => ({ ...(texts.en || FALLBACK_EN).ui, ...texts[lang]?.ui });
+  const getLanguageNames = (lang) => ({ ...(texts.en || FALLBACK_EN).languages, ...texts[lang]?.languages });
+  return { loadLang, loadAll, getTexts, getLanguageNames };
 }

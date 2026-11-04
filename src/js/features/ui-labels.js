@@ -12,27 +12,27 @@ export function createUiLabels(ctx) {
     const setText = (el, val) => {
       if (el && el.textContent !== val) el.textContent = val;
     };
-    setText(E.uiLangLabel, texts.uiLangLabel);
-    setText(E.labelLanguageCode, texts.labelLang);
-    setText(E.labelVoice, texts.labelVoice);
-    setText(E.labelDigitLength, texts.labelDigitLength);
-    setText(E.labelCount, texts.labelCount);
-    setText(E.labelRepeat, texts.labelRepeat);
-    setText(E.labelSpeed, texts.labelSpeed);
-    setText(E.labelInterval, texts.labelInterval);
-    setText(E.labelRepeatsText, texts.repeatsLeft);
-    setText(E.resetSettingsText, texts.defaultSettings);
-    setText(E.fillRandomBtn, texts.fillRandom);
-    setText(E.resetBtn, texts.reset);
-    setText(E.labelFullscreen, texts.labelFullscreen);
-    setText(E.labelFullscreenDelayMode, texts.labelFullscreenDelayMode);
-    setText(E.labelDelayTime, texts.labelDelayTime);
-    setText(E.labelFullscreenDelay, texts.labelFullscreenDelay);
-    setText(E.labelThema, texts.labelThema);
-    setText(E.labelThemaMode, texts.labelThemaMode);
+    setText(E.uiLangLabel, texts.interfaceLabel);
+    setText(E.labelLanguageCode, texts.languageLabel);
+    setText(E.labelVoice, texts.voiceLabel);
+    setText(E.labelDigitLength, texts.digitLengthLabel);
+    setText(E.labelCount, texts.countLabel);
+    setText(E.labelRepeat, texts.repeatLabel);
+    setText(E.labelSpeed, texts.speedLabel);
+    setText(E.labelInterval, texts.intervalLabel);
+    setText(E.labelRepeatsText, texts.repeatsLeftLabel);
+    setText(E.resetSettingsText, texts.resetSettingsLabel);
+    setText(E.fillRandomBtn, texts.fillRandomBtnLabel);
+    setText(E.resetBtn, texts.resetBtnLabel);
+    setText(E.labelFullscreen, texts.fullscreenLabel);
+    setText(E.labelFullscreenDelayMode, texts.fullscreenDelayModeLabel);
+    setText(E.labelDelayTime, texts.delayTimeLabel);
+    setText(E.labelFullscreenDelay, texts.fullscreenDelayLabel);
+    setText(E.labelThema, texts.themaLabel);
+    setText(E.labelThemaMode, texts.themaModeLabel);
     setText(E.settingsTitle, texts.settingsTitle);
-    setText(E.helpTitle, texts.helpTitle);
-    [[E.settingsAppBtn, texts.settingsTitle], [E.settingsAppCloseBtn, texts.closeBtn], [E.helpAppCloseBtn, texts.closeBtn]].forEach(([el, text]) => {
+    setText(E.helpTitle, texts.helpBtnTitle);
+    [[E.settingsAppBtn, texts.settingsTitle], [E.settingsAppCloseBtn, texts.closeBtnTitle], [E.helpAppCloseBtn, texts.closeBtnTitle]].forEach(([el, text]) => {
       if (!el || !text) return;
       el.title = text;
       el.setAttribute("aria-label", text);
@@ -76,13 +76,13 @@ export function createUiLabels(ctx) {
     const texts = langLoader.getTexts(elements.uiLangSelect?.value || "en");
     if (!texts) return;
     const labels = {
-      ["playing"]: texts.pause,
-      ["paused"]: texts.continue,
-      ["ready"]: texts.start,
+      ["playing"]: texts.pauseBtnLabel,
+      ["paused"]: texts.continueBtnLabel,
+      ["ready"]: texts.startBtnLabel,
     };
     const btn = elements.startPauseBtn;
     if (btn) {
-      const val = labels[view.appState] || texts.start;
+      const val = labels[view.appState] || texts.startBtnLabel;
       if (btn.textContent !== val) btn.textContent = val;
     }
   }

@@ -12,7 +12,7 @@ docs/
 assets/
   icons/                   icon_<APP>_<size>.png
 src/
-  i18n/                    <lang>.json
+  i18n/                    <lang>.json ({ "ui": {...}, "languages": {...} }, как в DT)
   css/
     main.css               список подключения файлов (порядок важен)
     base.css               переменные, базовые элементы (как у DT и CLT)
