@@ -38,7 +38,9 @@
   border-radius: 6px;
   cursor: pointer;
   outline: none;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 .help-app-btn,
 .settings-app-btn,

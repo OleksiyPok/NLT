@@ -1,10 +1,5 @@
 {
-        "editor.formatOnSave": true,
-    "[json]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "liveServer.settings.port": 5501,
-    // "prettier.printWidth": 80,
-    // "prettier.printWidth": 120,
-    "prettier.printWidth": 1000
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "liveServer.settings.port": 5501
 }

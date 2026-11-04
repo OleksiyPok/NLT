@@ -22,7 +22,7 @@ export function createLangLoader({ config }) {
       config.UI_LANGS.map(async (code) => {
         const data = await loadLang(code);
         if (data) texts[code] = data;
-      })
+      }),
     );
     if (!texts.en) {
       texts.en = FALLBACK_EN;

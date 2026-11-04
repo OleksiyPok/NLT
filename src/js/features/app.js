@@ -122,7 +122,7 @@ export function createApp({ bus, config, langLoader, store, ui, voices, speaker,
 
     speaker.init(
       () => voices.getVoices(),
-      () => store.getSettings()
+      () => store.getSettings(),
     );
     wakeLock.init();
 

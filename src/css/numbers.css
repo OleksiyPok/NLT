@@ -59,7 +59,9 @@
   border: 1px solid var(--border-color);
   border-radius: 6px;
   color: var(--text-placeholder);
-  transition: box-shadow 0.2s, outline 0.2s;
+  transition:
+    box-shadow 0.2s,
+    outline 0.2s;
 }
 .number-input.selected {
   color: var(--text-color);

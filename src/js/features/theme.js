@@ -13,7 +13,7 @@ export function createTheme({ utils, elements, langLoader }) {
         option.value = palette;
         option.textContent = label;
         return option;
-      })
+      }),
     );
   }
 

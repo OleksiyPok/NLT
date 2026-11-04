@@ -4,7 +4,6 @@ import { EventTypes } from "../core/event-types.js";
 export function createUiSelects(ctx, theme) {
   const { bus, utils, elements, view } = ctx;
 
-
   function setSelectsFromSettings(s) {
     const E = elements;
     s.digitLength = utils.safeNumber(utils.safeSetSelectValue(E.digitLengthSelect, String(s.digitLength), "2"), 2);

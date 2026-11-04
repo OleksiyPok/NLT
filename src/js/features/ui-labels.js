@@ -3,7 +3,6 @@
 export function createUiLabels(ctx) {
   const { langLoader, elements, view } = ctx;
 
-
   function updateUILabels() {
     const uiLang = elements.uiLangSelect?.value || "en";
     const texts = langLoader.getTexts(uiLang);
@@ -32,7 +31,11 @@ export function createUiLabels(ctx) {
     setText(E.labelThemaMode, texts.themaModeLabel);
     setText(E.settingsTitle, texts.settingsTitle);
     setText(E.helpTitle, texts.helpBtnTitle);
-    [[E.settingsAppBtn, texts.settingsTitle], [E.settingsAppCloseBtn, texts.closeBtnTitle], [E.helpAppCloseBtn, texts.closeBtnTitle]].forEach(([el, text]) => {
+    [
+      [E.settingsAppBtn, texts.settingsTitle],
+      [E.settingsAppCloseBtn, texts.closeBtnTitle],
+      [E.helpAppCloseBtn, texts.closeBtnTitle],
+    ].forEach(([el, text]) => {
       if (!el || !text) return;
       el.title = text;
       el.setAttribute("aria-label", text);

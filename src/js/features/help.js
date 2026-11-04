@@ -103,8 +103,7 @@ export function createHelp({ elements, langLoader }) {
       if (html) {
         page.innerHTML = html;
         markMissingImages(page);
-      }
-      else page.textContent = langLoader.getTexts(elements.uiLangSelect?.value || "en").helpUnavailable || "";
+      } else page.textContent = langLoader.getTexts(elements.uiLangSelect?.value || "en").helpUnavailable || "";
     }
 
     select.addEventListener("change", () => {

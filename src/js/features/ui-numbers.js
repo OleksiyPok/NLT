@@ -1,8 +1,6 @@
 // The number fields, the repeat counter and the overlays of the fullscreen mode.
 
 export function createUiNumbers({ utils, elements, view }, labels) {
-
-
   function cacheInputs() {
     view.inputs = elements.numberGrid ? Array.from(elements.numberGrid.querySelectorAll("input[type='text']")) : [];
   }
