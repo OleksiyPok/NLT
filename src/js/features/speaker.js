@@ -52,7 +52,9 @@ export function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
   async function speakAsync(text, options = {}) {
     if (!text) return;
     const settings = (typeof getSettings === "function" ? getSettings() : {}) || {};
-    const s = { ...settings, ...options };
+    // An option that is not given (undefined) does not replace the saved setting
+    const given = Object.fromEntries(Object.entries(options).filter(([, value]) => value !== undefined));
+    const s = { ...settings, ...given };
     if (options.interrupt !== false) speechSynthesis.cancel();
 
     const utter = new SpeechSynthesisUtterance(String(text));
@@ -91,10 +93,10 @@ export function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
     });
   }
 
-  function speak(obj) {
+  function speak(obj, options = {}) {
     if (!obj) return;
     if (typeof obj === "string") {
-      return speakAsync(obj).catch((e) => console.warn("speak failed", e));
+      return speakAsync(obj, options).catch((e) => console.warn("speak failed", e));
     }
     const { text, rate = 1, lang, button, voiceName, pitch, volume } = obj;
     return speakAsync(text, {
