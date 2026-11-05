@@ -35,6 +35,7 @@ createPlayback({
   uiProvider: UI,
   config: Config,
 });
+const Developer = createDeveloper({ bus: bus, ui: UI });
 const App = createApp({
   bus: bus,
   config: Config,
@@ -45,8 +46,8 @@ const App = createApp({
   speaker: Speaker,
   wakeLock: WakeLock,
   utils: Utils,
+  developer: Developer,
 });
 
 App.init();
-createDeveloper({ bus: bus, ui: UI, store: State }).init();
 initSnap();

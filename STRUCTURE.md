@@ -31,6 +31,8 @@ src/
 
 ## Правила
 
+- Файлы `core/theme-registry.js`, `features/theme.js`, `features/modals.js`, `features/developer.js` и `css/themes.css` одинаковы в NLT и CLT (при изменении правятся в обоих проектах).
+
 - Имена файлов: kebab-case.
 - Настройки по умолчанию: только `config/config.json`. В коде значений по умолчанию нет. Блок `mobile` переопределяет значения на телефонах и планшетах.
 - Настройки пользователя всегда сохраняются в localStorage, ключ `NLT-settings` (как `DT-settings` у DT и `CLT-settings` у CLT).

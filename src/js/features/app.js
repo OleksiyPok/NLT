@@ -1,8 +1,8 @@
 // The app: start, reset, keyboard and the order of the start.
-import { APP_VERSION, STORAGE_KEY } from "../core/config.js";
+import { APP_VERSION } from "../core/config.js";
 import { EventTypes } from "../core/event-types.js";
 
-export function createApp({ bus, config, langLoader, store, ui, voices, speaker, wakeLock, utils }) {
+export function createApp({ bus, config, langLoader, store, ui, voices, speaker, wakeLock, utils, developer }) {
   function setAppStateDirect(s) {
     store.setAppState(s);
     if (s === "playing") wakeLock.request();
@@ -46,7 +46,7 @@ export function createApp({ bus, config, langLoader, store, ui, voices, speaker,
 
     if (event.key === "F1" || event.code === "F1" || event.keyCode === 112) {
       event.preventDefault();
-      bus.emit(EventTypes.UI_HELP_MODAL_OPEN);
+      if (!ui.isAppHelpModalOpen() && !ui.isSettingsModalOpen()) bus.emit(EventTypes.UI_HELP_MODAL_OPEN);
       return;
     }
 
@@ -109,16 +109,8 @@ export function createApp({ bus, config, langLoader, store, ui, voices, speaker,
 
     document.getElementById("version").textContent = `version: ${APP_VERSION}`;
 
-    // Removes only the settings of this app, other localStorage keys stay
-    document.getElementById("developerPathBtn")?.addEventListener("click", () => alert(location.href));
-    document.getElementById("developerClearBtn")?.addEventListener("click", () => {
-      localStorage.removeItem(STORAGE_KEY);
-      alert(`${STORAGE_KEY} cleared`);
-    });
-
-    if (ui.elements.developerPanel) {
-      ui.elements.developerPanel.style.display = mergedSettings.developerMode ? "flex" : "none";
-    }
+    ui.setDeveloperVisibility(mergedSettings);
+    developer.init(mergedSettings);
 
     speaker.init(
       () => voices.getVoices(),

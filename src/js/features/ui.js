@@ -12,7 +12,7 @@ import { createTheme } from "./theme.js";
 export function createUI({ bus, utils, langLoader }) {
   const ctx = createUiContext({ bus, utils, langLoader });
   // The texts changed: the title of the mode button follows them
-  ctx.onLabelsUpdated = () => theme.updateModeButton();
+  ctx.onLabelsUpdated = (texts) => theme.updateLabels(texts);
   // A control changed: its copies follow
   ctx.onRefresh = () => mirrors.sync();
   const { elements, view } = ctx;
@@ -23,7 +23,7 @@ export function createUI({ bus, utils, langLoader }) {
   const labels = createUiLabels(ctx);
   const numbers = createUiNumbers(ctx, labels);
   const selects = createUiSelects(ctx, theme);
-  const settingsWindow = createModals(ctx);
+  const settingsWindow = createModals({ elements, mirrors });
 
   const { isAppHelpModalOpen, loadHelpContent, openHelpModal, closeHelpModal } = help;
   const { isSettingsModalOpen, openSettingsModal, closeSettingsModal } = settingsWindow;
@@ -62,6 +62,12 @@ export function createUI({ bus, utils, langLoader }) {
     upd("fullscreenDelay", E.fullscreenDelay, view.settings.fullscreenDelay);
     s.thema = theme.getThemaFromSelects() || view.settings.thema;
     bus.emit(EventTypes.SETTINGS_UPDATE, s);
+  }
+
+  // The developer row: shown when developerMode is on
+  function setDeveloperVisibility(appCfg) {
+    const devMode = appCfg?.developerMode;
+    if (elements.developerPanel) elements.developerPanel.style.display = devMode ? "" : "none";
   }
 
   function attachEventHandlers() {
@@ -221,6 +227,7 @@ export function createUI({ bus, utils, langLoader }) {
     showActiveNumberOverlay,
     hideActiveNumberOverlay,
     updateSettingsFromUI,
+    setDeveloperVisibility,
     attachEventHandlers,
     bindEventSubscriptions,
     resetRepeatLeft,

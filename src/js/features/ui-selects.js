@@ -16,7 +16,7 @@ export function createUiSelects(ctx, theme) {
     s.fullscreenDelay = utils.safeSetSelectValue(elements.fullscreenDelay, String(s.fullscreenDelay), "2");
 
     s.thema = theme.resolveCanonicalThema(s.thema);
-    theme.syncThemeSelectorsFromThema(s.thema);
+    theme.syncSelectsFromThema(s.thema);
 
     if (s.uiLang && E.uiLangSelect) E.uiLangSelect.value = s.uiLang;
     if (E.languageCodeSelect) {

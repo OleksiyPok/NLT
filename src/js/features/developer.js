@@ -1,18 +1,19 @@
 // Secret gesture: 7 quick clicks on the "Reset defaults" text show the developer panel
 // for 30 seconds (whatever the saved "developerMode" is).
+import { STORAGE_KEY } from "../core/config.js";
 import { EventTypes } from "../core/event-types.js";
 
 const GESTURE_CLICKS = 7;
 const GESTURE_WINDOW_MS = 3000;
 const TEMPORARY_VISIBLE_MS = 30_000;
 
-export function createDeveloper({ bus, ui, store }) {
+export function createDeveloper({ bus, ui }) {
+  let savedMode = false;
   let clicks = [];
   let hideTimer = null;
 
   function showPanel(visible) {
-    const panel = ui.elements.developerPanel;
-    if (panel) panel.style.display = visible ? "flex" : "none";
+    ui.setDeveloperVisibility({ developerMode: visible });
   }
 
   function showTemporarily() {
@@ -20,7 +21,7 @@ export function createDeveloper({ bus, ui, store }) {
     bus.emit(EventTypes.UI_HELP_MODAL_CLOSE);
     showPanel(true);
     clearTimeout(hideTimer);
-    hideTimer = setTimeout(() => showPanel(Boolean(store.getSettings().developerMode)), TEMPORARY_VISIBLE_MS);
+    hideTimer = setTimeout(() => showPanel(savedMode), TEMPORARY_VISIBLE_MS);
   }
 
   function onClick() {
@@ -33,7 +34,21 @@ export function createDeveloper({ bus, ui, store }) {
     }
   }
 
-  function init() {
+  // The two buttons of the developer row
+  function setupButtons() {
+    document.getElementById("developerPathBtn")?.addEventListener("click", () => alert(location.href));
+    document.getElementById("developerClearBtn")?.addEventListener("click", () => {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (e) {}
+      alert(`${STORAGE_KEY} cleared`);
+    });
+  }
+
+  function init(appCfg) {
+    savedMode = Boolean(appCfg?.developerMode);
+    setupButtons();
+    // The text in the settings window
     document.getElementById("resetSettingsText")?.addEventListener("click", onClick);
   }
 

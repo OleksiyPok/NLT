@@ -55,24 +55,9 @@ export function createUiLabels(ctx) {
         E.fullscreenDelayMode.options[2].textContent = texts.delayModeAudio;
       }
     }
-    if (E.themaModeSelect) {
-      if (E.themaModeSelect.options[0].textContent !== texts.themaModeContrast) {
-        E.themaModeSelect.options[0].textContent = texts.themaModeContrast;
-      }
-      if (E.themaModeSelect.options[1].textContent !== texts.themaModeNormal) {
-        E.themaModeSelect.options[1].textContent = texts.themaModeNormal;
-      }
-      if (E.themaModeSelect.options[2].textContent !== texts.themaModeEvening) {
-        E.themaModeSelect.options[2].textContent = texts.themaModeEvening;
-      }
-      if (E.themaModeSelect.options[3].textContent !== texts.themaModeNight) {
-        E.themaModeSelect.options[3].textContent = texts.themaModeNight;
-      }
-    }
-
     updateStartPauseButton();
     updateControlsState();
-    ctx.onLabelsUpdated?.();
+    ctx.onLabelsUpdated?.(texts);
   }
 
   function updateStartPauseButton() {
