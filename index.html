@@ -1,352 +1,409 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" class="theme-warmorange-normal">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Dual Translator</title>
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/icon_DT_16x16.png" />
+    <title>Number Listening Trainer</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/icon_NLT_16x16.png" />
     <script src="src/js/theme-boot.js"></script>
     <script type="module" src="src/js/main.js"></script>
     <link rel="stylesheet" href="src/css/main.css" />
   </head>
-  <!-- DT -->
+
+  <!-- NLT -->
+
   <body>
-    <!-- Line icons for the text-block buttons. Colour comes from CSS (currentColor). -->
+    <!-- Line icons. Colour comes from CSS (currentColor). -->
     <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
-      <symbol id="i-paste" viewBox="0 0 24 24">
-        <path d="M8 4H7a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1" />
-        <rect x="9" y="2.5" width="6" height="3.5" rx="1" />
-        <path d="M12 10v7M9 14l3 3 3-3" />
-      </symbol>
-      <symbol id="i-copy" viewBox="0 0 24 24">
-        <path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4" />
-        <rect x="9" y="9" width="12" height="12" rx="2" />
-      </symbol>
-      <symbol id="i-speak" viewBox="0 0 24 24">
-        <path d="M11 5 6 9H3v6h3l5 4z" />
-        <path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" />
-      </symbol>
-      <symbol id="i-mic" viewBox="0 0 24 24">
-        <rect x="9" y="2" width="6" height="12" rx="3" />
-        <path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6" />
-      </symbol>
-      <symbol id="i-mic-stop" viewBox="0 0 24 24">
-        <rect x="7" y="2" width="6" height="10" rx="3" />
-        <path d="M4 10a6 6 0 0 0 12 0M10 16v4M7 20h6" />
-        <rect x="15" y="14" width="7" height="7" rx="1.5" fill="currentColor" stroke="none" />
-      </symbol>
       <symbol id="i-info" viewBox="0 0 24 24">
         <circle cx="12" cy="6.5" r="1.6" fill="currentColor" stroke="none" />
         <path d="M12 10.5v8" />
       </symbol>
-      <symbol id="i-gear" viewBox="0 0 24 24">
-        <path d="M10.31 5.21L10.68 2.59L13.32 2.59L13.69 5.21L17.04 7.14L19.49 6.15L20.81 8.44L18.73 10.07L18.73 13.93L20.81 15.56L19.49 17.85L17.04 16.86L13.69 18.79L13.32 21.41L10.68 21.41L10.31 18.79L6.96 16.86L4.51 17.85L3.19 15.56L5.27 13.93L5.27 10.07L3.19 8.44L4.51 6.15L6.96 7.14Z" />
-        <circle cx="12" cy="12" r="2.8" />
-      </symbol>
-      <symbol id="i-clear" viewBox="0 0 24 24">
-        <path d="M6 6l12 12M18 6 6 18" />
-      </symbol>
+
       <symbol id="i-mode-contrast" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="9" />
         <path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" />
       </symbol>
+
       <symbol id="i-mode-normal" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="4" />
         <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
       </symbol>
+
       <symbol id="i-mode-evening" viewBox="0 0 24 24">
         <path d="M8 17a4 4 0 0 1 8 0" />
         <path d="M2 17h20M7 20.5h10M12 7v2M4.9 9.9l1.4 1.4M17.7 11.3l1.4-1.4" />
       </symbol>
+
       <symbol id="i-mode-night" viewBox="0 0 24 24">
         <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" />
       </symbol>
+
       <symbol id="i-reset" viewBox="0 0 24 24">
         <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
         <path d="M21 3v5h-5" />
+      </symbol>
+
+      <symbol id="i-gear" viewBox="0 0 24 24">
+        <path d="M10.31 5.21L10.68 2.59L13.32 2.59L13.69 5.21L17.04 7.14L19.49 6.15L20.81 8.44L18.73 10.07L18.73 13.93L20.81 15.56L19.49 17.85L17.04 16.86L13.69 18.79L13.32 21.41L10.68 21.41L10.31 18.79L6.96 16.86L4.51 17.85L3.19 15.56L5.27 13.93L5.27 10.07L3.19 8.44L4.51 6.15L6.96 7.14L10.31 5.21Z" />
+        <circle cx="12" cy="12" r="2.8" />
       </symbol>
     </svg>
 
     <div class="scroll-container" id="scrollContainer">
       <div class="layout">
         <div class="titles-container" id="titlesContainer">
-          <img class="title-icon" id="titleIcon" src="assets/icons/icon_DT_64x64.png" alt="Icon" />
+          <img class="title-icon" id="titleIcon" src="assets/icons/icon_NLT_64x64.png" alt="Icon" />
           <div class="title-text" id="titleText">
-            <h2>Dual Translator<br /></h2>
+            <h2>Number Listening Trainer<br /></h2>
             <h6 id="version" class="version"></h6>
           </div>
         </div>
-        <h5>Oleksii Pokormiakho</h5>
+
+        <h5>
+          <a class="author-link" href="mailto:Oleksii.Pokormiakho.job@gmail.com">Oleksii Pokormiakho</a>
+        </h5>
 
         <div class="setting-row" id="settingsRow">
           <div class="setting-buttons">
-            <button type="button" class="help-app-btn" id="helpAppBtn" title="Information" aria-label="Information">
+            <button class="help-app-btn" id="helpAppBtn" title="Open application description" aria-label="Open application description">
               <span class="framed-icon">
                 <svg aria-hidden="true"><use href="#i-info" /></svg>
               </span>
             </button>
+
             <button type="button" class="settings-app-btn" id="settingsAppBtn" title="Settings" aria-label="Settings">
               <span class="framed-icon">
                 <svg aria-hidden="true"><use href="#i-gear" /></svg>
               </span>
             </button>
           </div>
+
           <button type="button" class="mode-app-btn" id="themaModeBtn" title="Mode" aria-label="Mode">
             <span class="mode-icon" id="themaModeIcon"></span>
           </button>
         </div>
 
-        <div class="preset-row" id="presetRow">
-          <div class="preset-buttons" id="presetButtons" role="group"></div>
-        </div>
+        <div class="section-row">
+          <div class="section-block section-block-exercises">
+            <div class="number-area" id="numberGrid">
+              <div class="column">
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+              </div>
 
-        <div class="section-block section-block-source">
-          <label for="sourceLang" class="source-lang-label">Source Language</label>
-          <div class="row controls-row">
-            <select id="sourceLang" class="source-lang-select" title="Source language">
-              <option value="ar">Arabic</option>
-              <option value="cs">Czech</option>
-              <option value="de">German</option>
-              <option value="en">English</option>
-              <option value="es">Spanish</option>
-              <option value="fr">French</option>
-              <option value="it">Italian</option>
-              <option value="nl" selected>Dutch</option>
-              <option value="pl">Polish</option>
-              <option value="pt">Portuguese</option>
-              <option value="ru">Russian</option>
-              <option value="tr">Turkish</option>
-              <option value="uk">Ukrainian</option>
-            </select>
-            <div class="button-container">
-              <button type="button" id="pasteSource" class="icon-btn" title="Paste into source">
-                <svg class="ico" aria-hidden="true">
-                  <use href="#i-paste" />
-                </svg>
-              </button>
-              <button type="button" id="copySource" class="icon-btn" title="Copy source text">
-                <svg class="ico" aria-hidden="true"><use href="#i-copy" /></svg>
-              </button>
-              <button type="button" id="speakSource" class="icon-btn" title="Play source">
-                <svg class="ico" aria-hidden="true">
-                  <use href="#i-speak" />
-                </svg>
-              </button>
-            </div>
-          </div>
-          <div class="source-input-row">
-            <textarea id="sourceText" class="source-textarea" placeholder="Enter text..."></textarea>
-            <div class="side-buttons">
-              <button type="button" id="micSource" class="icon-btn" title="Speak">
-                <svg class="ico ico-mic" aria-hidden="true">
-                  <use href="#i-mic" />
-                </svg>
-                <svg class="ico ico-stop" aria-hidden="true">
-                  <use href="#i-mic-stop" />
-                </svg>
-              </button>
-              <button type="button" id="clearSource" class="icon-btn clear-btn" title="Clear source text">
-                <svg class="ico" aria-hidden="true">
-                  <use href="#i-clear" />
-                </svg>
-              </button>
-            </div>
-          </div>
+              <div class="column">
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+              </div>
 
-          <div class="row translate-control-row" id="translateControlRow">
-            <input type="checkbox" id="autoTranslate" class="auto-translate-checkbox" />
-            <label for="autoTranslate" id="autoTranslateLabel" class="auto-translate-label"> Auto-translate </label>
+              <div class="column">
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+              </div>
 
-            <button type="button" id="manualTranslateBtn" class="translate-btn" title="Translate manually">Translate</button>
-          </div>
-        </div>
-
-        <div class="section-block-targets-wrapper">
-          <div class="section-block section-block-target-1">
-            <label for="targetLang1" class="target-lang-1-label">Target Language 1</label>
-            <div class="row controls-row">
-              <select id="targetLang1" class="target-lang-1-select" title="Target language 1">
-                <option value="ar">Arabic</option>
-                <option value="cs">Czech</option>
-                <option value="de">German</option>
-                <option value="en" selected>English</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-                <option value="it">Italian</option>
-                <option value="nl">Dutch</option>
-                <option value="pl">Polish</option>
-                <option value="pt">Portuguese</option>
-                <option value="ru">Russian</option>
-                <option value="tr">Turkish</option>
-                <option value="uk">Ukrainian</option>
-              </select>
-              <div class="button-container">
-                <button type="button" id="copyTarget1" class="icon-btn" title="Copy translation 1">
-                  <svg class="ico" aria-hidden="true">
-                    <use href="#i-copy" />
-                  </svg>
-                </button>
-                <button type="button" id="speakTarget1" class="icon-btn" title="Play translation 1">
-                  <svg class="ico" aria-hidden="true">
-                    <use href="#i-speak" />
-                  </svg>
-                </button>
+              <div class="column">
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
+                <input type="text" class="number-input" readonly maxlength="2" placeholder="***" tabindex="-1" />
               </div>
             </div>
-            <textarea id="translatedText1" class="translated-text-1-textarea" placeholder="Translation 1" readonly></textarea>
+
+            <div class="repeat-info-group">
+              <span class="repeats-text" id="labelRepeatsText">Repeat left:</span>
+              <span id="repeatLeft" class="repeat-left">x</span>
+            </div>
           </div>
 
-          <div class="section-block section-block-target-2">
-            <label for="targetLang2" class="target-lang-2-label">Target Language 2</label>
-            <div class="row controls-row">
-              <select id="targetLang2" class="target-lang-2-select" title="Target language 2">
-                <option value="ar">Arabic</option>
-                <option value="cs">Czech</option>
-                <option value="de">German</option>
-                <option value="en">English</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-                <option value="it">Italian</option>
-                <option value="nl">Dutch</option>
-                <option value="pl">Polish</option>
-                <option value="pt">Portuguese</option>
-                <option value="ru">Russian</option>
-                <option value="tr">Turkish</option>
-                <option value="uk" selected>Ukrainian</option>
-              </select>
-              <div class="button-container">
-                <button type="button" id="copyTarget2" class="icon-btn" title="Copy translation 2">
-                  <svg class="ico" aria-hidden="true">
-                    <use href="#i-copy" />
-                  </svg>
-                </button>
-                <button type="button" id="speakTarget2" class="icon-btn" title="Play translation 2">
-                  <svg class="ico" aria-hidden="true">
-                    <use href="#i-speak" />
-                  </svg>
-                </button>
+          <div class="setting-button-wrapper">
+            <div class="section-block section-block-buttons">
+              <button class="fill-random-btn" id="fillRandomBtn">Rnd</button>
+              <button disabled id="startPauseBtn" class="start-pause-btn">Start</button>
+              <button disabled id="resetBtn" class="reset-btn">Reset</button>
+            </div>
+
+            <div class="section-block section-block-settings">
+              <div class="speed-delay-wrapper">
+                <div class="speed-group">
+                  <label for="speedSelect" id="labelSpeed">Speed</label>
+                  <select id="speedSelect" class="speed-select">
+                    <option value="0.6">0.6</option>
+                    <option value="0.8">0.8</option>
+                    <option value="1.0" selected>1.0</option>
+                    <option value="1.2">1.2</option>
+                    <option value="1.4">1.4</option>
+                    <option value="1.6">1.6</option>
+                    <option value="1.8">1.8</option>
+                    <option value="2.0">2.0</option>
+                  </select>
+                </div>
+
+                <div class="interval-group">
+                  <label for="intervalSelect" id="labelInterval" class="label-interval">Interval</label>
+                  <select id="intervalSelect" class="interval-select">
+                    <option value="500">500</option>
+                    <option value="1000" selected>1000</option>
+                    <option value="1500">1500</option>
+                    <option value="2000">2000</option>
+                    <option value="2500">2500</option>
+                    <option value="3000">3000</option>
+                    <option value="4000">4000</option>
+                    <option value="5000">5000</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="fullscreen-wrapper">
+                <div class="fullscreen-switcher-group">
+                  <label for="fullscreenSelectCopy" id="labelFullscreenCopy" data-mirror-of="labelFullscreen" class="label-fullscreen">Fullscreen</label>
+                  <select id="fullscreenSelectCopy" data-mirror-of="fullscreenSelect" class="fullscreen-select">
+                    <option value="0">No</option>
+                    <option value="1" selected>Yes</option>
+                  </select>
+                </div>
+
+                <div class="fullscreen-delay-mode-group">
+                  <label for="fullscreenDelayModeCopy" id="labelFullscreenDelayModeCopy" data-mirror-of="labelFullscreenDelayMode" class="label-fullscreen-delay-mode">Delay mode:</label>
+                  <select id="fullscreenDelayModeCopy" data-mirror-of="fullscreenDelayMode" class="fullscreen-delay-mode">
+                    <option value="No delay" selected>No</option>
+                    <option value="Visual delay">Visual</option>
+                    <option value="Audio delay">Audio</option>
+                  </select>
+                </div>
+
+                <div class="fullscreen-delay-group">
+                  <label for="fullscreenDelayCopy" id="labelFullscreenDelayCopy" data-mirror-of="labelFullscreenDelay" class="label-fullscreen-delay">Delay (sec):</label>
+                  <select id="fullscreenDelayCopy" data-mirror-of="fullscreenDelay" class="fullscreen-delay">
+                    <option value="1">1</option>
+                    <option value="2" selected>2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="digit-length-count-repeat-wrapper">
+                <div class="digit-length-group">
+                  <label for="digitLengthSelectCopy" id="labelDigitLengthCopy" data-mirror-of="labelDigitLength" class="label-digit-length">Digit length</label>
+                  <select id="digitLengthSelectCopy" data-mirror-of="digitLengthSelect" class="digit-length-select">
+                    <option value="1">1</option>
+                    <option value="2" selected>2</option>
+                    <option value="3">3</option>
+                  </select>
+                </div>
+
+                <div class="count-group">
+                  <label for="countSelectCopy" id="labelCountCopy" data-mirror-of="labelCount">Count</label>
+                  <select id="countSelectCopy" data-mirror-of="countSelect" class="count-select">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20" selected>20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                  </select>
+                </div>
+
+                <div class="repeat-group">
+                  <label for="repeatSelectCopy" id="labelRepeatCopy" data-mirror-of="labelRepeat" class="label-repeat">Repeat</label>
+                  <select id="repeatSelectCopy" data-mirror-of="repeatSelect" class="repeat-select">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                  </select>
+                </div>
               </div>
             </div>
-            <textarea id="translatedText2" class="translated-text-2-textarea" placeholder="Translation 2" readonly></textarea>
           </div>
-        </div>
 
-        <div class="bottom-actions" id="bottomActions">
-          <button type="button" id="clearBottom" class="icon-btn big-btn" title="Clear source text">
-            <svg class="ico" aria-hidden="true"><use href="#i-clear" /></svg>
-          </button>
-          <button type="button" id="micBottom" class="icon-btn big-btn" title="Speak">
-            <svg class="ico ico-mic" aria-hidden="true">
-              <use href="#i-mic" />
-            </svg>
-            <svg class="ico ico-stop" aria-hidden="true">
-              <use href="#i-mic-stop" />
-            </svg>
-          </button>
-        </div>
-
-        <div class="row service-row" id="serviceRow">
-          <label for="serviceSelect" id="serviceLabel" class="service-label">Service:</label>
-          <select id="serviceSelect" class="service-select" title="Select translation service">
-            <option value="mymemory">MyMemory (Free API with daily limit, basic translations)</option>
-            <option value="libretranslate">LibreTranslate (Open-source, no API key required, community-hosted)</option>
-            <option value="google">Google Cloud Translate (Paid API, high-quality translations)</option>
-          </select>
+          <div class="background-overlay" id="backgroundOverlay"></div>
+          <div class="active-number-overlay" id="activeNumberOverlay"></div>
         </div>
 
         <div class="developer" id="developer">
-          <div class="mymemory-usage" id="myMemoryUsage" aria-live="polite"></div>
           <button type="button" id="developerPathBtn" title="Path to this page">Path</button>
           <button type="button" id="developerClearBtn" title="Clear the saved settings of this app">Clear LS</button>
         </div>
       </div>
 
-      <div class="snap-spacer" id="mainSnapSpacer" aria-hidden="true"></div>
-    </div>
-
-    <div id="helpAppModal" class="app-modal hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-      <div class="app-modal-content">
-        <div class="app-modal-header">
-          <h2 class="app-modal-title" id="helpTitle" data-app="DT">Information</h2>
-          <button type="button" id="helpAppCloseBtn" class="app-modal-close-btn" title="Close" aria-label="Close">✕</button>
-        </div>
-        <div class="app-modal-body help-body" id="helpBody">
-          <div id="helpAppContent"></div>
-        </div>
-      </div>
+      <div class="scroll-bottom-space"></div>
     </div>
 
     <div id="settingsAppModal" class="app-modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
       <div class="app-modal-content">
         <div class="app-modal-header">
-          <h2 class="app-modal-title" id="settingsTitle" data-app="DT">Settings</h2>
+          <h2 class="app-modal-title" id="settingsTitle" data-app="NLT">Application settings</h2>
           <button type="button" id="settingsAppCloseBtn" class="app-modal-close-btn" title="Close" aria-label="Close">✕</button>
         </div>
+
         <div class="app-modal-body-wrap">
           <div class="step-badge step-badge-settings" id="stepBadgeSettings" aria-hidden="true"></div>
           <div class="scroll-hint scroll-hint-left" id="scrollHintLeft" aria-hidden="true"><span class="hint-up"></span><span class="hint-down"></span></div>
           <div class="scroll-hint scroll-hint-right" id="scrollHintRight" aria-hidden="true"><span class="hint-up"></span><span class="hint-down"></span></div>
           <div class="app-modal-body" id="settingsBody">
             <div id="settingsAppContent" class="settings-app-content">
-              <div class="preset-count-wrapper" id="presetCountWrapper">
-                <div class="preset-title" id="labelPresets">Configurations</div>
-                <div class="preset-count-group">
-                  <label for="presetCountSelect" id="labelPresetCount">Number</label>
-                  <select id="presetCountSelect" class="preset-count-select" title="Number of configurations">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3" selected>3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
+              <div class="speed-delay-wrapper">
+                <div class="speed-group">
+                  <label for="speedSelectCopy" id="labelSpeedCopy" data-mirror-of="labelSpeed">Speed</label>
+                  <select id="speedSelectCopy" data-mirror-of="speedSelect" class="speed-select">
+                    <option value="0.6">0.6</option>
+                    <option value="0.8">0.8</option>
+                    <option value="1.0" selected>1.0</option>
+                    <option value="1.2">1.2</option>
+                    <option value="1.4">1.4</option>
+                    <option value="1.6">1.6</option>
+                    <option value="1.8">1.8</option>
+                    <option value="2.0">2.0</option>
+                  </select>
+                </div>
+
+                <div class="interval-group">
+                  <label for="intervalSelectCopy" id="labelIntervalCopy" data-mirror-of="labelInterval" class="label-interval">Interval</label>
+                  <select id="intervalSelectCopy" data-mirror-of="intervalSelect" class="interval-select">
+                    <option value="500">500</option>
+                    <option value="1000" selected>1000</option>
+                    <option value="1500">1500</option>
+                    <option value="2000">2000</option>
+                    <option value="2500">2500</option>
+                    <option value="3000">3000</option>
+                    <option value="4000">4000</option>
+                    <option value="5000">5000</option>
                   </select>
                 </div>
               </div>
 
-              <div class="preset-wrapper" id="presetLangWrapper">
-                <div class="preset-title" id="labelPresetLanguages">Languages</div>
-                <div class="preset-tabs" id="langPresetTabs" role="group"></div>
-
-                <div class="preset-lang-group">
-                  <label for="presetSourceLang" id="labelPresetSourceLang">Source Language</label>
-                  <select id="presetSourceLang" class="preset-lang-select" title="Source language"></select>
-                </div>
-                <div class="preset-lang-group">
-                  <label for="presetTargetLang1" id="labelPresetTargetLang1">Target Language 1</label>
-                  <select id="presetTargetLang1" class="preset-lang-select" title="Target language 1"></select>
-                </div>
-                <div class="preset-lang-group">
-                  <label for="presetTargetLang2" id="labelPresetTargetLang2">Target Language 2</label>
-                  <select id="presetTargetLang2" class="preset-lang-select" title="Target language 2"></select>
+              <div class="fullscreen-wrapper">
+                <div class="fullscreen-switcher-group">
+                  <label for="fullscreenSelect" id="labelFullscreen" class="label-fullscreen">Fullscreen</label>
+                  <select id="fullscreenSelect" class="fullscreen-select">
+                    <option value="0">No</option>
+                    <option value="1" selected>Yes</option>
+                  </select>
                 </div>
 
-                <label class="mic-option" for="overwriteLangs">
-                  <input type="checkbox" id="overwriteLangs" class="mic-checkbox" />
-                  <span id="labelOverwriteLangs">Remember main-screen languages</span>
-                </label>
+                <div class="fullscreen-delay-mode-group">
+                  <label for="fullscreenDelayMode" id="labelFullscreenDelayMode" class="label-fullscreen-delay-mode">Delay mode:</label>
+                  <select id="fullscreenDelayMode" class="fullscreen-delay-mode">
+                    <option value="No delay" selected>No</option>
+                    <option value="Visual delay">Visual</option>
+                    <option value="Audio delay">Audio</option>
+                  </select>
+                </div>
+
+                <div class="fullscreen-delay-group">
+                  <label for="fullscreenDelay" id="labelFullscreenDelay" class="label-fullscreen-delay">Delay (sec):</label>
+                  <select id="fullscreenDelay" class="fullscreen-delay">
+                    <option value="1">1</option>
+                    <option value="2" selected>2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </div>
               </div>
 
-              <div class="preset-wrapper" id="presetBtnWrapper">
-                <div class="preset-title" id="labelVisibleButtons">Visible buttons</div>
-                <div class="preset-tabs" id="btnPresetTabs" role="group"></div>
-                <div class="button-visibility-groups" id="buttonVisibilityGroups"></div>
+              <div class="digit-length-count-repeat-wrapper">
+                <div class="digit-length-group">
+                  <label for="digitLengthSelect" id="labelDigitLength" class="label-digit-length">Digit length</label>
+                  <select id="digitLengthSelect" class="digit-length-select">
+                    <option value="1">1</option>
+                    <option value="2" selected>2</option>
+                    <option value="3">3</option>
+                  </select>
+                </div>
+
+                <div class="count-group">
+                  <label for="countSelect" id="labelCount">Count</label>
+                  <select id="countSelect" class="count-select">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20" selected>20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                  </select>
+                </div>
+
+                <div class="repeat-group">
+                  <label for="repeatSelect" id="labelRepeat" class="label-repeat">Repeat</label>
+                  <select id="repeatSelect" class="repeat-select">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                  </select>
+                </div>
               </div>
 
-              <div class="mic-wrapper" id="micWrapper">
-                <label class="mic-option" for="bottomButtons">
-                  <input type="checkbox" id="bottomButtons" class="mic-checkbox" />
-                  <span id="labelBottomButtons">Extra microphone button</span>
-                </label>
-                <label class="mic-option" for="clearOnMic">
-                  <input type="checkbox" id="clearOnMic" class="mic-checkbox" />
-                  <span id="labelClearOnMic">Clear text when the microphone starts</span>
-                </label>
+              <div class="language-voice-wrapper">
+                <div class="language-group">
+                  <label for="languageCodeSelect" id="labelLanguageCode" class="label-language-code">Language</label>
+                  <select id="languageCodeSelect" title="Language" class="language-code-select"></select>
+                </div>
+
+                <div class="voice-group">
+                  <label for="voiceSelect" id="labelVoice" class="label-voice">Voice</label>
+                  <select id="voiceSelect" title="Voice" class="voice-select"></select>
+                </div>
               </div>
 
               <div class="interface-wrapper">
                 <div class="interface-group" id="uiLanguageWrapper">
                   <label for="uiLangSelect" id="uiLangLabel" class="label-interface">Interface</label>
-                  <select class="interface-select" id="uiLangSelect" title="Select interface language">
+                  <select id="uiLangSelect" class="interface-select" title="Select interface language">
                     <option value="ar">العربية</option>
                     <option value="cs">Čeština</option>
                     <option value="de">Deutsch</option>
@@ -363,10 +420,11 @@
                   </select>
                 </div>
                 <div class="thema-group" id="themaGroup">
-                  <label for="themaSelect" id="labelThema" class="label-thema">Theme</label>
-                  <select id="themaSelect" class="thema-select" title="Select theme"></select>
+                  <label for="themaSelect" id="labelThema" class="label-thema">Thema</label>
+                  <select id="themaSelect" class="thema-select"></select>
                 </div>
-                <div class="thema-group thema-mode-group" id="themaModeGroup">
+
+                <div class="thema-group" id="themaModeGroup">
                   <label for="themaModeSelect" id="labelThemaMode" class="label-thema">Mode</label>
                   <select id="themaModeSelect" class="thema-select" title="Select theme mode">
                     <option value="contrast">Contrast</option>
@@ -377,7 +435,7 @@
                 </div>
               </div>
               <div class="reset-settings-group" id="resetSettingsGroup">
-                <button type="button" class="reset-settings-btn" id="resetSettingsBtn" title="Reset to default settings">
+                <button class="reset-settings-btn" id="resetSettingsBtn" title="Reset to default settings">
                   <svg class="ico" aria-hidden="true"><use href="#i-reset" /></svg>
                 </button>
                 <span class="reset-settings-text" id="resetSettingsText">Reset defaults</span>
@@ -385,6 +443,19 @@
             </div>
             <div class="snap-spacer" id="settingsSnapSpacer" aria-hidden="true"></div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="helpAppModal" class="app-modal hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <div class="app-modal-content">
+        <div class="app-modal-header">
+          <h2 class="app-modal-title" id="helpTitle" data-app="NLT">Information</h2>
+          <button type="button" id="helpAppCloseBtn" class="app-modal-close-btn" title="Close" aria-label="Close">✕</button>
+        </div>
+
+        <div class="app-modal-body help-body" id="helpBody">
+          <div id="helpAppContent"></div>
         </div>
       </div>
     </div>
