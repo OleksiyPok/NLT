@@ -52,8 +52,8 @@ export function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
   async function speakAsync(text, options = {}) {
     if (!text) return;
     const settings = (typeof getSettings === "function" ? getSettings() : {}) || {};
-    // An option that is not given (undefined) does not replace the saved setting
-    const given = Object.fromEntries(Object.entries(options).filter(([, value]) => value !== undefined));
+    // The voice and the language are always the saved ones; the call gives only the way of speaking
+    const given = Object.fromEntries(Object.entries(options).filter(([key, value]) => value !== undefined && ["rate", "speed", "pitch", "volume"].includes(key)));
     const s = { ...settings, ...given };
     if (options.interrupt !== false) speechSynthesis.cancel();
 
@@ -98,12 +98,10 @@ export function createSpeaker({ bus, voicesProvider, settingsProvider } = {}) {
     if (typeof obj === "string") {
       return speakAsync(obj, options).catch((e) => console.warn("speak failed", e));
     }
-    const { text, rate = 1, lang, button, voiceName, pitch, volume } = obj;
+    const { text, rate = 1, button, pitch, volume } = obj;
     return speakAsync(text, {
       rate,
-      languageCode: lang,
       speed: rate,
-      voiceName,
       pitch,
       volume,
       button,

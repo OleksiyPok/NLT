@@ -80,22 +80,18 @@ export function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, conf
         if (currentAppState !== "playing") break;
 
         await speakDigit(item.value, {
-          languageCode: currentSettings.languageCode || "nl-NL",
           speed: currentSettings.speed,
           pitch: currentSettings.pitch,
           volume: currentSettings.volume,
-          voiceName: currentSettings.voiceName,
           interrupt: false,
         });
         await holdVisualIfSameStep(idx);
         bus.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
       } else if (isFullscreen && fsDelayMs > 0 && fsMode === "Visual delay") {
         const speakPromise = speakDigit(item.value, {
-          languageCode: currentSettings.languageCode || "nl-NL",
           speed: currentSettings.speed,
           pitch: currentSettings.pitch,
           volume: currentSettings.volume,
-          voiceName: currentSettings.voiceName,
           interrupt: false,
         });
 
@@ -111,11 +107,9 @@ export function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, conf
       } else {
         bus.emit(EventTypes.UI_ACTIVE_NUMBER_SHOW, { value: item.value, delayMs: null });
         await speakDigit(item.value, {
-          languageCode: currentSettings.languageCode || "nl-NL",
           speed: currentSettings.speed,
           pitch: currentSettings.pitch,
           volume: currentSettings.volume,
-          voiceName: currentSettings.voiceName,
           interrupt: false,
         });
         bus.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
