@@ -1,4 +1,4 @@
-/* ---------- Settings window content: flat panels with an accent bar (as in DT) ---------- */
+/* ---------- Settings window content: flat panels with an accent bar ---------- */
 .settings-app-content {
   display: flex;
   flex-direction: column;

@@ -1,6 +1,5 @@
 /* ==========================================================================
    themes.css — colour palettes ONLY (pure data, no element selectors).
-   The same file is used unchanged in DT, NLT and CLT.
 
    Theme = class "theme-<palette>-<mode>" on <html>.
    Palettes: oceanamber yellowblue skycoral malachite warmorange amberglow

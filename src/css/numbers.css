@@ -1,5 +1,5 @@
 /* ---------- The exercise: number field, buttons, settings block of the main page, overlays ----------
-   Same structure as clock.css in CLT: .section-row > .section-block-exercises + .setting-button-wrapper */
+   Structure: .section-row > .section-block-exercises + .setting-button-wrapper */
 .section-row {
   display: flex;
   flex-direction: column;
@@ -202,8 +202,7 @@
   transition: opacity 0.5s ease;
 }
 
-/* NLT only (kept here so that responsive.css stays identical in NLT, CLT and DT):
-   on wide screens the number field gets tighter rows, and the phone spacer under the page is removed */
+/* On wide screens the number field gets tighter rows, and the phone spacer under the page is removed */
 @media (min-width: 576px) {
   .number-area .column {
     gap: 6px;

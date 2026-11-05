@@ -2,7 +2,7 @@
 import { Utils } from "./utils.js";
 
 // Shown on the main screen (change it with every change of the app)
-export const APP_VERSION = "3.6.19";
+export const APP_VERSION = "3.6.20";
 
 // Folder of the help pages
 export const HELP_DIR = "docs/help/";
@@ -16,7 +16,7 @@ export const STORAGE_KEY = "NLT-settings";
 // Language chosen in the help window
 export const HELP_LANGUAGE_KEY = "NLT-help-language";
 
-// Default settings come only from config/config.json (the same idea as in DT).
+// Default settings come only from config/config.json.
 // config.json: common values; the "mobile" block overrides them on phones and tablets.
 export function createConfig() {
   const PATHS = {

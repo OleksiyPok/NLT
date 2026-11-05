@@ -1,4 +1,4 @@
-# Структура проекта (стандарт для DT, NLT и CLT)
+# Структура проекта
 
 ```
 index.html
@@ -12,16 +12,16 @@ docs/
 assets/
   icons/                   icon_<APP>_<size>.png
 src/
-  i18n/                    <lang>.json ({ "ui": {...}, "languages": {...} }, как в DT)
+  i18n/                    <lang>.json ({ "ui": {...}, "languages": {...} })
   css/
     main.css               список подключения файлов (порядок важен)
-    base.css               переменные, базовые элементы (как у CLT; у DT то же плюс поля ввода)
+    base.css               переменные, базовые элементы
     main-screen.css        заголовок, верхняя строка, блоки и группы настроек главной страницы
-    numbers.css            поле с числами, оверлеи упражнения (у CLT: clock.css)
-    settings-window.css    окно настроек: плоские панели (как у DT), сброс
+    numbers.css            поле с числами, оверлеи упражнения
+    settings-window.css    окно настроек: плоские панели, сброс
     scroll-steps.css       ступеньки прокрутки окна настроек, стрелки, бейдж
-    developer.css, modals.css, responsive.css, help.css, icons.css (как у CLT; у DT свои дополнения)
-    themes.css             общий для всех трёх проектов
+    developer.css, modals.css, responsive.css, help.css, icons.css
+    themes.css             палитры (только данные)
   js/
     theme-boot.js          обычный скрипт: тема до первой отрисовки
     main.js                точка входа: создаёт модули и связывает их
@@ -31,23 +31,14 @@ src/
 
 ## Правила
 
-- Файлы `core/theme-registry.js`, `features/theme.js`, `features/modals.js`, `features/developer.js` и `css/themes.css` одинаковы в NLT и CLT (при изменении правятся в обоих проектах).
-
 - Имена файлов: kebab-case.
 - Настройки по умолчанию: только `config/config.json`. В коде значений по умолчанию нет. Блок `mobile` переопределяет значения на телефонах и планшетах.
-- Настройки пользователя всегда сохраняются в localStorage, ключ `NLT-settings` (как `DT-settings` у DT и `CLT-settings` у CLT).
+- Настройки пользователя всегда сохраняются в localStorage, ключ `NLT-settings`.
+- Клавиши: F1 открывает справку; Esc закрывает открытое окно, без окна останавливает упражнение; пробел запускает, ставит на паузу и продолжает упражнение.
 - Версия приложения: `APP_VERSION` в `src/js/core/config.js`; меняется при каждом изменении.
 - Иконки: `assets/icons/icon_<APP>_<ширина>x<высота>.png`.
 - Нет inline-обработчиков (`onclick`) в HTML.
 - Все кнопки в HTML имеют `type="button"`.
 - Порядок CSS задаёт `src/css/main.css`: позже стоящий файл переопределяет раньше стоящий.
 - Приложение нужно открывать по HTTP (модули и `fetch` не работают с `file://`).
-- Форматирование: Prettier (`.prettierrc`, `.editorconfig` и `.vscode/settings.json` одинаковы во всех проектах).
-
-## Шаги работы
-
-1. DT: структура папок, пути, ключ localStorage, иконки. (готово)
-2. DT: код на модули, тексты в JSON по языкам, CSS на файлы. (готово)
-3. NLT: структура папок, пути, настройки по умолчанию. (готово, версия 3.4.1)
-4. NLT: код на модули по тому же стандарту: 4.1 core/, 4.2 speaker, voices, wake-lock, playback, 4.3 ui, app, тема. (готово)
-5. NLT: дизайн по образцу DT: 5.1 общие темы, иконки (готово), 5.2 главный экран (готово), 5.3 справка в стиле DT с выбором языка (готово), 5.4 окно настроек: плоские панели, ступеньки прокрутки (готово).
+- Форматирование: Prettier (`.prettierrc`, `.editorconfig`, `.vscode/settings.json`).

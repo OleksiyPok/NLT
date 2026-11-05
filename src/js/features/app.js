@@ -42,11 +42,12 @@ export function createApp({ bus, config, langLoader, store, ui, voices, speaker,
 
   function handleKeyControls(event) {
     const tag = document.activeElement?.tagName || "";
-    const isTyping = ["INPUT", "TEXTAREA"].includes(tag);
+    const isTyping = ["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(tag);
+    const anyWindowOpen = ui.isAppHelpModalOpen() || ui.isSettingsModalOpen();
 
     if (event.key === "F1" || event.code === "F1" || event.keyCode === 112) {
       event.preventDefault();
-      if (!ui.isAppHelpModalOpen() && !ui.isSettingsModalOpen()) bus.emit(EventTypes.UI_HELP_MODAL_OPEN);
+      if (!anyWindowOpen) bus.emit(EventTypes.UI_HELP_MODAL_OPEN);
       return;
     }
 
@@ -66,7 +67,7 @@ export function createApp({ bus, config, langLoader, store, ui, voices, speaker,
       bus.emit(EventTypes.APP_FULL_RESET);
     }
 
-    if ((event.key === " " || event.code === "Space" || event.keyCode === 32) && !isTyping) {
+    if ((event.key === " " || event.code === "Space" || event.keyCode === 32) && !isTyping && !anyWindowOpen) {
       event.preventDefault();
       bus.emit(EventTypes.PLAYBACK_TOGGLE);
     }
