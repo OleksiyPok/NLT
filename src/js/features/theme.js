@@ -1,5 +1,6 @@
 // Theme in the page: the palette and mode selects, the mode button and the class of <html>.
 import { DEFAULT_THEME, THEME_MODES, THEME_VALUES, applyThemeClass, composeThema, getPaletteOptions, parseThema, resolveThemaKey } from "../core/theme-registry.js";
+import { initLiveSelect, refreshLiveLists } from "./live-select.js";
 
 export function createTheme({ elements, langLoader }) {
   const fallbackParsed = parseThema(DEFAULT_THEME);
@@ -21,6 +22,9 @@ export function createTheme({ elements, langLoader }) {
         return option;
       }),
     );
+    // The lists of the theme and the mode apply every choice at once (see live-select.js)
+    ["themaSelect", "themaModeSelect"].forEach(initLiveSelect);
+    refreshLiveLists();
   }
 
   // Texts of the mode options and the title of the mode button
@@ -33,6 +37,7 @@ export function createTheme({ elements, langLoader }) {
       });
     }
     updateModeButton();
+    refreshLiveLists();
   }
 
   // Icon and title of the mode button
@@ -53,6 +58,7 @@ export function createTheme({ elements, langLoader }) {
     const select = elements.themaModeSelect;
     if (!select) return;
     select.value = THEME_MODES[(THEME_MODES.indexOf(select.value) + 1) % THEME_MODES.length];
+    refreshLiveLists();
   }
 
   function syncSelectsFromThema(fullThema) {
@@ -61,6 +67,7 @@ export function createTheme({ elements, langLoader }) {
     setSelectValue(elements.themaSelect, parsed.palette, fallbackParsed.palette);
     setSelectValue(elements.themaModeSelect, parsed.mode, fallbackParsed.mode);
     updateModeButton();
+    refreshLiveLists();
   }
 
   // A valid full theme name for any saved value

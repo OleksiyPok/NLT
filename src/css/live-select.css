@@ -1,0 +1,75 @@
+/* ---------- Live lists (theme, mode): every choice is applied at once ---------- */
+.settings-app-content select.live-select-native {
+  display: none;
+}
+.live-select {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+.live-select-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: none;
+  min-height: var(--control-h);
+  padding: 4px 8px;
+  font-size: 0.95em;
+  font-weight: 400;
+  text-align: left;
+  color: var(--text-color);
+  background: var(--background-color);
+  border: 1px solid var(--border-strong);
+  border-radius: 0;
+}
+.live-select-btn::after {
+  content: "";
+  flex-shrink: 0;
+  margin-left: 8px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid currentColor;
+  transition: transform 0.15s ease;
+}
+.live-select-btn[aria-expanded="true"]::after {
+  transform: rotate(180deg);
+}
+.live-select-btn:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+}
+.live-select-btn:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: -2px;
+}
+.live-select-list {
+  max-height: min(260px, 40vh);
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  background: var(--background-color);
+  border: 1px solid var(--border-strong);
+  -webkit-overflow-scrolling: touch;
+}
+.live-select-list[hidden] {
+  display: none;
+}
+.live-select-item {
+  padding: 9px 10px;
+  color: var(--text-color);
+  cursor: pointer;
+  user-select: none;
+}
+@media (hover: hover) {
+  .live-select-item:hover {
+    background: var(--surface-hover);
+  }
+}
+.live-select-item[aria-selected="true"] {
+  font-weight: 600;
+  color: var(--primary-text);
+  background: var(--primary);
+}
