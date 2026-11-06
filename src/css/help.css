@@ -67,7 +67,7 @@
 
 .help-content ul,
 .help-content ol {
-  padding-left: 1.5em;
+  padding-inline-start: 1.5em;
 }
 
 .help-content li {
@@ -117,7 +117,7 @@
   padding: 8px 12px;
   color: var(--text-muted);
   background: var(--surface-color);
-  border-left: 4px solid var(--primary-border);
+  border-inline-start: 4px solid var(--primary-border);
 }
 
 .help-shot {
