@@ -1,0 +1,145 @@
+<div class="help-content" lang="es" dir="ltr">
+  <section class="help-section" id="help-about">
+    <h2>Finalidad del programa</h2>
+    <p>Number Listening Trainer sirve para aprender números en idiomas extranjeros y entrenar la comprensión auditiva.</p>
+    <p>El programa genera un conjunto de números aleatorios, los pronuncia en voz alta en el idioma elegido con la voz elegida y repite el ejercicio tantas veces como haga falta. Usted elige la longitud de los números, su cantidad, la velocidad del habla y la duración de las pausas.</p>
+    <p>Un retardo opcional entre mostrar un número y pronunciarlo convierte el ejercicio en un juego: puede ver primero el número y decirlo usted antes que el programa, o escuchar primero el número e imaginarlo antes de que aparezca en la pantalla.</p>
+    <p>La interfaz está disponible en 13 idiomas: العربية, Čeština, Deutsch, English, Español, Français, Italiano, Nederlands, Polski, Português, Русский, Türkçe, Українська.</p>
+  </section>
+
+  <section class="help-section" id="help-main">
+    <h2>Pantalla principal</h2>
+
+    <figure class="help-shot" data-shot="main-overview">
+      <img src="docs/help/img/main-overview.png" alt="Pantalla principal del programa con los elementos numerados" loading="lazy" />
+      <figcaption>Pantalla principal</figcaption>
+    </figure>
+
+    <ol class="help-legend">
+      <li value="1">
+        <span class="help-framed"
+          ><svg class="help-ico" aria-hidden="true"><use href="#i-info" /></svg
+        ></span>
+        <b>Información</b>: abre esta ventana.
+      </li>
+      <li value="2">
+        <span class="help-framed"
+          ><svg class="help-ico" aria-hidden="true"><use href="#i-gear" /></svg
+        ></span>
+        <b>Ajustes</b>: abre la ventana de ajustes (véase «Ajustes»).
+      </li>
+      <li value="3">
+        <svg class="help-ico" aria-hidden="true"><use href="#i-mode-normal" /></svg> <b>Modo</b>: el modo de color de la interfaz: Contraste, Normal, Tarde o Noche. Cada pulsación pasa al modo siguiente.
+      </li>
+      <li value="4"><b>Campos de números</b>: los números del ejercicio. Antes de empezar muestran asteriscos.</li>
+      <li value="5"><b>Repeticiones restantes</b>: cuántas veces más se reproducirá el ejercicio.</li>
+      <li value="6"><b>Rnd</b>: genera números aleatorios nuevos.</li>
+      <li value="7"><b>Iniciar / Pausa / Continuar</b>: inicia el ejercicio, lo pone en pausa y lo reanuda.</li>
+      <li value="8"><b>Restablecer</b>: devuelve el ejercicio al principio (disponible cuando está en pausa).</li>
+      <li value="9"><b>Controles de reproducción y visualización</b>: Velocidad, Intervalo, Pantalla completa, Modo de retardo, Retardo, Longitud de dígitos, Cantidad y Repetir. Son los mismos controles que hay en la ventana de ajustes y se describen en el apartado «Ajustes».</li>
+    </ol>
+  </section>
+
+  <section class="help-section" id="help-use">
+    <h2>Cómo se usa</h2>
+    <ol class="help-steps">
+      <li>Elija el idioma y la voz en los ajustes.</li>
+      <li>Defina la longitud de los números, su cantidad y el número de repeticiones.</li>
+      <li>Pulse <b>Rnd</b> para obtener números nuevos y después <b>Iniciar</b>. El número que suena aparece resaltado.</li>
+      <li>Anote lo que oye, o diga usted el número y compárelo con la pantalla.</li>
+      <li>Para hacerlo más difícil, active el retardo en los ajustes o use la pantalla completa para que solo se vea el número actual.</li>
+    </ol>
+
+    <figure class="help-shot" data-shot="playing">
+      <img src="docs/help/img/playing.png" alt="Ejercicio en reproducción: el número actual aparece resaltado" loading="lazy" />
+      <figcaption>Ejercicio en reproducción</figcaption>
+    </figure>
+
+    <figure class="help-shot" data-shot="fullscreen">
+      <img src="docs/help/img/fullscreen.png" alt="Modo de pantalla completa: el número actual ocupa toda la pantalla" loading="lazy" />
+      <figcaption>Modo de pantalla completa</figcaption>
+    </figure>
+  </section>
+
+  <section class="help-section" id="help-settings">
+    <h2>Ajustes</h2>
+    <p>
+      La ventana de ajustes se abre con el botón
+      <span class="help-framed"
+        ><svg class="help-ico" aria-hidden="true"><use href="#i-gear" /></svg></span
+      >. Consta de bloques; al desplazarse pasa de un bloque a otro, y una fracción en la esquina muestra el número del bloque actual sobre el total de bloques. Los controles de reproducción y visualización de la pantalla principal son los mismos controles y siempre muestran los mismos valores. Los cambios se aplican al instante, incluso durante la reproducción.
+    </p>
+
+    <h3>Velocidad e intervalo</h3>
+    <figure class="help-shot" data-shot="settings-playback">
+      <img src="docs/help/img/settings-playback.png" alt="Ajustes: velocidad e intervalo" loading="lazy" />
+      <figcaption>Velocidad e intervalo</figcaption>
+    </figure>
+    <ol class="help-legend">
+      <li value="1"><b>Velocidad</b>: la velocidad del habla, de 0,6 (lento) a 2,0 (rápido).</li>
+      <li value="2"><b>Intervalo (ms)</b>: la pausa entre el final de un número y el comienzo del siguiente, en milisegundos.</li>
+    </ol>
+
+    <h3>Pantalla completa y retardo</h3>
+    <figure class="help-shot" data-shot="settings-fullscreen">
+      <img src="docs/help/img/settings-fullscreen.png" alt="Ajustes: pantalla completa, modo de retardo y retardo" loading="lazy" />
+      <figcaption>Pantalla completa y retardo</figcaption>
+    </figure>
+    <ol class="help-legend">
+      <li value="1"><b>Pantalla completa</b>: «Sí» muestra el número actual en toda la pantalla; «No» lo resalta solo en la zona del ejercicio.</li>
+      <li value="2"><b>Modo de retardo</b>: «No» (el número se muestra y se pronuncia a la vez), «Visual» (el número se muestra primero y se pronuncia tras el retardo) o «Audio» (el número se pronuncia primero y se muestra tras el retardo).</li>
+      <li value="3"><b>Retardo (seg)</b>: la duración del retardo, de 1 a 5 segundos.</li>
+    </ol>
+
+    <h3>Números</h3>
+    <figure class="help-shot" data-shot="settings-numbers">
+      <img src="docs/help/img/settings-numbers.png" alt="Ajustes: longitud de dígitos, cantidad y repetir" loading="lazy" />
+      <figcaption>Números</figcaption>
+    </figure>
+    <ol class="help-legend">
+      <li value="1"><b>Longitud de dígitos</b>: la longitud de los números: 1 (unidades), 2 (hasta decenas) o 3 (hasta centenas).</li>
+      <li value="2"><b>Cantidad</b>: cuántos números tiene el ejercicio.</li>
+      <li value="3"><b>Repetir</b>: cuántas veces se reproduce el ejercicio con los mismos números, de 1 a 10.</li>
+    </ol>
+
+    <h3>Idioma y voz</h3>
+    <figure class="help-shot" data-shot="settings-speech">
+      <img src="docs/help/img/settings-speech.png" alt="Ajustes: idioma y voz" loading="lazy" />
+      <figcaption>Idioma y voz</figcaption>
+    </figure>
+    <ol class="help-legend">
+      <li value="1"><b>Idioma</b>: el idioma del habla.</li>
+      <li value="2"><b>Voz</b>: la voz de su dispositivo. La lista depende del dispositivo y del navegador.</li>
+    </ol>
+
+    <h3>Interfaz, tema y modo</h3>
+    <figure class="help-shot" data-shot="settings-appearance">
+      <img src="docs/help/img/settings-appearance.png" alt="Ajustes: idioma de la interfaz, tema y modo" loading="lazy" />
+      <figcaption>Interfaz, tema y modo</figcaption>
+    </figure>
+    <ol class="help-legend">
+      <li value="1"><b>Interfaz</b>: el idioma de los textos del programa.</li>
+      <li value="2"><b>Tema</b>: la paleta de colores del programa.</li>
+      <li value="3"><b>Modo</b>: Contraste (más brillante y nítido), Normal, Tarde o Noche. El modo Noche es oscuro y suave, para mirar la pantalla con comodidad en la oscuridad. Funciona de forma sincronizada con el botón «Modo» de la pantalla principal.</li>
+    </ol>
+
+    <h3>Ajustes predeterminados</h3>
+    <figure class="help-shot" data-shot="settings-reset">
+      <img src="docs/help/img/settings-reset.png" alt="Ajustes: restablecimiento de los valores predeterminados" loading="lazy" />
+      <figcaption>Ajustes predeterminados</figcaption>
+    </figure>
+    <ol class="help-legend">
+      <li value="1">
+        <b>Ajustes predeterminados</b> (<svg class="help-ico" aria-hidden="true"><use href="#i-reset" /></svg>): devuelve todos los ajustes a sus valores iniciales.
+      </li>
+    </ol>
+  </section>
+
+  <section class="help-section" id="help-notes">
+    <h2>Notas</h2>
+    <p class="help-note">Todos los ajustes se guardan en su navegador y permanecen después de cerrar el programa.</p>
+    <p class="help-note">Las ventanas de ayuda y de ajustes se cierran con el botón ✕ o con la tecla <kbd>Esc</kbd>; en el teléfono, también con el botón Atrás. La tecla <kbd>F1</kbd> abre esta ventana.</p>
+    <p class="help-note">Si el idioma no tiene voces en su dispositivo, instale una voz en los ajustes del sistema.</p>
+    <p class="help-note">Esta ayuda se puede mostrar en cualquier idioma: elíjalo en el campo de arriba.</p>
+  </section>
+</div>
