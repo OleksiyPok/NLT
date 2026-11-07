@@ -10,6 +10,24 @@ Uygulama, eşzamanlı işitsel ve görsel algı yöntemini kullanır; bu sayede 
 
 ![Uygulamanın görünümü](img/app.png)
 
+## Özellikler
+
+- Rastgele sayıları sesli okur ve her birini ekranda vurgular; böylece sayıyı aynı anda hem duyar hem görürsünüz.
+- Hane sayısını, kaç sayı çalışılacağını ve dizinin kaç kez tekrarlanacağını seçin.
+- Konuşma hızını, sayılar arasındaki duraklamayı, cihazınızın dilini ve sesini ayarlayın.
+- İsteğe bağlı tam ekran modu geçerli sayıyı büyük puntoyla gösterir (telefonlarda varsayılan olarak açıktır).
+- Telefonlarda ve bilgisayarlarda çalışır, 13 arayüz dilini, dört modda (normal, akşam, gece, kontrast) 10 renk temasını destekler.
+
+## Ayarlar
+
+Ayarlar penceresinde hız ve aralık, tam ekran, hane sayısı, adet ve tekrar, dil ve ses, arayüz dili, tema ve mod ile varsayılanlara sıfırlama bulunur.
+
+![Ayarlar penceresi](img/settings.png)
+
+## Başlarken
+
+Uygulamayı tarayıcınızda açın: https://oleksiypok.github.io/NLT/. Hiçbir şey kurmanız gerekmez; ayarlarınız tarayıcıda saklanır.
+
 ---
 
 🌐 Mevcut diller:  

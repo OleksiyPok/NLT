@@ -10,6 +10,24 @@ Aplikace využívá metodu současného sluchového a zrakového vnímání, kte
 
 ![Vzhled aplikace](img/app.png)
 
+## Funkce
+
+- Čte náhodná čísla nahlas a každé zvýrazní na obrazovce, takže ho zároveň slyšíte a vidíte.
+- Zvolte délku čísel, kolik čísel procvičovat a kolikrát řadu opakovat.
+- Nastavte rychlost řeči, pauzu mezi čísly a jazyk a hlas svého zařízení.
+- Volitelný celoobrazovkový režim zobrazí aktuální číslo velkým písmem (na telefonech je ve výchozím stavu zapnutý).
+- Funguje na telefonech i počítačích, ve 13 jazycích rozhraní, s 10 barevnými motivy ve čtyřech režimech (normální, večerní, noční, kontrastní).
+
+## Nastavení
+
+Okno nastavení obsahuje rychlost a interval, celou obrazovku, délku čísel, počet a opakování, jazyk a hlas, jazyk rozhraní, motiv a režim a obnovení výchozích hodnot.
+
+![Okno nastavení](img/settings.png)
+
+## Jak začít
+
+Otevřete aplikaci v prohlížeči: https://oleksiypok.github.io/NLT/. Nic se neinstaluje a nastavení se ukládá v prohlížeči.
+
 ---
 
 🌐 Dostupné jazyky:  

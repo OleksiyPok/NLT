@@ -10,6 +10,24 @@ Die App nutzt eine Methode der gleichzeitigen auditiven und visuellen Wahrnehmun
 
 ![Aussehen der Anwendung](img/app.png)
 
+## Funktionen
+
+- Liest Zufallszahlen laut vor und hebt jede auf dem Bildschirm hervor, sodass man sie gleichzeitig hört und sieht.
+- Wähle die Ziffernanzahl, wie viele Zahlen geübt werden und wie oft die Reihe wiederholt wird.
+- Stelle Sprechgeschwindigkeit, Pause zwischen den Zahlen sowie Sprache und Stimme deines Geräts ein.
+- Der optionale Vollbildmodus zeigt die aktuelle Zahl in großer Schrift (auf Smartphones standardmäßig aktiv).
+- Läuft auf Smartphone und Computer, in 13 Oberflächensprachen, mit 10 Farbthemen in vier Modi (normal, Abend, Nacht, Kontrast).
+
+## Einstellungen
+
+Das Einstellungsfenster enthält Geschwindigkeit und Intervall, Vollbild, Ziffernanzahl, Anzahl und Wiederholungen, Sprache und Stimme, Oberflächensprache, Thema und Modus sowie das Zurücksetzen auf Standardwerte.
+
+![Einstellungsfenster](img/settings.png)
+
+## Erste Schritte
+
+Öffne die App im Browser: https://oleksiypok.github.io/NLT/. Es muss nichts installiert werden, und deine Einstellungen werden im Browser gespeichert.
+
 ---
 
 🌐 Verfügbare Sprachen:  

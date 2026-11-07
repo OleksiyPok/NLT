@@ -10,6 +10,24 @@ O aplicativo usa um método de percepção auditiva e visual simultânea, que pe
 
 ![Aparência do aplicativo](img/app.png)
 
+## Funcionalidades
+
+- Lê números aleatórios em voz alta e destaca cada um no ecrã, para o ouvir e ver ao mesmo tempo.
+- Escolha o comprimento dos números, quantos praticar e quantas vezes repetir a série.
+- Defina a velocidade da voz, a pausa entre números e o idioma e a voz do dispositivo.
+- O modo de ecrã inteiro opcional mostra o número atual em letras grandes (em telemóveis vem ativado por predefinição).
+- Funciona em telemóveis e computadores, em 13 idiomas de interface, com 10 temas de cor em quatro modos (normal, tarde, noite, contraste).
+
+## Definições
+
+A janela de definições contém velocidade e intervalo, ecrã inteiro, comprimento, quantidade e repetições, idioma e voz, idioma da interface, tema e modo, e a reposição dos valores predefinidos.
+
+![Janela de definições](img/settings.png)
+
+## Primeiros passos
+
+Abra a aplicação no navegador: https://oleksiypok.github.io/NLT/. Não é preciso instalar nada e as definições ficam guardadas no navegador.
+
 ---
 
 🌐 Idiomas disponíveis:  
