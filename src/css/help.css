@@ -127,7 +127,7 @@
 
 .help-shot img {
   display: block;
-  max-width: 100%;
+  max-width: min(100%, 400px);
   height: auto;
   margin: 0 auto;
   border: 1px solid var(--border-color);
