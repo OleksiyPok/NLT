@@ -2,22 +2,24 @@
 
 /* ---------- Scroll steps (CSS scroll-snap) ---------- */
 
-function contentTop(container, el) {
+export function contentTop(container, el) {
   return el.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
 }
 
-function snapOffset(container, el) {
+export function snapOffset(container, el) {
   return (parseFloat(getComputedStyle(container).scrollPaddingTop) || 0) + (parseFloat(getComputedStyle(el).scrollMarginTop) || 0);
 }
 
-function fitSnapSpacer(container, spacer, lastSnapEl) {
+export function fitSnapSpacer(container, spacer, lastSnapEl) {
   if (!container || !spacer || !lastSnapEl || !container.clientHeight) return;
-  spacer.style.height = "0px";
   const stepPos = contentTop(container, lastSnapEl) - snapOffset(container, lastSnapEl);
   // The real end of the content: scrollHeight is never less than the window height,
   // so on a tall window it can not be used (the last step would stay out of reach).
   const contentEnd = contentTop(container, spacer) + (parseFloat(getComputedStyle(container).paddingBottom) || 0);
-  spacer.style.height = Math.max(0, Math.ceil(stepPos + container.clientHeight - contentEnd)) + "px";
+  // The spacer is not reset to 0 first and is written only when it changes: a temporary shrink of the
+  // scroll range makes Firefox re-snap the page (it jumped to the configuration buttons).
+  const height = Math.max(0, Math.ceil(stepPos + container.clientHeight - contentEnd)) + "px";
+  if (spacer.style.height !== height) spacer.style.height = height;
 }
 
 export function updateModalSnap() {
