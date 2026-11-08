@@ -8,7 +8,7 @@
 Este é um aplicativo compacto, de página única, criado para aprender números em línguas estrangeiras.  
 O aplicativo usa um método de percepção auditiva e visual simultânea, que permite memorizar de forma rápida e eficaz.
 
-![Aparência do aplicativo](img/app.png)
+<img src="img/app.png" alt="Aparência do aplicativo" width="360">
 
 ## Funcionalidades
 
@@ -22,7 +22,7 @@ O aplicativo usa um método de percepção auditiva e visual simultânea, que pe
 
 A janela de definições contém velocidade e intervalo, ecrã inteiro, comprimento, quantidade e repetições, idioma e voz, idioma da interface, tema e modo, e a reposição dos valores predefinidos.
 
-![Janela de definições](img/settings.png)
+<img src="img/settings.png" alt="Janela de definições" width="360">
 
 ## Primeiros passos
 

@@ -8,7 +8,7 @@
 Toto je kompaktní jednostránková aplikace určená k učení čísel v cizích jazycích.  
 Aplikace využívá metodu současného sluchového a zrakového vnímání, která umožňuje rychlé a efektivní zapamatování.
 
-![Vzhled aplikace](img/app.png)
+<img src="img/app.png" alt="Vzhled aplikace" width="360">
 
 ## Funkce
 
@@ -22,7 +22,7 @@ Aplikace využívá metodu současného sluchového a zrakového vnímání, kte
 
 Okno nastavení obsahuje rychlost a interval, celou obrazovku, délku čísel, počet a opakování, jazyk a hlas, jazyk rozhraní, motiv a režim a obnovení výchozích hodnot.
 
-![Okno nastavení](img/settings.png)
+<img src="img/settings.png" alt="Okno nastavení" width="360">
 
 ## Jak začít
 

@@ -8,7 +8,7 @@
 To kompaktowa, jednostronicowa aplikacja przeznaczona do nauki liczb w językach obcych.  
 Aplikacja wykorzystuje metodę jednoczesnego postrzegania słuchowego i wzrokowego, która pozwala szybko i skutecznie zapamiętywać.
 
-![Wygląd aplikacji](img/app.png)
+<img src="img/app.png" alt="Wygląd aplikacji" width="360">
 
 ## Funkcje
 
@@ -22,7 +22,7 @@ Aplikacja wykorzystuje metodę jednoczesnego postrzegania słuchowego i wzrokowe
 
 Okno ustawień zawiera szybkość i odstęp, pełny ekran, długość liczb, ilość i powtórzenia, język i głos, język interfejsu, motyw i tryb oraz przywracanie ustawień domyślnych.
 
-![Okno ustawień](img/settings.png)
+<img src="img/settings.png" alt="Okno ustawień" width="360">
 
 ## Jak zacząć
 

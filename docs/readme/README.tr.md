@@ -8,7 +8,7 @@
 Bu, yabancı dillerde sayıları öğrenmek için tasarlanmış, tek sayfalık kompakt bir uygulamadır.  
 Uygulama, eşzamanlı işitsel ve görsel algı yöntemini kullanır; bu sayede hızlı ve etkili ezberleme sağlar.
 
-![Uygulamanın görünümü](img/app.png)
+<img src="img/app.png" alt="Uygulamanın görünümü" width="360">
 
 ## Özellikler
 
@@ -22,7 +22,7 @@ Uygulama, eşzamanlı işitsel ve görsel algı yöntemini kullanır; bu sayede 
 
 Ayarlar penceresinde hız ve aralık, tam ekran, hane sayısı, adet ve tekrar, dil ve ses, arayüz dili, tema ve mod ile varsayılanlara sıfırlama bulunur.
 
-![Ayarlar penceresi](img/settings.png)
+<img src="img/settings.png" alt="Ayarlar penceresi" width="360">
 
 ## Başlarken
 

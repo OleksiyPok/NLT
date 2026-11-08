@@ -8,7 +8,7 @@
 Dies ist eine kompakte, einseitige Anwendung, die zum Erlernen von Zahlen in Fremdsprachen entwickelt wurde.  
 Die App nutzt eine Methode der gleichzeitigen auditiven und visuellen Wahrnehmung, die ein schnelles und effektives Einprägen ermöglicht.
 
-![Aussehen der Anwendung](img/app.png)
+<img src="img/app.png" alt="Aussehen der Anwendung" width="360">
 
 ## Funktionen
 
@@ -22,7 +22,7 @@ Die App nutzt eine Methode der gleichzeitigen auditiven und visuellen Wahrnehmun
 
 Das Einstellungsfenster enthält Geschwindigkeit und Intervall, Vollbild, Ziffernanzahl, Anzahl und Wiederholungen, Sprache und Stimme, Oberflächensprache, Thema und Modus sowie das Zurücksetzen auf Standardwerte.
 
-![Einstellungsfenster](img/settings.png)
+<img src="img/settings.png" alt="Einstellungsfenster" width="360">
 
 ## Erste Schritte
 

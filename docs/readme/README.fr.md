@@ -8,7 +8,7 @@
 Il s'agit d'une application compacte d'une seule page, conçue pour apprendre les nombres dans des langues étrangères.  
 L'application utilise une méthode de perception auditive et visuelle simultanée, qui permet une mémorisation rapide et efficace.
 
-![Aperçu de l'application](img/app.png)
+<img src="img/app.png" alt="Aperçu de l'application" width="360">
 
 ## Fonctionnalités
 
@@ -22,7 +22,7 @@ L'application utilise une méthode de perception auditive et visuelle simultané
 
 La fenêtre des paramètres contient la vitesse et l’intervalle, le plein écran, le nombre de chiffres, la quantité et les répétitions, la langue et la voix, la langue de l’interface, le thème et le mode, ainsi que la réinitialisation.
 
-![Fenêtre des paramètres](img/settings.png)
+<img src="img/settings.png" alt="Fenêtre des paramètres" width="360">
 
 ## Pour commencer
 

@@ -8,7 +8,7 @@
 Dit is een compacte, eendelige applicatie ontworpen om getallen in vreemde talen te leren.  
 De app maakt gebruik van een methode van gelijktijdige auditieve en visuele waarneming, waardoor snelle en effectieve memorisatie mogelijk is.
 
-![Uiterlijk van de applicatie](img/app.png)
+<img src="img/app.png" alt="Uiterlijk van de applicatie" width="360">
 
 ## Functies
 
@@ -22,7 +22,7 @@ De app maakt gebruik van een methode van gelijktijdige auditieve en visuele waar
 
 Het instellingenvenster bevat snelheid en interval, schermvullend, aantal cijfers, aantal en herhalingen, taal en stem, interfacetaal, thema en modus, en terugzetten naar de standaardwaarden.
 
-![Instellingenvenster](img/settings.png)
+<img src="img/settings.png" alt="Instellingenvenster" width="360">
 
 ## Aan de slag
 

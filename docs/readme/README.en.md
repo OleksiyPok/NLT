@@ -8,7 +8,7 @@
 This is a compact, one-page application designed for learning numbers in foreign languages.  
 The app employs a method of simultaneous auditory and visual perception, enabling rapid and effective memorization.
 
-![Appearance of the application](img/app.png)
+<img src="img/app.png" alt="Appearance of the application" width="360">
 
 ## Features
 
@@ -22,7 +22,7 @@ The app employs a method of simultaneous auditory and visual perception, enablin
 
 The settings window contains speed and interval, fullscreen, digit length, count and repeat, language and voice, interface language, theme and mode, and a reset to defaults.
 
-![Settings window](img/settings.png)
+<img src="img/settings.png" alt="Settings window" width="360">
 
 ## Getting started
 
