@@ -36,20 +36,26 @@ export function createDeveloper({ bus, ui }) {
 
   // The two buttons of the developer row
   function setupButtons() {
-    document.getElementById("developerPathBtn")?.addEventListener("click", () => alert(location.href));
-    document.getElementById("developerClearBtn")?.addEventListener("click", () => {
-      try {
-        localStorage.removeItem(STORAGE_KEY);
-      } catch (e) {}
-      alert(`${STORAGE_KEY} cleared`);
-    });
+    document
+      .getElementById("developerPathBtn")
+      ?.addEventListener("click", () => alert(location.href));
+    document
+      .getElementById("developerClearBtn")
+      ?.addEventListener("click", () => {
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+        } catch (e) {}
+        alert(`${STORAGE_KEY} cleared`);
+      });
   }
 
   function init(appCfg) {
     savedMode = Boolean(appCfg?.developerMode);
     setupButtons();
     // The text in the settings window
-    document.getElementById("resetSettingsText")?.addEventListener("click", onClick);
+    document
+      .getElementById("resetSettingsText")
+      ?.addEventListener("click", onClick);
   }
 
   return { init };

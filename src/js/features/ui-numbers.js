@@ -2,10 +2,13 @@
 
 export function createUiNumbers({ utils, elements, view }, labels) {
   function cacheInputs() {
-    view.inputs = elements.numberGrid ? Array.from(elements.numberGrid.querySelectorAll("input[type='text']")) : [];
+    view.inputs = elements.numberGrid
+      ? Array.from(elements.numberGrid.querySelectorAll("input[type='text']"))
+      : [];
   }
   const getInputs = () => view.inputs.slice();
-  const getSelectedInputs = () => view.inputs.filter((i) => i.classList.contains("selected"));
+  const getSelectedInputs = () =>
+    view.inputs.filter((i) => i.classList.contains("selected"));
 
   function showBackgroundOverlay() {
     if ((elements.fullscreenSelect?.value || "0") !== "1") return;
@@ -31,7 +34,8 @@ export function createUiNumbers({ utils, elements, view }, labels) {
   function resetRepeatLeft() {
     if (elements.repeatLeft && elements.repeatSelect) {
       const val = elements.repeatSelect.value;
-      if (elements.repeatLeft.textContent !== val) elements.repeatLeft.textContent = val;
+      if (elements.repeatLeft.textContent !== val)
+        elements.repeatLeft.textContent = val;
     }
     labels.updateControlsState();
   }
@@ -49,8 +53,10 @@ export function createUiNumbers({ utils, elements, view }, labels) {
     getInputs().forEach((input, idx) => {
       const sel = idx < count;
       const hi = idx === ci;
-      if (input.classList.contains("selected") !== sel) input.classList.toggle("selected", sel);
-      if (input.classList.contains("highlight") !== hi) input.classList.toggle("highlight", hi);
+      if (input.classList.contains("selected") !== sel)
+        input.classList.toggle("selected", sel);
+      if (input.classList.contains("highlight") !== hi)
+        input.classList.toggle("highlight", hi);
     });
   }
 

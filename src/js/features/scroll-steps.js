@@ -3,22 +3,34 @@
 /* ---------- Scroll steps (CSS scroll-snap) ---------- */
 
 export function contentTop(container, el) {
-  return el.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
+  return (
+    el.getBoundingClientRect().top -
+    container.getBoundingClientRect().top +
+    container.scrollTop
+  );
 }
 
 export function snapOffset(container, el) {
-  return (parseFloat(getComputedStyle(container).scrollPaddingTop) || 0) + (parseFloat(getComputedStyle(el).scrollMarginTop) || 0);
+  return (
+    (parseFloat(getComputedStyle(container).scrollPaddingTop) || 0) +
+    (parseFloat(getComputedStyle(el).scrollMarginTop) || 0)
+  );
 }
 
 export function fitSnapSpacer(container, spacer, lastSnapEl) {
   if (!container || !spacer || !lastSnapEl || !container.clientHeight) return;
-  const stepPos = contentTop(container, lastSnapEl) - snapOffset(container, lastSnapEl);
+  const stepPos =
+    contentTop(container, lastSnapEl) - snapOffset(container, lastSnapEl);
   // The real end of the content: scrollHeight is never less than the window height,
   // so on a tall window it can not be used (the last step would stay out of reach).
-  const contentEnd = contentTop(container, spacer) + (parseFloat(getComputedStyle(container).paddingBottom) || 0);
+  const contentEnd =
+    contentTop(container, spacer) +
+    (parseFloat(getComputedStyle(container).paddingBottom) || 0);
   // The spacer is not reset to 0 first and is written only when it changes: a temporary shrink of the
   // scroll range makes Firefox re-snap the page (it jumped to the configuration buttons).
-  const height = Math.max(0, Math.ceil(stepPos + container.clientHeight - contentEnd)) + "px";
+  const height =
+    Math.max(0, Math.ceil(stepPos + container.clientHeight - contentEnd)) +
+    "px";
   if (spacer.style.height !== height) spacer.style.height = height;
 }
 
@@ -26,7 +38,11 @@ export function updateModalSnap() {
   const body = document.getElementById("settingsBody");
   if (!body || !body.clientHeight) return;
   const blocks = document.getElementById("settingsAppContent");
-  fitSnapSpacer(body, document.getElementById("settingsSnapSpacer"), blocks && blocks.lastElementChild);
+  fitSnapSpacer(
+    body,
+    document.getElementById("settingsSnapSpacer"),
+    blocks && blocks.lastElementChild,
+  );
   updateScrollHints();
 }
 
@@ -35,7 +51,10 @@ function updateScrollHints() {
   if (!body || !body.clientHeight) return;
   const canUp = body.scrollTop > 2;
   const canDown = body.scrollTop + body.clientHeight < body.scrollHeight - 2;
-  body.parentElement.style.setProperty("--scrollbar-w", body.offsetWidth - body.clientWidth + "px");
+  body.parentElement.style.setProperty(
+    "--scrollbar-w",
+    body.offsetWidth - body.clientWidth + "px",
+  );
   ["scrollHintLeft", "scrollHintRight"].forEach((id) => {
     const hint = document.getElementById(id);
     if (!hint) return;
@@ -53,7 +72,9 @@ const stepBadgeTimers = {};
 
 function getSettingsSteps() {
   const blocks = document.getElementById("settingsAppContent");
-  return blocks ? Array.from(blocks.children).filter((el) => el.offsetParent !== null) : [];
+  return blocks
+    ? Array.from(blocks.children).filter((el) => el.offsetParent !== null)
+    : [];
 }
 
 function showStepBadge(badgeId, container, steps) {
@@ -70,27 +91,43 @@ function showStepBadge(badgeId, container, steps) {
       current = i;
     }
   });
-  if (container.scrollTop + container.clientHeight >= container.scrollHeight - 2) {
+  if (
+    container.scrollTop + container.clientHeight >=
+    container.scrollHeight - 2
+  ) {
     current = steps.length - 1;
   }
 
-  badge.innerHTML = `<span class="step-num">${current + 1}</span>` + `<span class="step-den">${steps.length}</span>`;
+  badge.innerHTML =
+    `<span class="step-num">${current + 1}</span>` +
+    `<span class="step-den">${steps.length}</span>`;
   badge.classList.add("show");
   clearTimeout(stepBadgeTimers[badgeId]);
-  stepBadgeTimers[badgeId] = setTimeout(() => badge.classList.remove("show"), STEP_BADGE_MS);
+  stepBadgeTimers[badgeId] = setTimeout(
+    () => badge.classList.remove("show"),
+    STEP_BADGE_MS,
+  );
 }
 
 export function initSnap() {
   const settingsBody = document.getElementById("settingsBody");
-  settingsBody?.addEventListener("scroll", updateScrollHints, { passive: true });
-  settingsBody?.addEventListener("scroll", () => showStepBadge("stepBadgeSettings", settingsBody, getSettingsSteps()), { passive: true });
+  settingsBody?.addEventListener("scroll", updateScrollHints, {
+    passive: true,
+  });
+  settingsBody?.addEventListener(
+    "scroll",
+    () => showStepBadge("stepBadgeSettings", settingsBody, getSettingsSteps()),
+    { passive: true },
+  );
 
   window.addEventListener("resize", updateModalSnap);
   window.addEventListener("orientationchange", updateModalSnap);
   window.addEventListener("load", updateModalSnap);
   if (window.ResizeObserver) {
     const ro = new ResizeObserver(updateModalSnap);
-    [document.getElementById("settingsAppContent"), settingsBody].forEach((el) => el && ro.observe(el));
+    [document.getElementById("settingsAppContent"), settingsBody].forEach(
+      (el) => el && ro.observe(el),
+    );
   }
   updateModalSnap();
 }

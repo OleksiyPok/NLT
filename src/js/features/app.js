@@ -2,7 +2,18 @@
 import { APP_VERSION } from "../core/config.js";
 import { EventTypes } from "../core/event-types.js";
 
-export function createApp({ bus, config, langLoader, store, ui, voices, speaker, wakeLock, utils, developer }) {
+export function createApp({
+  bus,
+  config,
+  langLoader,
+  store,
+  ui,
+  voices,
+  speaker,
+  wakeLock,
+  utils,
+  developer,
+}) {
   function setAppStateDirect(s) {
     store.setAppState(s);
     if (s === "playing") wakeLock.request();
@@ -20,12 +31,18 @@ export function createApp({ bus, config, langLoader, store, ui, voices, speaker,
 
     const settings = store.getSettings();
     const defaultVoiceName = settings.voiceName;
-    const defaultLangCode = (settings.languageCode || "").replace("_", "-").toLowerCase();
+    const defaultLangCode = (settings.languageCode || "")
+      .replace("_", "-")
+      .toLowerCase();
 
     const voiceList = voices.getVoices();
     const match = voiceList.find((v) => {
       const voiceLang = (v.lang || "").replace("_", "-").toLowerCase();
-      return utils.normalizeString(v.name) === utils.normalizeString(defaultVoiceName) || voiceLang === defaultLangCode;
+      return (
+        utils.normalizeString(v.name) ===
+          utils.normalizeString(defaultVoiceName) ||
+        voiceLang === defaultLangCode
+      );
     });
 
     if (match) {
@@ -51,7 +68,11 @@ export function createApp({ bus, config, langLoader, store, ui, voices, speaker,
       return;
     }
 
-    if (event.key === "Escape" || event.code === "Escape" || event.keyCode === 27) {
+    if (
+      event.key === "Escape" ||
+      event.code === "Escape" ||
+      event.keyCode === 27
+    ) {
       event.preventDefault();
 
       if (ui.isAppHelpModalOpen()) {
@@ -67,7 +88,11 @@ export function createApp({ bus, config, langLoader, store, ui, voices, speaker,
       bus.emit(EventTypes.APP_FULL_RESET);
     }
 
-    if ((event.key === " " || event.code === "Space" || event.keyCode === 32) && !isTyping && !anyWindowOpen) {
+    if (
+      (event.key === " " || event.code === "Space" || event.keyCode === 32) &&
+      !isTyping &&
+      !anyWindowOpen
+    ) {
       event.preventDefault();
       bus.emit(EventTypes.PLAYBACK_TOGGLE);
     }
@@ -95,7 +120,9 @@ export function createApp({ bus, config, langLoader, store, ui, voices, speaker,
     bus.emit(EventTypes.UI_TEXTS_UPDATE);
 
     if (utils.isMobileDevice()) {
-      [ui.elements.languageCodeSelect, ui.elements.labelLanguageCode].forEach((el) => el && (el.style.display = "none"));
+      [ui.elements.languageCodeSelect, ui.elements.labelLanguageCode].forEach(
+        (el) => el && (el.style.display = "none"),
+      );
     }
 
     ui.cacheInputs();
@@ -103,7 +130,9 @@ export function createApp({ bus, config, langLoader, store, ui, voices, speaker,
     ui.highlightSelection();
     ui.attachEventHandlers();
 
-    ui.elements.resetBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_FULL_RESET));
+    ui.elements.resetBtn?.addEventListener("click", () =>
+      bus.emit(EventTypes.APP_FULL_RESET),
+    );
     if (ui.elements.startPauseBtn) ui.elements.startPauseBtn.disabled = false;
     ui.resetRepeatLeft();
     document.addEventListener("keydown", handleKeyControls);
@@ -137,15 +166,25 @@ export function createApp({ bus, config, langLoader, store, ui, voices, speaker,
         return;
       }
 
-      let match = allVoices.find((v) => utils.normalizeString(v.name) === utils.normalizeString(settings.voiceName));
+      let match = allVoices.find(
+        (v) =>
+          utils.normalizeString(v.name) ===
+          utils.normalizeString(settings.voiceName),
+      );
       if (!match) {
-        match = allVoices.find((v) => utils.normalizeString(v.name).includes(utils.normalizeString(settings.voiceName)));
+        match = allVoices.find((v) =>
+          utils
+            .normalizeString(v.name)
+            .includes(utils.normalizeString(settings.voiceName)),
+        );
       }
       if (!match && settings.languageCode) {
         const wanted = (settings.languageCode || "").toLowerCase();
         match = allVoices.find((v) => (v.lang || "").toLowerCase() === wanted);
         if (!match) {
-          match = allVoices.find((v) => (v.lang || "").toLowerCase().startsWith(wanted.split(/[-_]/)[0]));
+          match = allVoices.find((v) =>
+            (v.lang || "").toLowerCase().startsWith(wanted.split(/[-_]/)[0]),
+          );
         }
       }
       if (match) {

@@ -26,8 +26,10 @@ export function createUI({ bus, utils, langLoader }) {
   const selects = createUiSelects(ctx, theme);
   const settingsWindow = createModals({ elements, mirrors });
 
-  const { isAppHelpModalOpen, loadHelpContent, openHelpModal, closeHelpModal } = help;
-  const { isSettingsModalOpen, openSettingsModal, closeSettingsModal } = settingsWindow;
+  const { isAppHelpModalOpen, loadHelpContent, openHelpModal, closeHelpModal } =
+    help;
+  const { isSettingsModalOpen, openSettingsModal, closeSettingsModal } =
+    settingsWindow;
   const modalHistory = createModalHistory({
     isAnyOpen: () => isAppHelpModalOpen() || isSettingsModalOpen(),
     closeAll: () => {
@@ -36,9 +38,27 @@ export function createUI({ bus, utils, langLoader }) {
       closeSettingsModal();
     },
   });
-  const { updateUILabels, updateStartPauseButton, updateControlsState } = labels;
-  const { cacheInputs, getInputs, getSelectedInputs, showBackgroundOverlay, hideBackgroundOverlay, showActiveNumberOverlay, hideActiveNumberOverlay, resetRepeatLeft, fillRandom, highlightSelection } = numbers;
-  const { setSelectsFromSettings, populateLanguageSelect, populateVoiceSelect, setLanguageCodeFromSettings, setVoiceFromSettings } = selects;
+  const { updateUILabels, updateStartPauseButton, updateControlsState } =
+    labels;
+  const {
+    cacheInputs,
+    getInputs,
+    getSelectedInputs,
+    showBackgroundOverlay,
+    hideBackgroundOverlay,
+    showActiveNumberOverlay,
+    hideActiveNumberOverlay,
+    resetRepeatLeft,
+    fillRandom,
+    highlightSelection,
+  } = numbers;
+  const {
+    setSelectsFromSettings,
+    populateLanguageSelect,
+    populateVoiceSelect,
+    setLanguageCodeFromSettings,
+    setVoiceFromSettings,
+  } = selects;
 
   function cache() {
     cacheElements(ctx);
@@ -60,7 +80,11 @@ export function createUI({ bus, utils, langLoader }) {
     upd("speed", E.speedSelect, view.settings.speed);
     upd("intervalMs", E.intervalSelect, view.settings.intervalMs);
     upd("fullscreen", E.fullscreenSelect, view.settings.fullscreen);
-    upd("fullscreenDelayMode", E.fullscreenDelayMode, view.settings.fullscreenDelayMode);
+    upd(
+      "fullscreenDelayMode",
+      E.fullscreenDelayMode,
+      view.settings.fullscreenDelayMode,
+    );
     upd("fullscreenDelay", E.fullscreenDelay, view.settings.fullscreenDelay);
     s.thema = theme.getThemaFromSelects() || view.settings.thema;
     bus.emit(EventTypes.SETTINGS_UPDATE, s);
@@ -69,7 +93,8 @@ export function createUI({ bus, utils, langLoader }) {
   // The developer row: shown when developerMode is on
   function setDeveloperVisibility(appCfg) {
     const devMode = appCfg?.developerMode;
-    if (elements.developerPanel) elements.developerPanel.style.display = devMode ? "" : "none";
+    if (elements.developerPanel)
+      elements.developerPanel.style.display = devMode ? "" : "none";
   }
 
   function attachEventHandlers() {
@@ -123,8 +148,12 @@ export function createUI({ bus, utils, langLoader }) {
       highlightSelection();
     });
 
-    E.fullscreenSelect?.addEventListener("change", () => updateSettingsFromUI());
-    E.fullscreenDelayMode?.addEventListener("change", () => updateSettingsFromUI());
+    E.fullscreenSelect?.addEventListener("change", () =>
+      updateSettingsFromUI(),
+    );
+    E.fullscreenDelayMode?.addEventListener("change", () =>
+      updateSettingsFromUI(),
+    );
     E.fullscreenDelay?.addEventListener("change", () => updateSettingsFromUI());
     E.themaSelect?.addEventListener("change", () => updateSettingsFromUI());
     E.themaModeSelect?.addEventListener("change", () => updateSettingsFromUI());
@@ -132,15 +161,30 @@ export function createUI({ bus, utils, langLoader }) {
       theme.nextThemaMode();
       updateSettingsFromUI();
     });
-    E.resetSettingsBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_SETTINGS_RESET));
-    E.startPauseBtn?.addEventListener("click", () => bus.emit(EventTypes.PLAYBACK_TOGGLE));
-    E.resetBtn?.addEventListener("click", () => bus.emit(EventTypes.APP_FULL_RESET));
-    E.helpAppBtn?.addEventListener("click", () => bus.emit(EventTypes.UI_HELP_MODAL_OPEN));
-    E.helpAppCloseBtn?.addEventListener("click", () => bus.emit(EventTypes.UI_HELP_MODAL_CLOSE));
-    E.settingsAppBtn?.addEventListener("click", () => bus.emit(EventTypes.UI_SETTINGS_MODAL_OPEN));
-    E.settingsAppCloseBtn?.addEventListener("click", () => bus.emit(EventTypes.UI_SETTINGS_MODAL_CLOSE));
+    E.resetSettingsBtn?.addEventListener("click", () =>
+      bus.emit(EventTypes.APP_SETTINGS_RESET),
+    );
+    E.startPauseBtn?.addEventListener("click", () =>
+      bus.emit(EventTypes.PLAYBACK_TOGGLE),
+    );
+    E.resetBtn?.addEventListener("click", () =>
+      bus.emit(EventTypes.APP_FULL_RESET),
+    );
+    E.helpAppBtn?.addEventListener("click", () =>
+      bus.emit(EventTypes.UI_HELP_MODAL_OPEN),
+    );
+    E.helpAppCloseBtn?.addEventListener("click", () =>
+      bus.emit(EventTypes.UI_HELP_MODAL_CLOSE),
+    );
+    E.settingsAppBtn?.addEventListener("click", () =>
+      bus.emit(EventTypes.UI_SETTINGS_MODAL_OPEN),
+    );
+    E.settingsAppCloseBtn?.addEventListener("click", () =>
+      bus.emit(EventTypes.UI_SETTINGS_MODAL_CLOSE),
+    );
     E.settingsAppModal?.addEventListener("click", (e) => {
-      if (e.target === E.settingsAppModal) bus.emit(EventTypes.UI_SETTINGS_MODAL_CLOSE);
+      if (e.target === E.settingsAppModal)
+        bus.emit(EventTypes.UI_SETTINGS_MODAL_CLOSE);
     });
     E.helpAppModal?.addEventListener("click", (e) => {
       if (e.target === elements.helpAppModal) {
@@ -170,11 +214,16 @@ export function createUI({ bus, utils, langLoader }) {
     });
     bus.on(EventTypes.UI_BACKGROUND_SHOW, showBackgroundOverlay);
     bus.on(EventTypes.UI_BACKGROUND_HIDE, hideBackgroundOverlay);
-    bus.on(EventTypes.UI_ACTIVE_NUMBER_SHOW, ({ value, delayMs }) => showActiveNumberOverlay(value));
+    bus.on(EventTypes.UI_ACTIVE_NUMBER_SHOW, ({ value, delayMs }) =>
+      showActiveNumberOverlay(value),
+    );
     bus.on(EventTypes.UI_ACTIVE_NUMBER_HIDE, hideActiveNumberOverlay);
     bus.on(EventTypes.UI_HIGHLIGHT, highlightSelection);
     bus.on(EventTypes.UI_REPEAT_LEFT_SET, (val) => {
-      if (elements.repeatLeft && String(elements.repeatLeft.textContent) !== String(val)) {
+      if (
+        elements.repeatLeft &&
+        String(elements.repeatLeft.textContent) !== String(val)
+      ) {
         elements.repeatLeft.textContent = String(val);
       }
       updateControlsState();
@@ -189,7 +238,8 @@ export function createUI({ bus, utils, langLoader }) {
     const onVoices = ({ voices, availableLanguages: langs }) => {
       view.voices = (voices || []).map((v) => ({ name: v.name, lang: v.lang }));
       view.availableLanguages = (langs || []).slice();
-      if (!view.availableLanguages.includes("ALL")) view.availableLanguages.push("ALL");
+      if (!view.availableLanguages.includes("ALL"))
+        view.availableLanguages.push("ALL");
       populateLanguageSelect();
       populateVoiceSelect();
     };

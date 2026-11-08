@@ -41,17 +41,23 @@ export function createUiLabels(ctx) {
       el.setAttribute("aria-label", text);
     });
     if (E.fullscreenSelect) {
-      if (E.fullscreenSelect.options[0].textContent !== texts.fullscreenNo) E.fullscreenSelect.options[0].textContent = texts.fullscreenNo;
-      if (E.fullscreenSelect.options[1].textContent !== texts.fullscreenYes) E.fullscreenSelect.options[1].textContent = texts.fullscreenYes;
+      if (E.fullscreenSelect.options[0].textContent !== texts.fullscreenNo)
+        E.fullscreenSelect.options[0].textContent = texts.fullscreenNo;
+      if (E.fullscreenSelect.options[1].textContent !== texts.fullscreenYes)
+        E.fullscreenSelect.options[1].textContent = texts.fullscreenYes;
     }
     if (E.fullscreenDelayMode) {
       if (E.fullscreenDelayMode.options[0].textContent !== texts.delayModeNo) {
         E.fullscreenDelayMode.options[0].textContent = texts.delayModeNo;
       }
-      if (E.fullscreenDelayMode.options[1].textContent !== texts.delayModeVisual) {
+      if (
+        E.fullscreenDelayMode.options[1].textContent !== texts.delayModeVisual
+      ) {
         E.fullscreenDelayMode.options[1].textContent = texts.delayModeVisual;
       }
-      if (E.fullscreenDelayMode.options[2].textContent !== texts.delayModeAudio) {
+      if (
+        E.fullscreenDelayMode.options[2].textContent !== texts.delayModeAudio
+      ) {
         E.fullscreenDelayMode.options[2].textContent = texts.delayModeAudio;
       }
     }
@@ -103,7 +109,8 @@ export function createUiLabels(ctx) {
     setDisabled(elements.resetBtn, !isPaused);
 
     const isFullscreen = (elements.fullscreenSelect?.value || "0") === "1";
-    const isDelayModeOn = (elements.fullscreenDelayMode?.value || "No delay") !== "No delay";
+    const isDelayModeOn =
+      (elements.fullscreenDelayMode?.value || "No delay") !== "No delay";
 
     setDisabled(elements.fullscreenDelayMode, !isFullscreen);
     toggleClass(elements.labelFullscreenDelayMode, "disabled", !isFullscreen);

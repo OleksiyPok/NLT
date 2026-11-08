@@ -7,7 +7,13 @@ export function createVoices({ bus }) {
   const emitter = bus;
 
   function computeAvailableLanguages() {
-    availableLanguages = Array.from(new Set(voices.map((v) => (v.lang || "").split(/[-_]/)[0].toUpperCase()).filter(Boolean))).sort();
+    availableLanguages = Array.from(
+      new Set(
+        voices
+          .map((v) => (v.lang || "").split(/[-_]/)[0].toUpperCase())
+          .filter(Boolean),
+      ),
+    ).sort();
     if (!availableLanguages.includes("ALL")) availableLanguages.push("ALL");
   }
 
@@ -39,7 +45,8 @@ export function createVoices({ bus }) {
     publish(EventTypes.VOICES_LOADED);
   }
 
-  if ("onvoiceschanged" in speechSynthesis) speechSynthesis.onvoiceschanged = () => collect();
+  if ("onvoiceschanged" in speechSynthesis)
+    speechSynthesis.onvoiceschanged = () => collect();
 
   return {
     collect,

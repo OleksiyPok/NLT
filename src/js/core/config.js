@@ -8,7 +8,21 @@ export const APP_VERSION = "3.7.4";
 export const HELP_DIR = "docs/help/";
 
 // Languages of the help pages (docs/help/help.<lang>.html); a missing page is replaced by the English one
-export const HELP_LANGS = ["ar", "cs", "de", "en", "es", "fr", "it", "nl", "pl", "pt", "ru", "tr", "uk"];
+export const HELP_LANGS = [
+  "ar",
+  "cs",
+  "de",
+  "en",
+  "es",
+  "fr",
+  "it",
+  "nl",
+  "pl",
+  "pt",
+  "ru",
+  "tr",
+  "uk",
+];
 
 // Key of the saved settings in localStorage
 export const STORAGE_KEY = "NLT-settings";
@@ -23,12 +37,29 @@ export function createConfig() {
     CONFIG: "config/config.json",
     UI_TEXTS_DIR: "src/i18n",
   };
-  const UI_LANGS = Object.freeze(["ar", "cs", "de", "en", "es", "fr", "it", "nl", "pl", "pt", "ru", "tr", "uk"]);
+  const UI_LANGS = Object.freeze([
+    "ar",
+    "cs",
+    "de",
+    "en",
+    "es",
+    "fr",
+    "it",
+    "nl",
+    "pl",
+    "pt",
+    "ru",
+    "tr",
+    "uk",
+  ]);
 
   let defaults = null;
 
   // "true", "1", 1 -> 1; everything else -> 0
-  const toFlag = (v) => (v === true || v === 1 || v === "1" || String(v).toLowerCase() === "true" ? 1 : 0);
+  const toFlag = (v) =>
+    v === true || v === 1 || v === "1" || String(v).toLowerCase() === "true"
+      ? 1
+      : 0;
 
   return {
     PATHS,

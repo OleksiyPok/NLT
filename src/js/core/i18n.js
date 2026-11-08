@@ -37,8 +37,14 @@ export function createLangLoader({ config }) {
   }
 
   // Texts of the language; a text missing in it is taken from English.
-  const getTexts = (lang) => ({ ...(texts.en || FALLBACK_EN).ui, ...texts[lang]?.ui });
-  const getLanguageNames = (lang) => ({ ...(texts.en || FALLBACK_EN).languages, ...texts[lang]?.languages });
+  const getTexts = (lang) => ({
+    ...(texts.en || FALLBACK_EN).ui,
+    ...texts[lang]?.ui,
+  });
+  const getLanguageNames = (lang) => ({
+    ...(texts.en || FALLBACK_EN).languages,
+    ...texts[lang]?.languages,
+  });
 
   return { loadLang, loadAll, getTexts, getLanguageNames };
 }

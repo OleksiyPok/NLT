@@ -155,7 +155,8 @@ button:disabled {
   height: 64px;
   margin-right: 8px;
   /* --logo-filter comes from the theme (unchanged / muted / grey) */
-  filter: drop-shadow(1px 1px 2px var(--shadow-light)) var(--logo-filter, brightness(1));
+  filter: drop-shadow(1px 1px 2px var(--shadow-light))
+    var(--logo-filter, brightness(1));
 }
 
 /* Own checkbox in every theme: the native one is always bright white and ignores the theme.

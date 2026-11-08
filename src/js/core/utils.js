@@ -12,7 +12,10 @@ export const Utils = (() => {
     return chosen;
   };
   const delay = (ms) => new Promise((r) => setTimeout(r, Number(ms) || 0));
-  const isMobileDevice = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent || "");
+  const isMobileDevice = () =>
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent || "",
+    );
   const normalizeString = (s) =>
     String(s || "")
       .trim()

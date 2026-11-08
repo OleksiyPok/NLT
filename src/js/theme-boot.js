@@ -39,7 +39,8 @@
     var match = theme.match(/-(contrast|normal|evening|night)$/);
     var mode = match ? match[1] : "normal";
 
-    icon.innerHTML = '<svg aria-hidden="true"><use href="#i-mode-' + mode + '" /></svg>';
+    icon.innerHTML =
+      '<svg aria-hidden="true"><use href="#i-mode-' + mode + '" /></svg>';
   }
 
   if (document.readyState === "loading") {

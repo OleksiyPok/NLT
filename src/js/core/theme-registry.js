@@ -42,7 +42,10 @@ export const THEME_DEFS = [
   { value: "theme-malachite-normal", label: "Malachite - Normal" },
   { value: "theme-malachite-evening", label: "Malachite - Evening" },
   { value: "theme-malachite-night", label: "Malachite - Night" },
-  { value: "theme-tropical-contrast", label: "Tropical / Caribbean - Contrast" },
+  {
+    value: "theme-tropical-contrast",
+    label: "Tropical / Caribbean - Contrast",
+  },
   { value: "theme-tropical-normal", label: "Tropical / Caribbean - Normal" },
   { value: "theme-tropical-evening", label: "Tropical / Caribbean - Evening" },
   { value: "theme-tropical-night", label: "Tropical / Caribbean - Night" },
@@ -63,7 +66,12 @@ export const THEME_DEFS = [
 export const THEME_VALUES = THEME_DEFS.map((x) => x.value);
 
 // Order must stay in sync with <select id="themaModeSelect"> option values
-export const THEME_MODES = Object.freeze(["contrast", "normal", "evening", "night"]);
+export const THEME_MODES = Object.freeze([
+  "contrast",
+  "normal",
+  "evening",
+  "night",
+]);
 
 export function resolveThemaKey(value) {
   const s = String(value || "");
@@ -101,7 +109,10 @@ export function getPaletteOptions() {
     if (!parsed || seen.has(parsed.palette)) return;
     seen.add(parsed.palette);
     const sep = def.label.indexOf(" - ");
-    out.push({ palette: parsed.palette, label: sep >= 0 ? def.label.slice(0, sep).trim() : def.label });
+    out.push({
+      palette: parsed.palette,
+      label: sep >= 0 ? def.label.slice(0, sep).trim() : def.label,
+    });
   });
   return out;
 }
@@ -111,7 +122,9 @@ export function applyThemeClass(htmlEl, value, fallback = DEFAULT_THEME) {
   const wanted = resolveThemaKey(value);
   const chosen = THEME_VALUES.includes(wanted) ? wanted : fallback;
   // Also removes a theme class that is not in the list (set early by theme-boot.js)
-  [...htmlEl.classList].filter((c) => c.startsWith("theme-")).forEach((c) => htmlEl.classList.remove(c));
+  [...htmlEl.classList]
+    .filter((c) => c.startsWith("theme-"))
+    .forEach((c) => htmlEl.classList.remove(c));
   htmlEl.classList.add(chosen);
   return chosen;
 }

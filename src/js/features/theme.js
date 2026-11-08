@@ -1,5 +1,14 @@
 // Theme in the page: the palette and mode selects, the mode button and the class of <html>.
-import { DEFAULT_THEME, THEME_MODES, THEME_VALUES, applyThemeClass, composeThema, getPaletteOptions, parseThema, resolveThemaKey } from "../core/theme-registry.js";
+import {
+  DEFAULT_THEME,
+  THEME_MODES,
+  THEME_VALUES,
+  applyThemeClass,
+  composeThema,
+  getPaletteOptions,
+  parseThema,
+  resolveThemaKey,
+} from "../core/theme-registry.js";
 import { initLiveSelect, refreshLiveLists } from "./live-select.js";
 
 export function createTheme({ elements, langLoader }) {
@@ -32,7 +41,10 @@ export function createTheme({ elements, langLoader }) {
     const modeSelect = elements.themaModeSelect;
     if (modeSelect) {
       Array.from(modeSelect.options).forEach((option) => {
-        const text = texts["themaMode" + option.value[0].toUpperCase() + option.value.slice(1)];
+        const text =
+          texts[
+            "themaMode" + option.value[0].toUpperCase() + option.value.slice(1)
+          ];
         if (text) option.textContent = text;
       });
     }
@@ -57,14 +69,19 @@ export function createTheme({ elements, langLoader }) {
   function nextThemaMode() {
     const select = elements.themaModeSelect;
     if (!select) return;
-    select.value = THEME_MODES[(THEME_MODES.indexOf(select.value) + 1) % THEME_MODES.length];
+    select.value =
+      THEME_MODES[(THEME_MODES.indexOf(select.value) + 1) % THEME_MODES.length];
     refreshLiveLists();
   }
 
   function syncSelectsFromThema(fullThema) {
     const parsed = parseThema(fullThema);
     if (!parsed) return;
-    setSelectValue(elements.themaSelect, parsed.palette, fallbackParsed.palette);
+    setSelectValue(
+      elements.themaSelect,
+      parsed.palette,
+      fallbackParsed.palette,
+    );
     setSelectValue(elements.themaModeSelect, parsed.mode, fallbackParsed.mode);
     updateModeButton();
     refreshLiveLists();
@@ -75,18 +92,27 @@ export function createTheme({ elements, langLoader }) {
     const resolved = resolveThemaKey(raw);
     if (THEME_VALUES.includes(resolved)) return resolved;
     const parsed = parseThema(resolved);
-    return (parsed && composeThema(parsed.palette, parsed.mode)) || DEFAULT_THEME;
+    return (
+      (parsed && composeThema(parsed.palette, parsed.mode)) || DEFAULT_THEME
+    );
   }
 
   // Puts the saved theme on <html> and into the selects
   function applyThemeFromSettings(settings) {
-    const chosen = applyThemeClass(document.documentElement, settings?.thema, DEFAULT_THEME);
+    const chosen = applyThemeClass(
+      document.documentElement,
+      settings?.thema,
+      DEFAULT_THEME,
+    );
     syncSelectsFromThema(chosen);
   }
 
   // The theme chosen in the selects (null if they are not complete)
   function getThemaFromSelects() {
-    return composeThema(elements.themaSelect?.value, elements.themaModeSelect?.value);
+    return composeThema(
+      elements.themaSelect?.value,
+      elements.themaModeSelect?.value,
+    );
   }
 
   // The selects were changed by the user: the class of <html> follows them
@@ -96,5 +122,15 @@ export function createTheme({ elements, langLoader }) {
     updateModeButton();
   }
 
-  return { renderThemeSelectOptions, updateLabels, updateModeButton, nextThemaMode, resolveCanonicalThema, syncSelectsFromThema, applyThemeFromSettings, applyThemeFromSelects, getThemaFromSelects };
+  return {
+    renderThemeSelectOptions,
+    updateLabels,
+    updateModeButton,
+    nextThemaMode,
+    resolveCanonicalThema,
+    syncSelectsFromThema,
+    applyThemeFromSettings,
+    applyThemeFromSelects,
+    getThemaFromSelects,
+  };
 }

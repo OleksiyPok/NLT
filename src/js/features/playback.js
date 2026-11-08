@@ -1,7 +1,14 @@
 // The exercise: plays the numbers one after another (start, pause, repeat, fullscreen).
 import { EventTypes } from "../core/event-types.js";
 
-export function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, config }) {
+export function createPlayback({
+  bus,
+  speaker,
+  utils,
+  wakeLock,
+  uiProvider,
+  config,
+}) {
   let currentSettings = { pitch: 1.0, volume: 1.0 };
   let currentAppState = "init";
   let currentIndex = 0;
@@ -17,7 +24,9 @@ export function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, conf
   }
 
   function buildPlayQueue() {
-    return uiProvider.getSelectedInputs().map((i) => ({ value: i.value, el: i }));
+    return uiProvider
+      .getSelectedInputs()
+      .map((i) => ({ value: i.value, el: i }));
   }
 
   function resetRuntime(runtime) {
@@ -42,7 +51,9 @@ export function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, conf
       const intervalMs = utils.safeNumber(currentSettings.intervalMs, 500);
       const isFullscreen = String(currentSettings.fullscreen ?? "0") === "1";
       const fsMode = String(currentSettings.fullscreenDelayMode || "No delay");
-      const fsDelayMs = isFullscreen ? utils.safeNumber(currentSettings.fullscreenDelay, 0) * 1000 : 0;
+      const fsDelayMs = isFullscreen
+        ? utils.safeNumber(currentSettings.fullscreenDelay, 0) * 1000
+        : 0;
 
       if (currentIndex >= runtime.playQueue.length) {
         if (runtime.repeatsRemaining > 1) {
@@ -75,7 +86,10 @@ export function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, conf
       bus.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
 
       if (isFullscreen && fsDelayMs > 0 && fsMode === "Audio delay") {
-        bus.emit(EventTypes.UI_ACTIVE_NUMBER_SHOW, { value: item.value, delayMs: null });
+        bus.emit(EventTypes.UI_ACTIVE_NUMBER_SHOW, {
+          value: item.value,
+          delayMs: null,
+        });
         await utils.delay(fsDelayMs);
         if (currentAppState !== "playing") break;
 
@@ -98,14 +112,20 @@ export function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, conf
         await utils.delay(fsDelayMs);
         if (currentAppState !== "playing") break;
         if (currentIndex === idx) {
-          bus.emit(EventTypes.UI_ACTIVE_NUMBER_SHOW, { value: item.value, delayMs: null });
+          bus.emit(EventTypes.UI_ACTIVE_NUMBER_SHOW, {
+            value: item.value,
+            delayMs: null,
+          });
         }
 
         await speakPromise;
         await holdVisualIfSameStep(idx);
         bus.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
       } else {
-        bus.emit(EventTypes.UI_ACTIVE_NUMBER_SHOW, { value: item.value, delayMs: null });
+        bus.emit(EventTypes.UI_ACTIVE_NUMBER_SHOW, {
+          value: item.value,
+          delayMs: null,
+        });
         await speakDigit(item.value, {
           speed: currentSettings.speed,
           pitch: currentSettings.pitch,
@@ -162,15 +182,20 @@ export function createPlayback({ bus, speaker, utils, wakeLock, uiProvider, conf
     bus.emit(EventTypes.UI_BACKGROUND_HIDE);
     bus.emit(EventTypes.UI_ACTIVE_NUMBER_HIDE);
     resetRuntime(runtime);
-    bus.emit(EventTypes.UI_REPEAT_LEFT_SET, utils.safeNumber(currentSettings.repeat, 1));
+    bus.emit(
+      EventTypes.UI_REPEAT_LEFT_SET,
+      utils.safeNumber(currentSettings.repeat, 1),
+    );
     bus.emit(EventTypes.UI_HIGHLIGHT);
     wakeLock.release();
     warmUpDoneForSession = false;
   });
 
   bus.on(EventTypes.PLAYBACK_TOGGLE, () => {
-    if (currentAppState === "playing") return bus.emit(EventTypes.PLAYBACK_PAUSE);
-    if (currentAppState === "paused") return bus.emit(EventTypes.PLAYBACK_RESUME);
+    if (currentAppState === "playing")
+      return bus.emit(EventTypes.PLAYBACK_PAUSE);
+    if (currentAppState === "paused")
+      return bus.emit(EventTypes.PLAYBACK_RESUME);
     bus.emit(EventTypes.PLAYBACK_START);
   });
 

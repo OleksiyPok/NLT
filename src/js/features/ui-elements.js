@@ -71,5 +71,6 @@ export function createUiContext({ bus, utils, langLoader }) {
 }
 
 export function cacheElements({ elements }) {
-  for (const key in SELECTORS) elements[key] = document.querySelector(SELECTORS[key]) || null;
+  for (const key in SELECTORS)
+    elements[key] = document.querySelector(SELECTORS[key]) || null;
 }

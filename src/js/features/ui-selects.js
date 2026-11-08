@@ -6,14 +6,45 @@ export function createUiSelects(ctx, theme) {
 
   function setSelectsFromSettings(s) {
     const E = elements;
-    s.digitLength = utils.safeNumber(utils.safeSetSelectValue(E.digitLengthSelect, String(s.digitLength), "2"), 2);
-    s.count = utils.safeNumber(utils.safeSetSelectValue(E.countSelect, String(s.count), "40"), 40);
-    s.repeat = utils.safeNumber(utils.safeSetSelectValue(E.repeatSelect, String(s.repeat), "1"), 1);
-    s.speed = utils.safeNumber(utils.safeSetSelectValue(E.speedSelect, Number(s.speed).toFixed(1), "1.0"), 1.0);
-    s.intervalMs = utils.safeNumber(utils.safeSetSelectValue(E.intervalSelect, String(s.intervalMs), "1000"), 1000);
-    s.fullscreen = utils.safeSetSelectValue(E.fullscreenSelect, String(s.fullscreen), "0");
-    s.fullscreenDelayMode = utils.safeSetSelectValue(elements.fullscreenDelayMode, s.fullscreenDelayMode, "No delay");
-    s.fullscreenDelay = utils.safeSetSelectValue(elements.fullscreenDelay, String(s.fullscreenDelay), "2");
+    s.digitLength = utils.safeNumber(
+      utils.safeSetSelectValue(E.digitLengthSelect, String(s.digitLength), "2"),
+      2,
+    );
+    s.count = utils.safeNumber(
+      utils.safeSetSelectValue(E.countSelect, String(s.count), "40"),
+      40,
+    );
+    s.repeat = utils.safeNumber(
+      utils.safeSetSelectValue(E.repeatSelect, String(s.repeat), "1"),
+      1,
+    );
+    s.speed = utils.safeNumber(
+      utils.safeSetSelectValue(
+        E.speedSelect,
+        Number(s.speed).toFixed(1),
+        "1.0",
+      ),
+      1.0,
+    );
+    s.intervalMs = utils.safeNumber(
+      utils.safeSetSelectValue(E.intervalSelect, String(s.intervalMs), "1000"),
+      1000,
+    );
+    s.fullscreen = utils.safeSetSelectValue(
+      E.fullscreenSelect,
+      String(s.fullscreen),
+      "0",
+    );
+    s.fullscreenDelayMode = utils.safeSetSelectValue(
+      elements.fullscreenDelayMode,
+      s.fullscreenDelayMode,
+      "No delay",
+    );
+    s.fullscreenDelay = utils.safeSetSelectValue(
+      elements.fullscreenDelay,
+      String(s.fullscreenDelay),
+      "2",
+    );
 
     s.thema = theme.resolveCanonicalThema(s.thema);
     theme.syncSelectsFromThema(s.thema);
@@ -37,22 +68,35 @@ export function createUiSelects(ctx, theme) {
       frag.appendChild(opt);
     });
     el.replaceChildren(frag);
-    const configLang = ((view.settings.languageCode || "ALL").split(/[-_]/)[0] || "ALL").toUpperCase();
-    el.value = view.availableLanguages.includes(configLang) ? configLang : utils.isMobileDevice() ? "ALL" : el.value;
+    const configLang = (
+      (view.settings.languageCode || "ALL").split(/[-_]/)[0] || "ALL"
+    ).toUpperCase();
+    el.value = view.availableLanguages.includes(configLang)
+      ? configLang
+      : utils.isMobileDevice()
+        ? "ALL"
+        : el.value;
   }
 
   function populateVoiceSelect() {
     const el = elements.voiceSelect;
     if (!el) return;
     const isMobile = utils.isMobileDevice();
-    const selectedLang = (elements.languageCodeSelect?.value || "ALL").toUpperCase();
+    const selectedLang = (
+      elements.languageCodeSelect?.value || "ALL"
+    ).toUpperCase();
 
     if (!view.voices || !view.voices.length) {
       el.replaceChildren();
       return;
     }
 
-    const voicesToShow = isMobile || selectedLang === "ALL" ? view.voices : view.voices.filter((v) => (v.lang || "").toUpperCase().startsWith(selectedLang));
+    const voicesToShow =
+      isMobile || selectedLang === "ALL"
+        ? view.voices
+        : view.voices.filter((v) =>
+            (v.lang || "").toUpperCase().startsWith(selectedLang),
+          );
 
     const frag = document.createDocumentFragment();
     voicesToShow.forEach((v) => {
@@ -63,7 +107,11 @@ export function createUiSelects(ctx, theme) {
     });
     el.replaceChildren(frag);
 
-    let match = voicesToShow.find((v) => utils.normalizeString(v.name) === utils.normalizeString(view.settings.voiceName));
+    let match = voicesToShow.find(
+      (v) =>
+        utils.normalizeString(v.name) ===
+        utils.normalizeString(view.settings.voiceName),
+    );
     if (!match && voicesToShow.length) match = voicesToShow[0];
 
     if (match && el.value !== match.name) {
@@ -74,7 +122,9 @@ export function createUiSelects(ctx, theme) {
 
   function setLanguageCodeFromSettings() {
     const E = elements;
-    const langPart = ((view.settings.languageCode || "ALL").split(/[-_]/)[0] || "ALL").toUpperCase();
+    const langPart = (
+      (view.settings.languageCode || "ALL").split(/[-_]/)[0] || "ALL"
+    ).toUpperCase();
     if (E.languageCodeSelect && E.languageCodeSelect.value !== langPart) {
       E.languageCodeSelect.value = langPart;
     }

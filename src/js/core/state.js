@@ -1,7 +1,13 @@
 // Settings and state of the app; the settings are saved in localStorage.
 import { STORAGE_KEY } from "./config.js";
 import { EventTypes } from "./event-types.js";
-import { DEFAULT_THEME, THEME_VALUES, composeThema, parseThema, resolveThemaKey } from "./theme-registry.js";
+import {
+  DEFAULT_THEME,
+  THEME_VALUES,
+  composeThema,
+  parseThema,
+  resolveThemaKey,
+} from "./theme-registry.js";
 
 export function createState({ bus }) {
   const Storage = {
@@ -45,7 +51,8 @@ export function createState({ bus }) {
       return;
     }
     const parsed = parseThema(raw);
-    settings.thema = (parsed && composeThema(parsed.palette, parsed.mode)) || DEFAULT_THEME;
+    settings.thema =
+      (parsed && composeThema(parsed.palette, parsed.mode)) || DEFAULT_THEME;
   }
 
   const getState = () => structuredClone(state);

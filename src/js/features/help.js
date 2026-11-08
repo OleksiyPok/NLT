@@ -7,7 +7,8 @@ const DEFAULT_LANGUAGE = "en";
 // A screenshot that is not added yet: the figure shows a grey placeholder with the file name (see help.css)
 function markMissingImages(page) {
   page.querySelectorAll(".help-shot img").forEach((img) => {
-    const markMissing = () => img.closest(".help-shot")?.classList.add("missing");
+    const markMissing = () =>
+      img.closest(".help-shot")?.classList.add("missing");
     img.addEventListener("error", markMissing);
     if (img.complete && img.naturalWidth === 0) markMissing();
   });
@@ -41,7 +42,9 @@ export function createHelp({ elements, langLoader }) {
 
   async function fetchPage(lang) {
     if (pageCache[lang]) return pageCache[lang];
-    const res = await fetch(`${HELP_DIR}help.${lang}.html`, { cache: "no-cache" });
+    const res = await fetch(`${HELP_DIR}help.${lang}.html`, {
+      cache: "no-cache",
+    });
     if (!res.ok) throw new Error(`help.${lang}.html: ${res.status}`);
     pageCache[lang] = await res.text();
     return pageCache[lang];
@@ -74,7 +77,10 @@ export function createHelp({ elements, langLoader }) {
     select.className = "help-language-select";
     select.title = texts.helpLanguageLabel;
     select.setAttribute("aria-label", texts.helpLanguageLabel);
-    select.append(new Option(texts.helpLanguageApp, APP_LANGUAGE), ...HELP_LANGS.map((code) => new Option(code.toUpperCase(), code)));
+    select.append(
+      new Option(texts.helpLanguageApp, APP_LANGUAGE),
+      ...HELP_LANGS.map((code) => new Option(code.toUpperCase(), code)),
+    );
     select.value = selected;
 
     const row = document.createElement("div");
@@ -97,13 +103,17 @@ export function createHelp({ elements, langLoader }) {
 
     async function showPage() {
       const current = ++request;
-      const lang = select.value === APP_LANGUAGE ? interfaceLanguage() : select.value;
+      const lang =
+        select.value === APP_LANGUAGE ? interfaceLanguage() : select.value;
       const html = await getPage(lang);
       if (current !== request) return; // a newer choice has been made
       if (html) {
         page.innerHTML = html;
         markMissingImages(page);
-      } else page.textContent = langLoader.getTexts(elements.uiLangSelect?.value || "en").helpUnavailable || "";
+      } else
+        page.textContent =
+          langLoader.getTexts(elements.uiLangSelect?.value || "en")
+            .helpUnavailable || "";
     }
 
     select.addEventListener("change", () => {
@@ -113,7 +123,8 @@ export function createHelp({ elements, langLoader }) {
     await showPage();
   }
 
-  const isAppHelpModalOpen = () => !elements.helpAppModal?.classList.contains("hidden");
+  const isAppHelpModalOpen = () =>
+    !elements.helpAppModal?.classList.contains("hidden");
   const openHelpModal = () => elements.helpAppModal?.classList.remove("hidden");
 
   function closeHelpModal() {
