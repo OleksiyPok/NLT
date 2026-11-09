@@ -119,16 +119,6 @@ export function createApp({
     }
     bus.emit(EventTypes.UI_TEXTS_UPDATE);
 
-    if (utils.isMobileDevice()) {
-      // The language list is not used on phones (all voices are shown): the copy on the main page too
-      [
-        ui.elements.languageCodeSelect,
-        ui.elements.labelLanguageCode,
-        document.getElementById("languageCodeSelectCopy"),
-        document.getElementById("labelLanguageCodeCopy"),
-      ].forEach((el) => el && (el.style.display = "none"));
-    }
-
     ui.cacheInputs();
     ui.fillRandom();
     ui.highlightSelection();

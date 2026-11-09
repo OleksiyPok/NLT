@@ -110,17 +110,15 @@ export function createUI({ bus, utils, langLoader }) {
       }
     });
 
-    if (!utils.isMobileDevice()) {
-      E.languageCodeSelect?.addEventListener("change", () => {
-        const selectedLang = E.languageCodeSelect.value;
-        let newSettings = { languageCode: selectedLang };
-        populateVoiceSelect();
-        const selectedVoice = E.voiceSelect?.value || null;
-        if (selectedVoice) newSettings.voiceName = selectedVoice;
-        bus.emit(EventTypes.SETTINGS_UPDATE, newSettings);
-        setVoiceFromSettings();
-      });
-    }
+    E.languageCodeSelect?.addEventListener("change", () => {
+      const selectedLang = E.languageCodeSelect.value;
+      let newSettings = { languageCode: selectedLang };
+      populateVoiceSelect();
+      const selectedVoice = E.voiceSelect?.value || null;
+      if (selectedVoice) newSettings.voiceName = selectedVoice;
+      bus.emit(EventTypes.SETTINGS_UPDATE, newSettings);
+      setVoiceFromSettings();
+    });
 
     E.voiceSelect?.addEventListener("change", () => updateSettingsFromUI());
 

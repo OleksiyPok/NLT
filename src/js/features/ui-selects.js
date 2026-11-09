@@ -82,7 +82,6 @@ export function createUiSelects(ctx, theme) {
   function populateVoiceSelect() {
     const el = elements.voiceSelect;
     if (!el) return;
-    const isMobile = utils.isMobileDevice();
     const selectedLang = (
       elements.languageCodeSelect?.value || "ALL"
     ).toUpperCase();
@@ -94,7 +93,7 @@ export function createUiSelects(ctx, theme) {
     }
 
     const voicesToShow =
-      isMobile || selectedLang === "ALL"
+      selectedLang === "ALL"
         ? view.voices
         : view.voices.filter((v) =>
             (v.lang || "").toUpperCase().startsWith(selectedLang),
