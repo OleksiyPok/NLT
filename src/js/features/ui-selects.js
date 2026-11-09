@@ -76,6 +76,7 @@ export function createUiSelects(ctx, theme) {
       : utils.isMobileDevice()
         ? "ALL"
         : el.value;
+    ctx.onRefresh?.();
   }
 
   function populateVoiceSelect() {
@@ -88,6 +89,7 @@ export function createUiSelects(ctx, theme) {
 
     if (!view.voices || !view.voices.length) {
       el.replaceChildren();
+      ctx.onRefresh?.();
       return;
     }
 
@@ -118,6 +120,7 @@ export function createUiSelects(ctx, theme) {
       el.value = match.name;
       bus.emit(EventTypes.SETTINGS_UPDATE, { voiceName: match.name });
     }
+    ctx.onRefresh?.();
   }
 
   function setLanguageCodeFromSettings() {
@@ -128,6 +131,7 @@ export function createUiSelects(ctx, theme) {
     if (E.languageCodeSelect && E.languageCodeSelect.value !== langPart) {
       E.languageCodeSelect.value = langPart;
     }
+    ctx.onRefresh?.();
   }
 
   function setVoiceFromSettings() {
@@ -138,6 +142,7 @@ export function createUiSelects(ctx, theme) {
     if (opts.includes(voice) && E.voiceSelect.value !== voice) {
       E.voiceSelect.value = voice;
     }
+    ctx.onRefresh?.();
   }
 
   return {

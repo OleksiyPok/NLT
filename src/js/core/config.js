@@ -2,7 +2,7 @@
 import { Utils } from "./utils.js";
 
 // Shown on the main screen (change it with every change of the app)
-export const APP_VERSION = "3.7.4";
+export const APP_VERSION = "3.7.5";
 
 // Folder of the help pages
 export const HELP_DIR = "docs/help/";
